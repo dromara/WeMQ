@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.mmanager.dao.System.LoginLogMapper">
+
+    <select id="selectAll" resultType="cn.mmanager.model.dto.LoginLogDto">
+        select
+            sys_login_log.id as id,
+            sys_login_log.admin_id as adminId,
+            sa.username as adminName,
+            sys_login_log.admin_ip as adminIP,
+            sys_login_log.admin_os as adminOS,
+            sys_login_log.login_status as loginStatus,
+            sys_login_log.login_time as loginTime
+        from sys_login_log
+        left join sys_admin sa on sys_login_log.admin_id = sa.id
+        <where>
+            <if test="id != null">
+                and sys_login_log.id = #{id}
+            </if>
+            <if test="username != null and username != ''">
+                and sa.username like concat('%',#{username},'%')
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="login_time != null">
+                and sys_login_log.login_time = #{login_time}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="LoginLog">
+        insert into sys_login_log
+        (admin_id, admin_ip, admin_os, login_status, login_time)
+        values
+        (#{adminId}, #{adminIP}, #{adminOS}, #{loginStatus}, #{loginTime})
+    </insert>
+
+    <update id="update" parameterType="LoginLog">
+        update sys_login_log
+        <set>
+            <if test="adminId != null">
+                admin_id = #{adminId},
+            </if>
+            <if test="adminIP != null">
+                admin_ip = #{adminIP},
+            </if>
+            <if test="adminOS != null">
+                admin_os = #{adminOS},
+            </if>
+            <if test="loginStatus != null">
+                login_status = #{loginStatus},
+            </if>
+            <if test="loginTime != null">
+                login_time = #{loginTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="long">
+        delete from sys_login_log where id = #{id}
+    </delete>
+</mapper>
