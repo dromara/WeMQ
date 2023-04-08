@@ -44,18 +44,18 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>5.3.25</version>
+            <version>5.3.26</version>
         </dependency>
         <!--spring依赖-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
-            <version>5.3.25</version>
+            <version>5.3.26</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
-            <version>5.3.25</version>
+            <version>5.3.26</version>
         </dependency>
         <!--    切面-->
         <dependency>
