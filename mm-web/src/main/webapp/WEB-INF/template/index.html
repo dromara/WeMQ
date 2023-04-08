@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>后台主页 - 物联网调试管理系统</title>
+    <script th:src="@{/statics/jquery-1.12.4.min.js}"></script>
+    <script th:src="@{/statics/tabler/tabler.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/statics/tabler/tabler.min.css}">
+
+</head>
+<body>
+<div class="page">
+    <div th:replace="common/header :: header"></div>
+
+    <div class="page-wrapper">
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <!-- Page pre-title -->
+                        <div class="page-pretitle">
+                            物联网调试管理后台
+                        </div>
+                        <h2 class="page-title">
+                            控制台
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row row-deck row-cards">
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="subheader">调试页面</div>
+                                </div>
+                                <div class="h1 mb-3">75个</div>
+                                <div class="d-flex mb-2">
+                                    <div>启用状态</div>
+                                    <div class="ms-auto">
+                                        <span class="text-green d-inline-flex align-items-center lh-1">
+                                          69个 已启用
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar bg-primary" style="width: 75%" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="75% Complete">
+                                        <span class="visually-hidden">75% Complete</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="subheader">管理员</div>
+                                </div>
+                                <div class="h1 mb-3">6个</div>
+                                <div class="d-flex mb-2">
+                                    <div>启用状态</div>
+                                    <div class="ms-auto">
+                                        <span class="text-green d-inline-flex align-items-center lh-1">
+                                          4个 已启用
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar bg-primary" style="width: 75%" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="75% Complete">
+                                        <span class="visually-hidden">75% Complete</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="subheader">Nmqs API服务状态</div>
+                                </div>
+                                <div class="d-flex align-items-baseline">
+                                    <div class="h1 mb-3 me-2">
+                                        <span class="status status-green">
+                                            <span class="status-dot status-dot-animated"></span>
+                                            服务正常
+                                    </span>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="tracking">
+                                        <div class="tracking-block bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Operational"></div>
+                                        <div class="tracking-block bg-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Downtime"></div>
+                                        <div class="tracking-block bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Operational"></div>
+                                        <div class="tracking-block bg-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Big load"></div>
+                                        <div class="tracking-block" data-bs-toggle="tooltip" data-bs-placement="top" title="No data"></div>
+                                        <div class="tracking-block" data-bs-toggle="tooltip" data-bs-placement="top" title="No data"></div>
+                                        <div class="tracking-block bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Operational"></div>
+                                        <div class="tracking-block bg-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Downtime"></div>
+                                        <div class="tracking-block bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Operational"></div>
+                                        <div class="tracking-block bg-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Big load"></div>
+                                        <div class="tracking-block" data-bs-toggle="tooltip" data-bs-placement="top" title="No data"></div>
+                                        <div class="tracking-block" data-bs-toggle="tooltip" data-bs-placement="top" title="No data"></div>
+                                        <div class="tracking-block bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Operational"></div>
+                                        <div class="tracking-block bg-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Downtime"></div>
+                                        <div class="tracking-block bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Operational"></div>
+                                        <div class="tracking-block bg-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Big load"></div>
+                                        <div class="tracking-block" data-bs-toggle="tooltip" data-bs-placement="top" title="No data"></div>
+                                        <div class="tracking-block" data-bs-toggle="tooltip" data-bs-placement="top" title="No data"></div>
+                                        <div class="tracking-block bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Operational"></div>
+                                        <div class="tracking-block bg-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Downtime"></div>
+                                        <div class="tracking-block bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Operational"></div>
+                                        <div class="tracking-block bg-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Big load"></div>
+                                        <div class="tracking-block" data-bs-toggle="tooltip" data-bs-placement="top" title="No data"></div>
+                                        <div class="tracking-block" data-bs-toggle="tooltip" data-bs-placement="top" title="No data"></div>
+                                        ...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">登录日志 <span class="status status-blue">2023-04-06</span></h3>
+                                <div class="table-responsive">
+                                    <table class="table table-vcenter" id="login_log">
+                                        <thead>
+                                        <tr>
+                                            <th>登录时间</th>
+                                            <th>用户名</th>
+                                            <th>IP</th>
+                                            <th>操作系统</th>
+                                            <th>状态</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script th:inline="javascript">
+    //模拟数据
+    let data = [
+        {
+            "loginTime": "2021-04-06 12:12:12",
+            "username": "admin",
+            "ip": "127.0.0.1",
+            "os": "Windows 10",
+            "status": "成功"
+        },
+        {
+            "loginTime": "2021-04-06 12:12:12",
+            "username": "admin",
+            "ip": "127.0.0.1",
+            "os": "Windows 10",
+            "status": "成功"
+        }, {
+            "loginTime": "2021-04-06 12:12:12",
+            "username": "admin",
+            "ip": "127.0.0.1",
+            "os": "Windows 10",
+            "status": "成功"
+        }, {
+            "loginTime": "2021-04-06 12:12:12",
+            "username": "admin",
+            "ip": "127.0.0.1",
+            "os": "Windows 10",
+            "status": "成功"
+        }, {
+            "loginTime": "2021-04-06 12:12:12",
+            "username": "admin",
+            "ip": "127.0.0.1",
+            "os": "Windows 10",
+            "status": "成功"
+        }, {
+            "loginTime": "2021-04-06 12:12:12",
+            "username": "admin",
+            "ip": "127.0.0.1",
+            "os": "Windows 10",
+            "status": "成功"
+        }, {
+            "loginTime": "2021-04-06 12:12:12",
+            "username": "admin",
+            "ip": "127.0.0.1",
+            "os": "Windows 10",
+            "status": "成功"
+        }, {
+            "loginTime": "2021-04-06 12:12:12",
+            "username": "admin",
+            "ip": "127.0.0.1",
+            "os": "Windows 10",
+            "status": "成功"
+        }
+    ];
+
+    //初始化表格
+    data.forEach(function (item) {
+        let tr = document.createElement("tr");
+        tr.innerHTML = "<td>" + item.loginTime + "</td>" +
+            "<td>" + item.username + "</td>" +
+            "<td>" + item.ip + "</td>" +
+            "<td>" + item.os + "</td>" +
+            "<td>" + item.status + "</td>";
+        $("#login_log tbody").append(tr);
+    });
+
+</script>
+</html>
