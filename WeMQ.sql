@@ -11,7 +11,7 @@
  Target Server Version : 50731
  File Encoding         : 65001
 
- Date: 08/04/2023 08:34:18
+ Date: 08/04/2023 14:34:04
 */
 
 SET NAMES utf8mb4;
@@ -63,6 +63,7 @@ DROP TABLE IF EXISTS `mq_page`;
 CREATE TABLE `mq_page` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '页面ID',
   `page_name` varchar(255) NOT NULL COMMENT '页面名称',
+  `page_url` varchar(255) NOT NULL COMMENT '访问URL',
   `nmqs_id` int(11) NOT NULL COMMENT 'NmqsTokenID',
   `status` int(11) NOT NULL COMMENT '页面启用状态',
   PRIMARY KEY (`id`)
