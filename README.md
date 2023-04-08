@@ -56,3 +56,23 @@
 **组员：**
 
 罗猷力、常浩哲、纪雨佳、李宇航、梁晓惠、袁祎阳
+
+### 1.5 项目结构
+```
+cn.mmanager
+├── mm-common            // 工具类
+│       └── annotation                    // 自定义注解
+│       └── constant                      // 通用常量
+│       └── core                          // 核心控制
+│       └── enums                         // 通用枚举
+│       └── exception                     // 通用异常
+├── mm-framework         // 框架核心
+│       └── aspectj                       // 注解实现
+│       └── interceptor                   // 拦截器
+│       └── manager                       // 异步处理
+│       └── web                           // 前端控制
+├── mm-web       	 // Web服务
+├── mm-dao      	 // 数据访问层
+├── mm-service     // 业务层
+├── mm-model       // 模型
+```
