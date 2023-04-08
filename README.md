@@ -1,4 +1,4 @@
-# WeMQ
+# WeMQ - 物联网调试管理平台
 [![mqttlogo.png](https://img.nicholasld.cn/i/2023/04/08/6430b2aff1b11.png)](https://img.nicholasld.cn/i/2023/04/08/6430b2aff1b11.png)
 ## 1. 项目介绍
 
