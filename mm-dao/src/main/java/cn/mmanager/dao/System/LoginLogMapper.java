@@ -15,7 +15,7 @@ public interface LoginLogMapper {
      * @param params 查询条件
      * @return 查询结果
      */
-    List<LoginLog> selectAll(Map<String, Object> params);
+    List<LoginLog> select(Map<String, Object> params);
 
     /**
      * 插入一条登录日志
