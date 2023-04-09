@@ -46,9 +46,17 @@
         <div class="page-body">
             <div class="container-xl">
                 <div class="row row-deck row-cards">
+                    <div class="alert alert-danger alert-dismissible" role="alert">
+                        <h3 class="mb-1">数据库无有效Nmqs Token！</h3>
+                        <p>
+                            平台数据库没有有效的Nmqs Token，无法添加调试页面！请前往 Token 管理页面添加有效的Nmqs Token！
+                        </p>
+                        <div class="btn-list">
+                            <a th:href="@{/token}" class="btn btn-danger">前往 Nmqs Token</a>
+                        </div>
+                    </div>
                     <div class="col-12">
                         <div class="spinner-border" id="list_refresh"></div>
-
                         <div id="card" class="card">
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -176,10 +184,11 @@
         let tr = `<tr>
                     <th>${item.id}</th>
                     <td>${item.name}</td>
-                    <td>${item.url}</td>
+                    <td><a href="${item.url}">${item.url}</a></td>
                     <td>${item.token}</td>
                     <td>${status}</td>
                     <td>
+                        <a href="#" class="btn btn-info btn-sm">详情</a>
                         <a href="#" class="btn btn-primary btn-sm">编辑</a>
                         <a href="#" class="btn btn-danger btn-sm">删除</a>
                     </td>
