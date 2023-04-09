@@ -24,9 +24,20 @@ import java.util.List;
 public class TestController extends BaseController {
 
     @GetMapping("/")
-     public String index() {
+    public String index() {
         return "index";
     }
+
+    @GetMapping("/customers")
+    public String customer() {
+        return "customers";
+    }
+
+    @GetMapping("/pages")
+    public String page() {
+        return "pages";
+    }
+
 
     @RepeatSubmit(interval = 1000, message = "请勿重复提交")
     @PostMapping("/testPOST")
