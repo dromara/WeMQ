@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh" xml:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nmqs Token - 物联网调试管理系统</title>
+    <script th:src="@{/statics/jquery-1.12.4.min.js}"></script>
+    <script th:src="@{/statics/tabler/tabler.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/statics/tabler/tabler.min.css}">
+</head>
+<body>
+<div class="page">
+    <div th:replace="common/header :: header"></div>
+
+    <div class="page-wrapper">
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <!-- Page pre-title -->
+                        <div class="page-pretitle">
+                            物联网调试管理后台
+                        </div>
+                        <h2 class="page-title">
+                            Nmqs Token管理
+                        </h2>
+                    </div>
+                    <div class="col-auto ms-auto d-print-none">
+                        <div class="btn-list">
+                            <div class="btn-list">
+                                <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#modal-report">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path d="M5 12l14 0"></path></svg>
+                                    新建Token
+                                </a>
+                                <a href="#" class="btn btn-primary d-sm-none btn-icon" data-bs-toggle="modal" data-bs-target="#modal-report" aria-label="Create new report">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path d="M5 12l14 0"></path></svg>
+                                </a>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row row-deck row-cards">
+                    <div class="col-12">
+                        <div class="spinner-border" id="list_refresh"></div>
+
+                        <div id="card" class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table style="min-height: 600px" class="table table-vcenter" id="token_list">
+                                        <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Token名称</th>
+                                            <th>Token</th>
+                                            <th>服务器</th>
+                                            <th>发布</th>
+                                            <th>订阅</th>
+                                            <th>操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    //菜单class追加属性
+    $(function () {
+        $("#menu_nmqs").addClass("active");
+        $("#card").hide();
+
+        setTimeout(function () {
+            $("#list_refresh").hide();
+            $("#card").show();
+        }, 1000);
+    });
+
+    //模拟数据
+    let data = [];
+    for (let i = 0; i < 10; i++) {
+        let item = {
+            id: i,
+            name: "token" + i,
+            token: "token" + i,
+            server: "127.0.0.1",
+            publish: "publish" + i,
+            subscribe: "subscribe" + i,
+        }
+        data.push(item);
+    }
+
+    //渲染数据
+    data.forEach(function (item) {
+        let tr = `<tr>
+                    <th>${item.id}</th>
+                    <td>${item.name}</td>
+                    <td>${item.token}</td>
+                    <td>${item.server}</td>
+                    <td>${item.publish}</td>
+                    <td>${item.subscribe}</td>
+                    <td>
+                        <a href="#" class="btn btn-info btn-sm">详情</a>
+                        <a href="#" class="btn btn-primary btn-sm">编辑</a>
+                        <a href="#" class="btn btn-danger btn-sm">删除</a>
+                    </td>
+                </tr>`;
+        $("#token_list tbody").append(tr);
+    })
+</script>
+</html>
