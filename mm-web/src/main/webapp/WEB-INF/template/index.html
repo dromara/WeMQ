@@ -2,7 +2,7 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>后台主页 - 物联网调试管理系统</title>
+    <title>控制台 - 物联网调试管理系统</title>
     <script th:src="@{/statics/jquery-1.12.4.min.js}"></script>
     <script th:src="@{/statics/tabler/tabler.min.js}"></script>
     <link rel="stylesheet" th:href="@{/statics/tabler/tabler.min.css}">
@@ -128,7 +128,7 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <h3 class="card-title">登录日志 <span class="status status-blue">2023-04-06</span></h3>
+                                <h3 class="card-title">登录日志 <span id="today" class="status status-blue"></span></h3>
                                 <div class="table-responsive">
                                     <table class="table table-vcenter" id="login_log">
                                         <thead>
@@ -155,6 +155,27 @@
 </div>
 </body>
 <script th:inline="javascript">
+    //菜单class追加属性
+    $(function () {
+        $("#menu_dashboard").addClass("active");
+
+        //获取今天日期
+        let today = new Date();
+        let year = today.getFullYear();
+        let month = today.getMonth() + 1;
+        let day = today.getDate();
+
+        //如果是1-9月份，前面补0
+        if (month < 10) {
+            month = "0" + month;
+        }
+        //如果是1-9号，前面补0
+        if (day < 10) {
+            day = "0" + day;
+        }
+        let date = year + "-" + month + "-" + day;
+        $("#today").text(date);
+    });
     //模拟数据
     let data = [
         {
