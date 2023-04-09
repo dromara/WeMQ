@@ -8,9 +8,12 @@ import cn.mmanager.common.core.page.TableData;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import oshi.PlatformEnum;
+import oshi.SystemInfo;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,7 +27,9 @@ import java.util.List;
 public class TestController extends BaseController {
 
     @GetMapping("/")
-    public String index() {
+    public String index(Model model) {
+        PlatformEnum currentPlatform = SystemInfo.getCurrentPlatform();
+        model.addAttribute("platform", currentPlatform);
         return "index";
     }
 
@@ -36,6 +41,11 @@ public class TestController extends BaseController {
     @GetMapping("/pages")
     public String page() {
         return "pages";
+    }
+
+    @GetMapping("/token")
+    public String nmqs() {
+        return "nmqs";
     }
 
 
