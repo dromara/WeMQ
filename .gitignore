@@ -20,3 +20,6 @@ bin/
 *.iws
 .kotlintest
 */.kotlintest/
+rebel.xml
+*/.idea/
+*/.id
