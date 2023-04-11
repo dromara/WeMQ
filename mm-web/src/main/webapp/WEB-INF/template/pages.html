@@ -6,6 +6,10 @@
     <script th:src="@{/statics/jquery-1.12.4.min.js}"></script>
     <script th:src="@{/statics/tabler/tabler.min.js}"></script>
     <link rel="stylesheet" th:href="@{/statics/tabler/tabler.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/statics/bootstrap/table/bootstrap-table.min.css}">
+    <script th:src="@{/statics/bootstrap/table/bootstrap-table.min.js}"></script>
+    <script th:src="@{/statics/bootstrap/table/bootstrap-table-zh-CN.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/statics/system/common.css}">
 </head>
 <body>
 <div class="page">
@@ -45,22 +49,38 @@
 
         <div class="page-body">
             <div class="container-xl">
-                <div class="row row-deck row-cards">
-                    <div class="alert alert-danger alert-dismissible" role="alert">
-                        <h3 class="mb-1">数据库无有效Nmqs Token！</h3>
-                        <p>
-                            平台数据库没有有效的Nmqs Token，无法添加调试页面！请前往 Token 管理页面添加有效的Nmqs Token！
-                        </p>
-                        <div class="btn-list">
-                            <a th:href="@{/token}" class="btn btn-danger">前往 Nmqs Token</a>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="alert alert-danger alert-dismissible" role="alert">
+                            <h3 class="mb-1">NMQS API 服务异常！<span class="status status-red">受影响的业务：调试、调试页面添加、NMQS Token管理</span></h3>
+                            <p>
+                                NicholasLD's Message Queue Service 服务异常，所有调试服务将不可用！<br>
+                                <span style="font-weight: bolder;">请联系系统管理员！</span>
+                            </p>
                         </div>
                     </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="alert alert-danger alert-dismissible" role="alert">
+                            <h3 class="mb-1">调试页面不可用！<span class="status status-red">受影响的业务：调试、调试页面添加</span></h3>
+                            <p>
+                                没有找到有效的Nmqs Token，无法添加新调试页面，现有调试页面功能将不可用！<br>
+                                <span style="font-weight: bolder;">请前往 Token 管理页面添加有效的Nmqs Token！</span>
+                            </p>
+                            <div class="btn-list">
+                                <a th:href="@{/token}" class="btn btn-danger">前往 Nmqs Token</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row row-deck row-cards">
                     <div class="col-12">
                         <div class="spinner-border" id="list_refresh"></div>
                         <div id="card" class="card">
                             <div class="card-body">
-                                <div class="table-responsive">
-                                    <table style="min-height: 600px" class="table table-vcenter" id="page_list">
+                                <div class="table-responsive" style="height: 460px">
+                                    <table class="table table-vcenter" id="page_list">
                                         <thead>
                                         <tr>
                                             <th>ID</th>
@@ -179,21 +199,66 @@
     ];
 
     //渲染数据
-    data.forEach(function (item) {
-        let status = item.status === 1 ? "<span class=\"status status-green\">启用</span>" : "<span class=\"status status-red\">禁用</span>";
-        let tr = `<tr>
-                    <th>${item.id}</th>
-                    <td>${item.name}</td>
-                    <td><a href="${item.url}">${item.url}</a></td>
-                    <td>${item.token}</td>
-                    <td>${status}</td>
-                    <td>
-                        <a href="#" class="btn btn-info btn-sm">详情</a>
-                        <a href="#" class="btn btn-primary btn-sm">编辑</a>
-                        <a href="#" class="btn btn-danger btn-sm">删除</a>
-                    </td>
-                </tr>`;
-        $("#page_list tbody").append(tr);
-    });
+    $('#page_list').bootstrapTable({
+        data: data,
+        pagination: true,
+        pageSize: 5,
+        pageList: [5, 10, 20],
+        columns: [{
+            field: 'id',
+            title: 'ID',
+            align: 'center',
+            valign: 'middle',
+            sortable: true
+        }, {
+            field: 'name',
+            title: '页面名称',
+            align: 'center',
+            valign: 'middle',
+            sortable: true
+        }, {
+            field: 'url',
+            title: '访问地址',
+            align: 'center',
+            valign: 'middle',
+            sortable: true,
+            formatter: function (value, row, index) {
+                return '<a href="' + value + '" target="_blank">' + value + '</a>';
+            }
+        }, {
+            field: 'token',
+            title: 'Token',
+            align: 'center',
+            valign: 'middle',
+            sortable: true
+        }, {
+            field: 'status',
+            title: '状态',
+            align: 'center',
+            valign: 'middle',
+            sortable: true,
+            formatter: function (value, row, index) {
+                if (value === 1) {
+                    return '<span class="badge bg-green">启用</span>';
+                } else {
+                    return '<span class="badge bg-red">禁用</span>';
+                }
+            }
+        }, {
+            field: 'id',
+            title: '操作',
+            align: 'center',
+            valign: 'middle',
+            sortable: true,
+            formatter: function (value, row, index) {
+                return '<a href="#" class="btn btn-sm btn-primary">编辑</a> <a href="#" class="btn btn-sm btn-danger">删除</a>';
+            }
+        }]
+    })
 </script>
+<style>
+    .fixed-table-container {
+        height: 400px;
+    }
+</style>
 </html>

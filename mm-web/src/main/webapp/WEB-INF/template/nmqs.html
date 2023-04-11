@@ -6,6 +6,10 @@
     <script th:src="@{/statics/jquery-1.12.4.min.js}"></script>
     <script th:src="@{/statics/tabler/tabler.min.js}"></script>
     <link rel="stylesheet" th:href="@{/statics/tabler/tabler.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/statics/bootstrap/table/bootstrap-table.min.css}">
+    <script th:src="@{/statics/bootstrap/table/bootstrap-table.min.js}"></script>
+    <script th:src="@{/statics/bootstrap/table/bootstrap-table-zh-CN.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/statics/system/common.css}">
 </head>
 <body>
 <div class="page">
@@ -45,6 +49,17 @@
 
         <div class="page-body">
             <div class="container-xl">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="alert alert-danger alert-dismissible" role="alert">
+                            <h3 class="mb-1">NMQS API 服务异常！<span class="status status-red">受影响的业务：调试、调试页面添加、NMQS Token管理</span></h3>
+                            <p>
+                                NicholasLD's Message Queue Service 服务异常，所有调试服务将不可用！<br>
+                                <span style="font-weight: bolder;">请联系系统管理员！</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
                 <div class="row row-deck row-cards">
                     <div class="col-12">
                         <div class="spinner-border" id="list_refresh"></div>
@@ -52,7 +67,7 @@
                         <div id="card" class="card">
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table style="min-height: 600px" class="table table-vcenter" id="token_list">
+                                    <table class="table table-vcenter" id="token_list">
                                         <thead>
                                         <tr>
                                             <th>ID</th>
@@ -105,21 +120,62 @@
     }
 
     //渲染数据
-    data.forEach(function (item) {
-        let tr = `<tr>
-                    <th>${item.id}</th>
-                    <td>${item.name}</td>
-                    <td>${item.token}</td>
-                    <td>${item.server}</td>
-                    <td>${item.publish}</td>
-                    <td>${item.subscribe}</td>
-                    <td>
-                        <a href="#" class="btn btn-info btn-sm">详情</a>
-                        <a href="#" class="btn btn-primary btn-sm">编辑</a>
-                        <a href="#" class="btn btn-danger btn-sm">删除</a>
-                    </td>
-                </tr>`;
-        $("#token_list tbody").append(tr);
+    $('#token_list').bootstrapTable({
+        data: data,
+        pagination: true,
+        pageSize: 5,
+        pageList: [5, 10, 20],
+        columns: [{
+            field: 'id',
+            title: 'ID',
+            align: 'center',
+            valign: 'middle',
+            width: 50
+        }, {
+            field: 'name',
+            title: 'Token名称',
+            align: 'center',
+            valign: 'middle',
+            width: 100
+        }, {
+            field: 'token',
+            title: 'Token',
+            align: 'center',
+            valign: 'middle',
+            width: 100
+        }, {
+            field: 'server',
+            title: '服务器',
+            align: 'center',
+            valign: 'middle',
+            width: 100
+        }, {
+            field: 'publish',
+            title: '发布',
+            align: 'center',
+            valign: 'middle',
+            width: 100
+        }, {
+            field: 'subscribe',
+            title: '订阅',
+            align: 'center',
+            valign: 'middle',
+            width: 100
+        }, {
+            field: 'operate',
+            title: '操作',
+            align: 'center',
+            valign: 'middle',
+            width: 100,
+            formatter: function (value, row, index) {
+                return '<a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-report">编辑</a> <a href="#" class="btn btn-danger btn-sm">删除</a>';
+            }
+        }]
     })
 </script>
+<style>
+    .fixed-table-container {
+        height: 400px;
+    }
+</style>
 </html>

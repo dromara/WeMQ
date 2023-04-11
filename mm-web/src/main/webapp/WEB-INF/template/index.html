@@ -8,7 +8,10 @@
     <link rel="stylesheet" th:href="@{/statics/tabler/tabler.min.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/statics/toastify/toastify.min.css}">
     <script type="text/javascript" th:src="@{/statics/toastify/toastify-js.js}"></script>
-
+    <link rel="stylesheet" type="text/css" th:href="@{/statics/bootstrap/table/bootstrap-table.min.css}">
+    <script th:src="@{/statics/bootstrap/table/bootstrap-table.min.js}"></script>
+    <script th:src="@{/statics/bootstrap/table/bootstrap-table-zh-CN.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/statics/system/common.css}">
 </head>
 <body>
 <div class="page">
@@ -91,7 +94,7 @@
                                         <span class="status status-green">
                                             <span class="status-dot status-dot-animated"></span>
                                             服务正常
-                                    </span>
+                                        </span>
                                     </div>
                                 </div>
                                 <div class="mt-2">
@@ -121,6 +124,52 @@
                                         <div class="tracking-block" data-bs-toggle="tooltip" data-bs-placement="top" title="No data"></div>
                                         <div class="tracking-block" data-bs-toggle="tooltip" data-bs-placement="top" title="No data"></div>
                                         ...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">业务状态</h3>
+                                <div class="datagrid">
+                                    <div class="datagrid-item">
+                                        <div class="datagrid-title">设备调试</div>
+                                        <div class="datagrid-content">
+                                            <span class="status status-red">
+                                                <span class="status-dot status-dot-animated"></span>
+                                                服务异常
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="datagrid-item">
+                                        <div class="datagrid-title">调试页面管理</div>
+                                        <div class="datagrid-content">
+                                            <span class="status status-red">
+                                                <span class="status-dot status-dot-animated"></span>
+                                                服务异常
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="datagrid-item">
+                                        <div class="datagrid-title">NMQS Token管理</div>
+                                        <div class="datagrid-content">
+                                             <span class="status status-red">
+                                                <span class="status-dot status-dot-animated"></span>
+                                                服务异常
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="datagrid-item">
+                                        <div class="datagrid-title">客户管理</div>
+                                        <div class="datagrid-content">
+                                            <span class="status status-green">
+                                                <span class="status-dot status-dot-animated"></span>
+                                                服务正常
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -181,21 +230,22 @@
                         <div class="card">
                             <div class="card-body">
                                 <h3 class="card-title">登录日志 <span id="today" class="status status-blue"></span></h3>
-                                <div class="table-responsive">
-                                    <table class="table table-vcenter" id="login_log">
-                                        <thead>
-                                        <tr>
-                                            <th>登录时间</th>
-                                            <th>用户名</th>
-                                            <th>IP</th>
-                                            <th>操作系统</th>
-                                            <th>状态</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
+<!--                                <div class="table-responsive" style="padding: 0 30px">-->
+<!--                                    -->
+<!--                                </div>-->
+                                <table class="table table-vcenter" id="login_log">
+                                    <thead>
+                                    <tr>
+                                        <th>登录时间</th>
+                                        <th>用户名</th>
+                                        <th>IP</th>
+                                        <th>操作系统</th>
+                                        <th>状态</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
 
                             </div>
                         </div>
@@ -229,11 +279,12 @@
         $("#today").text(date);
 
         Toastify({
-            text: "This is a toast",
+            text: "欢迎回来，admin！",
             duration: 3000,
+            avatar: "https://img.nicholasld.cn/i/2023/04/09/6432807ee7b23.jpg",
             close: true,
             gravity: "top", // `top` or `bottom`
-            position: "left", // `left`, `center` or `right`
+            position: "center", // `left`, `center` or `right`
             stopOnFocus: true, // Prevents dismissing of toast on hover
             style: {
                 background: "linear-gradient(to right, #00b09b, #96c93d)",
@@ -295,15 +346,33 @@
     ];
 
     //初始化表格
-    data.forEach(function (item) {
-        let tr = document.createElement("tr");
-        tr.innerHTML = "<td>" + item.loginTime + "</td>" +
-            "<td>" + item.username + "</td>" +
-            "<td>" + item.ip + "</td>" +
-            "<td>" + item.os + "</td>" +
-            "<td>" + item.status + "</td>";
-        $("#login_log tbody").append(tr);
+    $('#login_log').bootstrapTable({
+        data: data,
+        pagination: true,
+        pageSize: 5,
+        pageList: [5, 10, 20],
+        columns: [{
+            field: 'loginTime',
+            title: '登录时间'
+        }, {
+            field: 'username',
+            title: '用户名'
+        }, {
+            field: 'ip',
+            title: 'IP'
+        }, {
+            field: 'os',
+            title: '操作系统'
+        }, {
+            field: 'status',
+            title: '状态'
+        }]
     });
 
 </script>
+<style>
+    .pagination {
+        margin-right: 50px;
+    }
+</style>
 </html>
