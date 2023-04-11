@@ -7,10 +7,13 @@ import cn.mmanager.common.core.domain.AjaxResult;
 import cn.mmanager.common.core.page.TableData;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import oshi.PlatformEnum;
 import oshi.SystemInfo;
@@ -58,7 +61,7 @@ public class TestController extends BaseController {
 
     @GetMapping("/testPage")
     @ResponseBody
-    public AjaxResult testPage(int pageNum) {
+    public AjaxResult testPage(@RequestParam() int pageNum) {
         //模拟100条数据
         List<String> list = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
