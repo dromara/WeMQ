@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.mmanager.dao.MQTT.MQParamMapper">
+
+    <insert id="add" parameterType="mqParam">
+        INSERT INTO mq_param(message,button)
+        values (#{message},#{button})
+    </insert>
+
+    <update id="update" parameterType="mqParam">
+        update mq_param
+        <set>
+            <if test="message!=null">
+                message=#{message},
+            </if>
+            <if test="button!=null">
+                button=#{button},
+            </if>
+        </set>
+        <where>
+            id=#{id}
+        </where>
+    </update>
+
+    <!--    删除-->
+    <delete id="deleteById" parameterType="int">
+        delete from mq_param
+        <where>
+            id=#{id}
+        </where>
+    </delete>
+    <!--    查询-->
+    <select id="select" parameterType="long" resultType="MQParam">
+        SELECT * FROM mq_param
+        <where>
+            <if test="id!=null">
+                id=#{id}
+            </if>
+        </where>
+    </select>
+</mapper>
