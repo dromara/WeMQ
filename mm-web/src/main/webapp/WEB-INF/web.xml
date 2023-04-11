@@ -15,6 +15,11 @@
         <param-value>classpath:applicationContext-*.xml</param-value>
     </context-param>
 
+    <error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/template/error/404.html</location>
+    </error-page>
+
     <!-- Spring字符编码过滤器start-->
     <filter>
         <!--① Spring 编码过滤器 -->
