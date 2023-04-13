@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.mmanager.dao.MQTT.MqPageMapper">
+    <resultMap id="mqPage" type="cn.mmanager.model.dto.MqPageDto">
+        <id column="id" property="id"/>
+        <result column="page_name" property="pageName"/>
+        <result column="page_url" property="pageUrl"/>
+        <result column="nmqs_id" property="nmqsTokenID"/>
+        <result column="status" property="status"/>
+        <association property="settings" javaType="cn.mmanager.model.pojo.NmqsToken">
+            <result column="name" property="name"/>
+            <result column="token" property="token"/>
+            <result column="mqtt_server" property="mqttServer"/>
+            <result column="mqtt_port" property="mqttPort"/>
+            <result column="mqtt_username" property="mqttUsername"/>
+            <result column="mqtt_password" property="mqttPassword"/>
+            <result column="mqtt_sendTopic" property="mqttSendTopic"/>
+            <result column="mqtt_receiveTopic" property="mqttReceiveTopic"/>
+            <result column="mqtt_qos" property="mqttQos"/>
+        </association>
+        <collection property="mqParams" javaType="arraylist" ofType="MQParam" select="selectParamsByPageId" column="id"/>
+    </resultMap>
+
+    <select id="select" parameterType="string" resultType="MQPage">
+        select * from mq_page
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+            <if test="pageName != null">
+                and page_name = #{pageName}
+            </if>
+            <if test="pageUrl != null">
+                and page_url = #{pageUrl}
+            </if>
+            <if test="nmqsTokenID != null">
+                and nmqs_id = #{nmqsTokenID}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="MQPage">
+        insert into mq_page (page_name, page_url, nmqs_id, status)
+        values (#{pageName}, #{pageUrl}, #{nmqsTokenID}, #{status})
+    </insert>
+
+    <update id="update" parameterType="MQPage">
+        update mq_page
+        <set>
+            <if test="pageName != null">
+                page_name = #{pageName},
+            </if>
+            <if test="pageUrl != null">
+                page_url = #{pageUrl},
+            </if>
+            <if test="nmqsTokenID != null">
+                nmqs_id = #{nmqsTokenID},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="long">
+        delete from mq_page where id = #{id}
+    </delete>
+
+    <select id="selectById" resultType="MqPageDto" resultMap="mqPage">
+        select
+            page.*,
+            nmqs.name,
+            nmqs.token,
+            nmqs.mqtt_server,
+            nmqs.mqtt_port,
+            nmqs.mqtt_username,
+            nmqs.mqtt_password,
+            nmqs.mqtt_sendTopic,
+            nmqs.mqtt_receiveTopic,
+            nmqs.mqtt_qos
+        from mq_page page, mq_nmqs_token nmqs, mq_param
+        left join mq_page_param on mq_param.id = mq_page_param.param_id
+        where page.id = #{id}
+    </select>
+
+    <select id="selectParamsByPageId" resultType="MQParam" parameterType="long">
+        select mq_param.id,mq_param.message,mq_param.button from mq_param
+        left join mq_page_param on mq_param.id = mq_page_param.param_id
+        where mq_page_param.page_id = #{id}
+    </select>
+</mapper>
