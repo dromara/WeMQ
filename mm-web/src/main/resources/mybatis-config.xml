@@ -11,7 +11,7 @@
 
     <!--    配置mybatis懒加载和日志-->
     <settings>
-        <setting name="lazyLoadingEnabled" value="true"/>
+        <setting name="lazyLoadingEnabled" value="false"/>
         <setting name="logImpl" value="SLF4J"/>
     </settings>
     <!--    配置别名-->
