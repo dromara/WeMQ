@@ -22,11 +22,11 @@
         <!--        配置mybatis核心文件-->
         <property name="configLocation" value="classpath:mybatis-config.xml"/>
         <!--        配置mapper映射文件-->
-        <property name="mapperLocations" value="classpath*:cn/mmanager/dao/*.xml"/>
+        <property name="mapperLocations" value="classpath*:cn/mmanager/dao/**/*.xml"/>
     </bean>
     <!--       5、 配置mapper接口扫描器-->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="cn.qy.dao"/>
+        <property name="basePackage" value="cn.mmanager.dao"/>
     </bean>
     <!-- 配置事务管理器-->
     <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
