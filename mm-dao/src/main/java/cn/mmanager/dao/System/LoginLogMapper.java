@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 登录日志Mapper
  * @author NicholasLD
  * @createTime 2023/4/8 15:16
  */
