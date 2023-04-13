@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.mmanager.dao.MQTT.NmqsMapper">
+
+    <select id="select" resultType="cn.mmanager.model.pojo.NmqsToken">
+        select * from mq_nmqs_token
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="name != null">
+                and name = #{name}
+            </if>
+            <if test="token != null">
+                and token = #{token}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectById" resultType="cn.mmanager.model.pojo.NmqsToken">
+        select * from mq_nmqs_token where id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="NmqsToken">
+        insert into mq_nmqs_token (id, name, token, mqtt_server, mqtt_port, mqtt_username, mqtt_password, mqtt_sendTopic, mqtt_receiveTopic, mqtt_qos)
+        values (#{id}, #{name}, #{token}, #{mqttServer}, #{mqttPort}, #{mqttUsername}, #{mqttPassword}, #{mqttSendTopic}, #{mqttReceiveTopic}, #{mqttQos})
+    </insert>
+
+    <update id="update" parameterType="NmqsToken">
+        update mq_nmqs_token
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="token != null">
+                token = #{token},
+            </if>
+            <if test="mqttServer != null">
+                mqtt_server = #{mqttServer},
+            </if>
+            <if test="mqttPort != null">
+                mqtt_port = #{mqttPort},
+            </if>
+            <if test="mqttUsername != null">
+                mqtt_username = #{mqttUsername},
+            </if>
+            <if test="mqttPassword != null">
+                mqtt_password = #{mqttPassword},
+            </if>
+            <if test="mqttSendTopic != null">
+                mqtt_sendTopic = #{mqttSendTopic},
+            </if>
+            <if test="mqttReceiveTopic != null">
+                mqtt_receiveTopic = #{mqttReceiveTopic},
+            </if>
+            <if test="mqttQos != null">
+                mqtt_qos = #{mqttQos},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="long">
+        delete from mq_nmqs_token where id = #{id}
+    </delete>
+</mapper>
