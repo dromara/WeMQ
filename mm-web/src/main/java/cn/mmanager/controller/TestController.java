@@ -5,10 +5,12 @@ import cn.mmanager.common.constant.PageConstants;
 import cn.mmanager.common.core.controller.BaseController;
 import cn.mmanager.common.core.domain.AjaxResult;
 import cn.mmanager.common.core.page.TableData;
+import cn.mmanager.framework.utils.JSON;
+import cn.mmanager.model.dto.MqPageDto;
+import cn.mmanager.service.MQTT.MqPageService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +20,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import oshi.PlatformEnum;
 import oshi.SystemInfo;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,13 @@ import java.util.List;
  */
 @Controller
 public class TestController extends BaseController {
+
+    private MqPageService mqPageService;
+
+    @Autowired
+    public void setMqPageService(MqPageService mqPageService) {
+        this.mqPageService = mqPageService;
+    }
 
     @GetMapping("/")
     public String index(Model model) {
@@ -71,5 +79,12 @@ public class TestController extends BaseController {
         PageInfo<String> pageInfo = new PageInfo<>(list);
 
         return AjaxResult.success(new TableData(list, pageNum, pageInfo.getPages()));
+    }
+
+    @GetMapping("/testPage2")
+    @ResponseBody
+    public AjaxResult testPage2() throws Exception {
+        MqPageDto mqPageDto = mqPageService.selectById(1L);
+        return AjaxResult.success(mqPageDto);
     }
 }
