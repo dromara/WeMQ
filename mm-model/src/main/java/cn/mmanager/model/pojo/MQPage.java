@@ -18,7 +18,14 @@ public class MQPage {
     private String pageUrl;
 
     /** Nmqs Token ID */
-    private String nmqsTokenID;
+    private Long nmqsTokenID;
+
+    /** Token */
+    private String token;
+
+
+    /** 客户 */
+    private Customer customer;
 
     /** 页面状态 */
     private int status;
@@ -50,11 +57,11 @@ public class MQPage {
         this.pageUrl = pageUrl;
     }
 
-    public String getNmqsTokenID() {
+    public Long getNmqsTokenID() {
         return nmqsTokenID;
     }
 
-    public void setNmqsTokenID(String nmqsTokenID) {
+    public void setNmqsTokenID(Long nmqsTokenID) {
         this.nmqsTokenID = nmqsTokenID;
     }
 
@@ -74,13 +81,31 @@ public class MQPage {
         this.mqParams = mqParams;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
     @Override
     public String toString() {
         return "MQPage{" +
                 "id=" + id +
                 ", pageName='" + pageName + '\'' +
                 ", pageUrl='" + pageUrl + '\'' +
-                ", nmqsTokenID='" + nmqsTokenID + '\'' +
+                ", nmqsTokenID=" + nmqsTokenID +
+                ", token='" + token + '\'' +
+                ", customer=" + customer +
                 ", status=" + status +
                 ", mqParams=" + mqParams +
                 '}';
