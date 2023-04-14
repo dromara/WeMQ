@@ -17,7 +17,7 @@
 
     <error-page>
         <error-code>404</error-code>
-        <location>/WEB-INF/template/error/404.html</location>
+        <location>/error/404</location>
     </error-page>
 
     <!-- Spring字符编码过滤器start-->
