@@ -21,11 +21,32 @@
         <collection property="mqParams" javaType="arraylist" ofType="MQParam" select="selectParamsByPageId" column="id"/>
     </resultMap>
 
-    <select id="select" parameterType="string" resultType="MQPage">
-        select * from mq_page
+    <resultMap id="select" type="MQPage">
+        <id column="id" property="id"/>
+        <result column="page_name" property="pageName"/>
+        <result column="page_url" property="pageUrl"/>
+        <result column="nmqs_id" property="nmqsTokenID"/>
+        <result column="token" property="token"/>
+        <result column="status" property="status"/>
+        <association property="customer" javaType="cn.mmanager.model.pojo.Customer">
+            <result column="customer_id" property="id"/>
+            <result column="customer_name" property="name"/>
+        </association>
+    </resultMap>
+
+    <select id="select" parameterType="string" resultType="MQPage" resultMap="select">
+        select
+        mq_page.*,
+        customer.id as customer_id,
+        customer.name as customer_name,
+        nmqs.token as token
+        from mq_page
+        left join mq_customer_page on mq_page.id = mq_customer_page.page_id
+        left join mq_customer customer on mq_customer_page.customer_id = customer.id
+        left join mq_nmqs_token nmqs on token = nmqs.token
         <where>
             <if test="id != null">
-                id = #{id}
+                mq_page.id = #{id}
             </if>
             <if test="pageName != null">
                 and page_name = #{pageName}
@@ -38,6 +59,9 @@
             </if>
             <if test="status != null">
                 and status = #{status}
+            </if>
+            <if test="customerID != null">
+                and customer.id = #{customerID}
             </if>
         </where>
     </select>

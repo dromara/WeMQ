@@ -24,7 +24,7 @@ public class MqPageServiceImpl implements MqPageService {
 
     @Override
     public List<MQPage> select(Map<String, Object> params) {
-        return null;
+        return mqPageMapper.select(params);
     }
 
     @Override
@@ -34,16 +34,16 @@ public class MqPageServiceImpl implements MqPageService {
 
     @Override
     public int insert(MQPage mqPage) {
-        return 0;
+        return mqPageMapper.insert(mqPage);
     }
 
     @Override
     public int update(MQPage mqPage) {
-        return 0;
+        return mqPageMapper.update(mqPage);
     }
 
     @Override
     public int deleteById(Long id) {
-        return 0;
+        return mqPageMapper.deleteById(id);
     }
 }
