@@ -37,28 +37,6 @@ public class TestController extends BaseController {
         this.mqPageService = mqPageService;
     }
 
-    @GetMapping("/")
-    public String index(Model model) {
-        PlatformEnum currentPlatform = SystemInfo.getCurrentPlatform();
-        model.addAttribute("platform", currentPlatform);
-        return "index";
-    }
-
-    @GetMapping("/customers")
-    public String customer() {
-        return "customers";
-    }
-
-    @GetMapping("/pages")
-    public String page() {
-        return "pages";
-    }
-
-    @GetMapping("/token")
-    public String nmqs() {
-        return "nmqs";
-    }
-
 
     @RepeatSubmit(interval = 1000, message = "请勿重复提交")
     @PostMapping("/testPOST")
