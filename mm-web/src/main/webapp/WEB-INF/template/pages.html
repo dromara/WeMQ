@@ -78,27 +78,120 @@
                     <div class="col-12">
                         <div class="spinner-border" id="list_refresh"></div>
                         <div id="card" class="card">
-                            <div class="card-body">
-                                <div class="table-responsive" style="height: 460px">
-                                    <table class="table table-vcenter" id="page_list">
-                                        <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>页面名称</th>
-                                            <th>访问地址</th>
-                                            <th>Token</th>
-                                            <th>状态</th>
-                                            <th>操作</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
+                            <div class="card-body" style="display: inline-block">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h3 class="card-title">客户</h3>
+                                            </div>
+                                            <div class="list-group list-group-flush overflow-auto" style="height: 25rem">
+                                                <div class="list-group-item">
+                                                    <div class="row">
+                                                        <div class="col text-truncate">
+                                                            <a href="#" class="text-body d-block">全部客户</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="list-group-item">
+                                                    <div class="row">
+                                                        <div class="col text-truncate">
+                                                            <a href="#" class="text-body d-block">张三</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="list-group-item">
+                                                    <div class="row">
+                                                        <div class="col text-truncate">
+                                                            <a href="#" class="text-body d-block">李四</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="list-group-item">
+                                                    <div class="row">
+                                                        <div class="col text-truncate">
+                                                            <a href="#" class="text-body d-block">王五</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-10">
+                                        <div class="table-responsive" style="height: 460px">
+                                            <table class="table table-vcenter" id="page_list">
+                                                <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>页面名称</th>
+                                                    <th>访问地址</th>
+                                                    <th>Token</th>
+                                                    <th>状态</th>
+                                                    <th>操作</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
+
+
+
 
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="modal-report" tabindex="-1" aria-modal="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="box-shadow: 0px 5px 6px rgb(205, 205, 205);">
+                <div class="modal-header">
+                    <h5 class="modal-title">调试页面详情</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="datagrid">
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">服务器地址</div>
+                            <div class="datagrid-content" id="view_server"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">端口</div>
+                            <div class="datagrid-content" id="view_port"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">用户名</div>
+                            <div class="datagrid-content" id="view_username"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">密码</div>
+                            <div class="datagrid-content" id="view_password"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">发布订阅</div>
+                            <div class="datagrid-content" id="view_sendTopic"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">接收订阅</div>
+                            <div class="datagrid-content" id="view_receiveTopic"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">QoS</div>
+                            <div class="datagrid-content" id="view_qos"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="fixed-table-container" style="padding-bottom: 0px;height: auto">
+                        <table class="table table-vcenter" id="params_table" style="height: auto"></table>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -109,101 +202,42 @@
     //菜单class追加属性
     $(function () {
         $("#menu_pages").addClass("active");
-        $("#card").hide();
-
-        setTimeout(function () {
-            $("#list_refresh").hide();
-            $("#card").show();
-        }, 1000);
+        $("#list_refresh").hide();
+        // $("#card").hide();
+        //
+        // setTimeout(function () {
+        //     $("#list_refresh").hide();
+        //     $("#card").show();
+        // }, 1000);
     });
 
-    //模拟数据
-    let data = [
-        {
-            "id": 1,
-            "name": "调试页面1",
-            "url": "http://test.com/",
-            "token": "123456",
-            "status": 1
-        },
-        {
-            "id": 2,
-            "name": "调试页面1",
-            "url": "http://test.com/",
-            "token": "123456",
-            "status": 1
-        },
-        {
-            "id": 1,
-            "name": "调试页面1",
-            "url": "http://test.com/",
-            "token": "123456",
-            "status": 1
-        },
-        {
-            "id": 1,
-            "name": "调试页面1",
-            "url": "http://test.com/",
-            "token": "123456",
-            "status": 1
-        },
-        {
-            "id": 1,
-            "name": "调试页面1",
-            "url": "http://test.com/",
-            "token": "123456",
-            "status": 1
-        },
-        {
-            "id": 1,
-            "name": "调试页面1",
-            "url": "http://test.com/",
-            "token": "123456",
-            "status": 1
-        },
-        {
-            "id": 1,
-            "name": "调试页面1",
-            "url": "http://test.com/",
-            "token": "123456",
-            "status": 1
-        },
-        {
-            "id": 1,
-            "name": "调试页面1",
-            "url": "http://test.com/",
-            "token": "123456",
-            "status": 1
-        },
-        {
-            "id": 1,
-            "name": "调试页面1",
-            "url": "http://test.com/",
-            "token": "123456",
-            "status": 2
-        },
-        {
-            "id": 1,
-            "name": "调试页面1",
-            "url": "http://test.com/",
-            "token": "123456",
-            "status": 1
-        },
-        {
-            "id": 1,
-            "name": "调试页面1",
-            "url": "http://test.com/",
-            "token": "123456",
-            "status": 1
-        }
-    ];
+    // let data = [];
+    // $.getJSON(
+    //     "/page/list",
+    //     function (data) {
+    //         this.data = data;
+    //     }
+    //
+    // )
 
     //渲染数据
     $('#page_list').bootstrapTable({
-        data: data,
+        url: '/page/list',                      //请求后台的URL（*）
+        method: 'GET',
         pagination: true,
-        pageSize: 5,
-        pageList: [5, 10, 20],
+        sidePagination: "server",
+        queryParams: function (params) {
+            return {
+                pageNum: params.offset + 1
+            }
+        },
+        responseHandler: function (res) {
+            return {
+                "total": res.data.total,
+                "rows": res.data.rows
+            }
+        },
+        pageNumber: 1,
         columns: [{
             field: 'id',
             title: 'ID',
@@ -211,17 +245,15 @@
             valign: 'middle',
             sortable: true
         }, {
-            field: 'name',
+            field: 'pageName',
             title: '页面名称',
             align: 'center',
             valign: 'middle',
-            sortable: true
         }, {
-            field: 'url',
+            field: 'pageUrl',
             title: '访问地址',
             align: 'center',
             valign: 'middle',
-            sortable: true,
             formatter: function (value, row, index) {
                 return '<a href="' + value + '" target="_blank">' + value + '</a>';
             }
@@ -230,8 +262,19 @@
             title: 'Token',
             align: 'center',
             valign: 'middle',
-            sortable: true
         }, {
+            field: 'customer',
+            title: '客户',
+            align: 'center',
+            valign: 'middle',
+            formatter: function (value, row, index) {
+                if  (value === null || value === "" || value === undefined) {
+                    return '<span class="badge bg-secondary">未分配</span>';
+                } else {
+                    return '<span class="badge bg-green">' + value.name + '</span>';
+                }
+            }
+        },{
             field: 'status',
             title: '状态',
             align: 'center',
@@ -245,20 +288,82 @@
                 }
             }
         }, {
-            field: 'id',
             title: '操作',
             align: 'center',
             valign: 'middle',
-            sortable: true,
             formatter: function (value, row, index) {
-                return '<a href="#" class="btn btn-sm btn-primary">编辑</a> <a href="#" class="btn btn-sm btn-danger">删除</a>';
+                return  '<button onclick="showInfo('+ row.id +')" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-report">查看</button> ' +
+                        '<a href="#" class="btn btn-sm btn-info">编辑</a> ' +
+                        '<a href="#" class="btn btn-sm btn-danger">删除</a>';
             }
         }]
     })
+
+    let params = [];
+    function showInfo(row) {
+        console.log(row)
+        let url = "/page/info/" + row;
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                params = data.data;
+
+                console.log(params.settings);
+
+                $("#view_server").text(params.settings.mqttServer);
+                $("#view_port").text(params.settings.mqttPort);
+                $("#view_username").text(params.settings.mqttUsername);
+                $("#view_password").text(params.settings.mqttPassword);
+                $("#view_sendTopic").text(params.settings.mqttSendTopic);
+                $("#view_receiveTopic").text(params.settings.mqttReceiveTopic);
+                $("#view_qos").text(params.settings.mqttQos);
+            }
+        })
+
+        $('#params_table').bootstrapTable({
+            url: url,                      //请求后台的URL（*）
+            method: 'GET',
+            responseHandler: function (res) {
+                return {
+                    "rows": res.data.mqParams
+                }
+            },
+            columns: [{
+                field: 'id',
+                title: 'ID',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'message',
+                title: '调试参数',
+                align: 'center',
+                valign: 'middle',
+            },{
+                field: 'button',
+                title: '按钮名称',
+                align: 'center',
+                valign: 'middle',
+            }],
+        })
+    }
 </script>
 <style>
     .fixed-table-container {
         height: 400px;
     }
+
+    #tree {
+        height: 400px;
+        overflow: auto;
+    }
+
+    .list-group-item {
+        padding: 0.5rem 1rem;
+    }
+
 </style>
 </html>
