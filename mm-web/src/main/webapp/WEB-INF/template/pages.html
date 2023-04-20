@@ -289,15 +289,8 @@
 
     //渲染数据
     $('#page_list').bootstrapTable({
-        url: '/page/list',                      //请求后台的URL（*）
+        url: '/page/list?pageNum=0',                      //请求后台的URL（*）
         method: 'GET',
-        pagination: true,
-        sidePagination: "server",
-        queryParams: function (params) {
-            return {
-                pageNum: params.offset + 1
-            }
-        },
         responseHandler: function (res) {
             return {
                 "total": res.data.total,
@@ -518,22 +511,36 @@
     layui.use('tree', function(){
         var tree = layui.tree;
 
-        //渲染
-        var inst1 = tree.render({
-            elem: '#tree',
-            data: [{
-                title: '全部客户',
-
-                spread: true,
-                children: [{
-                    title: '张三封'
-                },{
-                    title: '李四'
-                },{
-                    title: '王五'
-                }]
-            }]
-        });
+        $.ajax({
+            url: "/customer/list?pageNum=0",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                //把name字段改成title
+                let customerList = data.data.rows;
+                for (let i = 0; i < customerList.length; i++) {
+                    customerList[i].title = customerList[i].name;
+                    delete customerList[i].name;
+                }
+                //渲染
+                var inst1 = tree.render({
+                    elem: '#tree',
+                    data: [{
+                        title: '全部客户',
+                        spread: true,
+                        children: customerList
+                    }],
+                    click: function(obj){
+                        console.log(obj.data); //得到当前点击的节点数据
+                        if (obj.data.id === undefined) {
+                            $('#page_list').bootstrapTable('refresh', {url: '/page/list?pageNum=0'});
+                        } else {
+                            $('#page_list').bootstrapTable('refresh', {url: '/page/list?pageNum=0&customerId=' + obj.data.id});
+                        }
+                    }
+                });
+            }
+        })
     });
 
     function showMessage(row) {
