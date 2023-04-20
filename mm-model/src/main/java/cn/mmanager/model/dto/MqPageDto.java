@@ -1,5 +1,6 @@
 package cn.mmanager.model.dto;
 
+import cn.mmanager.model.pojo.Customer;
 import cn.mmanager.model.pojo.MQParam;
 import cn.mmanager.model.pojo.NmqsToken;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -29,6 +30,9 @@ public class MqPageDto implements Serializable {
 
     /** 服务器设置 */
     private NmqsToken settings;
+
+    /** 客户 */
+    private Customer customer;
 
     /** 页面状态 */
     private int status;
@@ -90,6 +94,14 @@ public class MqPageDto implements Serializable {
 
     public void setSettings(NmqsToken settings) {
         this.settings = settings;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     @Override

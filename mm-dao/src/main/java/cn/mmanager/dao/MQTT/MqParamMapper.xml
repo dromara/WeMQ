@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.mmanager.dao.MQTT.MqParamMapper">
 
-    <insert id="add" parameterType="mqParam">
+    <insert id="add" parameterType="mqParam" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO mq_param(message,button)
         values (#{message},#{button})
     </insert>
@@ -31,11 +31,18 @@
     </delete>
     <!--    查询-->
     <select id="select" parameterType="long" resultType="MQParam">
-        SELECT * FROM mq_param
-        <where>
-            <if test="id!=null">
-                id=#{id}
-            </if>
-        </where>
+        SELECT * FROM mq_param WHERE id=#{id}
     </select>
+
+    <delete id="deletePage_Param" parameterType="long">
+        delete from mq_page_param
+        <where>
+            param_id=#{paramId}
+        </where>
+    </delete>
+
+    <insert id="insertPage_Param" parameterType="long">
+        insert into mq_page_param(page_id,param_id)
+        values (#{pageId},#{paramId})
+    </insert>
 </mapper>

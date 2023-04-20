@@ -4,8 +4,10 @@ import cn.mmanager.dao.MQTT.MqPageMapper;
 import cn.mmanager.model.dto.MqPageDto;
 import cn.mmanager.model.pojo.MQPage;
 import cn.mmanager.service.MQTT.MqPageService;
+import cn.mmanager.service.MQTT.MqParamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -17,9 +19,15 @@ import java.util.Map;
 @Service("mqPageService")
 public class MqPageServiceImpl implements MqPageService {
     private MqPageMapper mqPageMapper;
+    private MqParamService mqParamService;
     @Autowired
     public void setMqPageMapper(MqPageMapper mqPageMapper) {
         this.mqPageMapper = mqPageMapper;
+    }
+
+    @Autowired
+    public void setMqParamService(MqParamService mqParamService) {
+        this.mqParamService = mqParamService;
     }
 
     @Override
@@ -33,17 +41,32 @@ public class MqPageServiceImpl implements MqPageService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int insert(MQPage mqPage) {
-        return mqPageMapper.insert(mqPage);
+        if (mqPageMapper.insert(mqPage) <= 0){
+            return 0;
+        }
+        return mqPageMapper.insertPage_Customer(mqPage.getId(), mqPage.getCustomer().getId());
     }
 
     @Override
-    public int update(MQPage mqPage) {
+    @Transactional(rollbackFor = Exception.class)
+    public int update(MqPageDto mqPage) {
+        if (mqPageMapper.updatePage_Customer(mqPage.getId(), mqPage.getCustomer().getId()) <= 0){
+            if (mqPageMapper.insertPage_Customer(mqPage.getId(), mqPage.getCustomer().getId()) <= 0){
+                return 0;
+            }
+            return mqPageMapper.update(mqPage);
+        }
         return mqPageMapper.update(mqPage);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int deleteById(Long id) {
+        if (mqPageMapper.deletePage_Customer(id) <= 0){
+            return 0;
+        }
         return mqPageMapper.deleteById(id);
     }
 }

@@ -10,6 +10,9 @@
     <script th:src="@{/statics/bootstrap/table/bootstrap-table.min.js}"></script>
     <script th:src="@{/statics/bootstrap/table/bootstrap-table-zh-CN.min.js}"></script>
     <link rel="stylesheet" th:href="@{/statics/system/common.css}">
+    <script th:src="@{/statics/layer/layer.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/statics/toastify/toastify.min.css}">
+    <script type="text/javascript" th:src="@{/statics/toastify/toastify-js.js}"></script>
 </head>
 <body>
 <div class="page">
@@ -31,14 +34,9 @@
                     <div class="col-auto ms-auto d-print-none">
                         <div class="btn-list">
                             <div class="btn-list">
-                                <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#modal-report">
-                                    <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                                <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#modal-add">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path d="M5 12l14 0"></path></svg>
                                     新建Token
-                                </a>
-                                <a href="#" class="btn btn-primary d-sm-none btn-icon" data-bs-toggle="modal" data-bs-target="#modal-report" aria-label="Create new report">
-                                    <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path d="M5 12l14 0"></path></svg>
                                 </a>
                         </div>
                         </div>
@@ -91,6 +89,175 @@
             </div>
         </div>
     </div>
+
+    <div class="modal modal-blur fade" id="modal-showinfo" tabindex="-1" aria-modal="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="box-shadow: 0px 5px 6px rgb(205, 205, 205);">
+                <div class="modal-header">
+                    <h5 class="modal-title">Token详情</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="datagrid">
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">服务器地址</div>
+                            <div class="datagrid-content" id="view_server"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">端口</div>
+                            <div class="datagrid-content" id="view_port"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">用户名</div>
+                            <div class="datagrid-content" id="view_username"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">密码</div>
+                            <div class="datagrid-content" id="view_password"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">发布订阅</div>
+                            <div class="datagrid-content" id="view_sendTopic"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">接收订阅</div>
+                            <div class="datagrid-content" id="view_receiveTopic"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">QoS</div>
+                            <div class="datagrid-content" id="view_qos"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="modal-edit" tabindex="-1" aria-modal="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="box-shadow: 0px 5px 6px rgb(205, 205, 205);">
+                <div class="modal-header">
+                    <h5 class="modal-title">编辑Nmqs Token</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <input type="hidden" id="edit_id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Token名称</label>
+                        <input id="edit_name" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Token</label>
+                        <div class="input-group mb-2">
+                            <input id="edit_token" type="text" class="form-control">
+                            <button class="btn" type="button">生成</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">MQTT服务器地址</label>
+                        <input id="edit_mqtt_server" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">MQTT服务器端口</label>
+                        <input id="edit_mqtt_port" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">MQTT服务器用户名</label>
+                        <input id="edit_mqtt_username" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">MQTT服务器密码</label>
+                        <input id="edit_mqtt_password" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">MQTT发送订阅</label>
+                        <input id="edit_mqtt_sendTopic" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">MQTT接收订阅</label>
+                        <input id="edit_mqtt_receiveTopic" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">MQTT QoS</label>
+                        <input id="edit_mqtt_qos" type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+                        取消
+                    </button>
+                    <button onclick="submitEdit()" type="button" class="btn btn-primary ms-auto" id="edit_save">
+                        保存
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="modal-add" tabindex="-1" aria-modal="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="box-shadow: 0px 5px 6px rgb(205, 205, 205);">
+                <div class="modal-header">
+                    <h5 class="modal-title">添加Nmqs Token</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <input type="hidden" id="add_id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Token名称</label>
+                        <input id="add_name" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Token</label>
+                        <div class="input-group mb-2">
+                            <input id="add_token" type="text" class="form-control">
+                            <button class="btn" type="button">生成</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">MQTT服务器地址</label>
+                        <input id="add_mqtt_server" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">MQTT服务器端口</label>
+                        <input id="add_mqtt_port" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">MQTT服务器用户名</label>
+                        <input id="add_mqtt_username" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">MQTT服务器密码</label>
+                        <input id="add_mqtt_password" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">MQTT发送订阅</label>
+                        <input id="add_mqtt_sendTopic" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">MQTT接收订阅</label>
+                        <input id="add_mqtt_receiveTopic" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">MQTT QoS</label>
+                        <input id="add_mqtt_qos" type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+                        取消
+                    </button>
+                    <button onclick="submitAdd()" type="button" class="btn btn-primary ms-auto" id="add_save">
+                        保存
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 <script>
@@ -121,10 +288,21 @@
 
     //渲染数据
     $('#token_list').bootstrapTable({
-        data: data,
+        url: '/nmqs/list',                      //请求后台的URL（*）
+        method: 'GET',
         pagination: true,
-        pageSize: 5,
-        pageList: [5, 10, 20],
+        sidePagination: "server",
+        queryParams: function (params) {
+            return {
+                pageNum: params.offset + 1
+            }
+        },
+        responseHandler: function (res) {
+            return {
+                "total": res.data.total,
+                "rows": res.data.rows
+            }
+        },
         columns: [{
             field: 'id',
             title: 'ID',
@@ -144,19 +322,19 @@
             valign: 'middle',
             width: 100
         }, {
-            field: 'server',
+            field: 'mqttServer',
             title: '服务器',
             align: 'center',
             valign: 'middle',
             width: 100
         }, {
-            field: 'publish',
+            field: 'mqttSendTopic',
             title: '发布',
             align: 'center',
             valign: 'middle',
             width: 100
         }, {
-            field: 'subscribe',
+            field: 'mqttReceiveTopic',
             title: '订阅',
             align: 'center',
             valign: 'middle',
@@ -168,10 +346,152 @@
             valign: 'middle',
             width: 100,
             formatter: function (value, row, index) {
-                return '<a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-report">编辑</a> <a href="#" class="btn btn-danger btn-sm">删除</a>';
+                return '<button onclick="showInfo('+ row.id +')" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-showinfo">查看</button> ' +
+                    '<button onclick="editInfo('+ row.id +')" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modal-edit">编辑</button> ' +
+                    '<button onclick="deleteToken('+ row.id +')" class="btn btn-danger btn-sm">删除</button>';
             }
         }]
     })
+
+    function showInfo(row) {
+        console.log(row)
+        let url = "/nmqs/info/" + row;
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                params = data.data;
+
+                console.log(params);
+
+                $("#view_server").text(params.mqttServer);
+                $("#view_port").text(params.mqttPort);
+                $("#view_username").text(params.mqttUsername);
+                $("#view_password").text(params.mqttPassword);
+                $("#view_sendTopic").text(params.mqttSendTopic);
+                $("#view_receiveTopic").text(params.mqttReceiveTopic);
+                $("#view_qos").text(params.mqttQos);
+            }
+        })
+    }
+
+    function editInfo(row) {
+        let url = "/nmqs/info/" + row;
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                params = data.data;
+                console.log(params);
+                $("#edit_id").val(params.id);
+                $("#edit_name").val(params.name);
+                $("#edit_token").val(params.token);
+                $("#edit_mqtt_server").val(params.mqttServer);
+                $("#edit_mqtt_port").val(params.mqttPort);
+                $("#edit_mqtt_username").val(params.mqttUsername);
+                $("#edit_mqtt_password").val(params.mqttPassword);
+                $("#edit_mqtt_sendTopic").val(params.mqttSendTopic);
+                $("#edit_mqtt_receiveTopic").val(params.mqttReceiveTopic);
+                $("#edit_mqtt_qos").val(params.mqttQos);
+            }
+        })
+    }
+
+    //添加
+    function submitAdd() {
+        let data = {
+            name: $("#add_name").val(),
+            token: $("#add_token").val(),
+            mqttServer: $("#add_mqtt_server").val(),
+            mqttPort: $("#add_mqtt_port").val(),
+            mqttUsername: $("#add_mqtt_username").val(),
+            mqttPassword: $("#add_mqtt_password").val(),
+            mqttSendTopic: $("#add_mqtt_sendTopic").val(),
+            mqttReceiveTopic: $("#add_mqtt_receiveTopic").val(),
+            mqttQos: $("#add_mqtt_qos").val(),
+        }
+
+        $.post({
+            url: "/nmqs/add",
+            dataType: "json",
+            data: JSON.stringify(data),
+            contentType:'application/json;charset=UTF-8',
+            success: function (data) {
+                if (data.code === 200) {
+                    layer.msg("添加成功");
+                    $('#modal-add').modal('hide');
+                    $('#token_list').bootstrapTable('refresh');
+                } else {
+                    alert(data.msg);
+                }
+            }
+        })
+    }
+
+    function submitEdit() {
+        let data = {
+            id: $("#edit_id").val(),
+            name: $("#edit_name").val(),
+            token: $("#edit_token").val(),
+            mqttServer: $("#edit_mqtt_server").val(),
+            mqttPort: $("#edit_mqtt_port").val(),
+            mqttUsername: $("#edit_mqtt_username").val(),
+            mqttPassword: $("#edit_mqtt_password").val(),
+            mqttSendTopic: $("#edit_mqtt_sendTopic").val(),
+            mqttReceiveTopic: $("#edit_mqtt_receiveTopic").val(),
+            mqttQos: $("#edit_mqtt_qos").val(),
+        }
+
+        layer.confirm('你确认要修改 ID:'+data.id+' 吗？', {
+            btn: ['确认','取消'] //按钮
+        }, function(){
+            $.post({
+                url: "/nmqs/update",
+                dataType: "json",
+                data: JSON.stringify(data),
+                contentType:'application/json;charset=UTF-8',
+                success: function (data) {
+                    if (data.code === 200) {
+                        layer.msg("修改成功");
+                        $('#modal-edit').modal('hide');
+                        $('#token_list').bootstrapTable('refresh');
+                    } else {
+                        alert(data.msg);
+                    }
+                }
+            })
+        }, function(){
+            layer.msg('已取消');
+        });
+    }
+
+    function deleteToken(row){
+        let url = "/nmqs/delete/" + row;
+
+        layer.confirm('你确认要删除 ID:'+row+' 吗？', {
+            btn: ['确认','取消'] //按钮
+        }, function(){
+            $.ajax({
+                url: url,
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (data.code === 200) {
+                        $('#token_list').bootstrapTable('refresh');
+                        layer.msg('删除成功！', {icon: 1});
+                    } else {
+                        alert(data.msg);
+                    }
+                }
+            })
+        }, function(){
+            layer.msg('已取消', {icon: 1});
+        });
+    }
 </script>
 <style>
     .fixed-table-container {

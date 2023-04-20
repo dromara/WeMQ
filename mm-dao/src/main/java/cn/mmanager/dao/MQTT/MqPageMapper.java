@@ -3,6 +3,7 @@ package cn.mmanager.dao.MQTT;
 import cn.mmanager.model.dto.MqPageDto;
 import cn.mmanager.model.pojo.MQPage;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
@@ -42,7 +43,7 @@ public interface MqPageMapper {
      * @param mqPage 调试页面对象
      * @return 更新结果
      */
-    int update(MQPage mqPage);
+    int update(MqPageDto mqPage);
 
     /**
      * 根据id删除调试页面
@@ -50,4 +51,10 @@ public interface MqPageMapper {
      * @return 删除结果
      */
     int deleteById(Long id);
+
+    int insertPage_Customer(@Param("pageId") Long pageId, @Param("customerId") Long customerId);
+
+    int updatePage_Customer(@Param("pageId") Long pageId, @Param("customerId") Long customerId);
+
+    int deletePage_Customer(Long pageId);
 }

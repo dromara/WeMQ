@@ -14,43 +14,31 @@
 
     <!--删除客户-->
     <delete id="deleteClientById"
-            parameterType="java.lang.Long">
+            parameterType="Long">
         delete
         from mq_customer
         where id = #{id}
     </delete>
 
-    <select id="getCustomerListByMap"
-            resultType="cn.mmanager.model.pojo.Customer">
-        SELECT * FROM
-        `mq_customer`
-        <trim prefix="where"
-              prefixOverrides="and | or">
-            <if test="name != null">
-                name=#{name}
-            </if>
-            <if test="beginPos != null and pageSize != null">
-                LIMIT
-                #{beginPos},#{pageSize}
-            </if>
-        </trim>
+    <select id="getCustomers" resultType="cn.mmanager.model.pojo.Customer">
+        SELECT * FROM `mq_customer`
     </select>
-    <select id="getCustomerCount"
-            resultType="java.lang.Integer">
+
+    <select id="getCustomerCount" resultType="int">
         select count(1) from mq_customer
     </select>
 
     <!--修改客户-->
-    <update id="updateClient"
-            parameterType="cn.mmanager.model.pojo.Customer">
+    <update id="updateClient" parameterType="cn.mmanager.model.pojo.Customer">
         UPDATE
         mq_customer
-        <trim prefix="set"
-              suffixOverrides=","
-              suffix="where id=#{id}">
-            <if test="name != null">
-                name=#{name}
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name}
             </if>
-        </trim>
+        </set>
+        <where>
+            id = #{id}
+        </where>
     </update>
 </mapper>

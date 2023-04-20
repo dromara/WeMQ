@@ -7,6 +7,10 @@
         <result column="page_url" property="pageUrl"/>
         <result column="nmqs_id" property="nmqsTokenID"/>
         <result column="status" property="status"/>
+        <association property="customer" javaType="cn.mmanager.model.pojo.Customer">
+            <result column="customer_id" property="id"/>
+            <result column="customer_name" property="name"/>
+        </association>
         <association property="settings" javaType="cn.mmanager.model.pojo.NmqsToken">
             <result column="name" property="name"/>
             <result column="token" property="token"/>
@@ -35,15 +39,16 @@
     </resultMap>
 
     <select id="select" parameterType="string" resultType="MQPage" resultMap="select">
-        select
+        SELECT
         mq_page.*,
-        customer.id as customer_id,
-        customer.name as customer_name,
-        nmqs.token as token
-        from mq_page
-        left join mq_customer_page on mq_page.id = mq_customer_page.page_id
-        left join mq_customer customer on mq_customer_page.customer_id = customer.id
-        left join mq_nmqs_token nmqs on token = nmqs.token
+        customer.id AS customer_id,
+        customer.name AS customer_name,
+        nmqs.token AS token
+        FROM
+        mq_page
+        LEFT JOIN mq_customer_page ON mq_page.id = mq_customer_page.page_id
+        LEFT JOIN mq_customer customer ON mq_customer_page.customer_id = customer.id
+        LEFT JOIN mq_nmqs_token nmqs ON nmqs.id = mq_page.nmqs_id
         <where>
             <if test="id != null">
                 mq_page.id = #{id}
@@ -66,12 +71,12 @@
         </where>
     </select>
 
-    <insert id="insert" parameterType="MQPage">
+    <insert id="insert" parameterType="MQPage" useGeneratedKeys="true" keyProperty="id">
         insert into mq_page (page_name, page_url, nmqs_id, status)
         values (#{pageName}, #{pageUrl}, #{nmqsTokenID}, #{status})
     </insert>
 
-    <update id="update" parameterType="MQPage">
+    <update id="update" parameterType="MQPageDto">
         update mq_page
         <set>
             <if test="pageName != null">
@@ -96,18 +101,22 @@
 
     <select id="selectById" resultType="MqPageDto" resultMap="mqPage">
         select
-            page.*,
-            nmqs.name,
-            nmqs.token,
-            nmqs.mqtt_server,
-            nmqs.mqtt_port,
-            nmqs.mqtt_username,
-            nmqs.mqtt_password,
-            nmqs.mqtt_sendTopic,
-            nmqs.mqtt_receiveTopic,
-            nmqs.mqtt_qos
-        from mq_page page, mq_nmqs_token nmqs, mq_param
-        left join mq_page_param on mq_param.id = mq_page_param.param_id
+        page.*,
+        nmqs.name,
+        nmqs.token,
+        nmqs.mqtt_server,
+        nmqs.mqtt_port,
+        nmqs.mqtt_username,
+        nmqs.mqtt_password,
+        nmqs.mqtt_sendTopic,
+        nmqs.mqtt_receiveTopic,
+        nmqs.mqtt_qos,
+        customer.id as customer_id,
+        customer.name as customer_name
+        from mq_page page
+        left join mq_customer_page mcp on page.id = mcp.page_id
+        left join mq_customer customer on mcp.customer_id = customer.id
+        left join mq_nmqs_token nmqs on page.nmqs_id = nmqs.id
         where page.id = #{id}
     </select>
 
@@ -116,4 +125,23 @@
         left join mq_page_param on mq_param.id = mq_page_param.param_id
         where mq_page_param.page_id = #{id}
     </select>
+
+    <insert id="insertPage_Customer" parameterType="long">
+        insert into mq_customer_page (customer_id, page_id)
+        values (#{customerId}, #{pageId})
+    </insert>
+
+    <update id="updatePage_Customer" parameterType="long">
+        update mq_customer_page
+        <set>
+            <if test="customerId != null">
+                customer_id = #{customerId},
+            </if>
+        </set>
+        where page_id = #{pageId}
+    </update>
+
+    <delete id="deletePage_Customer" parameterType="long">
+        delete from mq_customer_page where page_id = #{pageId}
+    </delete>
 </mapper>

@@ -1,6 +1,7 @@
 package cn.mmanager.dao.MQTT;
 
 import cn.mmanager.model.pojo.MQParam;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +12,7 @@ import java.util.List;
  * @author 梁晓惠、袁祎阳、纪雨佳
  * @createTime 2023/4/8 15:16
  */
-@Repository("mqParamMapper")
+@Repository
 public interface MqParamMapper {
     /**
      * 添加
@@ -31,13 +32,17 @@ public interface MqParamMapper {
      * @param id
      * @return
      */
-    int deleteById(int id);
+    int deleteById(Long id);
 
     /**
      * 查询
      * @param id 参数id
      * @return 返回值
      */
-    List<MQParam> select (Long id);
+    MQParam select (Long id);
+
+    int deletePage_Param(Long paramId);
+
+    int insertPage_Param(@Param("pageId") Long pageId,@Param("paramId") Long paramId);
 
 }

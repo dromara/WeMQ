@@ -68,7 +68,7 @@
         </trim>
     </update>
 
-    <delete id="deleteAdminById" parameterType="java.lang">
+    <delete id="deleteAdminById" parameterType="long">
         delete from sys_admin where id = #{id}
     </delete>
 </mapper>

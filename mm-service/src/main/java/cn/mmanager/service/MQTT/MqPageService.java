@@ -37,7 +37,7 @@ public interface MqPageService {
      * @param mqPage 调试页面对象
      * @return 更新结果
      */
-    int update(MQPage mqPage);
+    int update(MqPageDto mqPage);
 
     /**
      * 根据id删除调试页面

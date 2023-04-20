@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.mmanager.dao.MQTT.NmqsMapper">
+    <resultMap id="select" type="NmqsToken">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="token" property="token" />
+        <result column="mqtt_server" property="mqttServer" />
+        <result column="mqtt_port" property="mqttPort" />
+        <result column="mqtt_username" property="mqttUsername" />
+        <result column="mqtt_password" property="mqttPassword" />
+        <result column="mqtt_sendTopic" property="mqttSendTopic" />
+        <result column="mqtt_receiveTopic" property="mqttReceiveTopic" />
+        <result column="mqtt_qos" property="mqttQos" />
+    </resultMap>
 
-    <select id="select" resultType="cn.mmanager.model.pojo.NmqsToken">
+    <select id="select" resultType="cn.mmanager.model.pojo.NmqsToken" resultMap="select">
         select * from mq_nmqs_token
         <where>
             <if test="id != null">
@@ -17,7 +29,7 @@
         </where>
     </select>
 
-    <select id="selectById" resultType="cn.mmanager.model.pojo.NmqsToken">
+    <select id="selectById" resultType="cn.mmanager.model.pojo.NmqsToken" resultMap="select">
         select * from mq_nmqs_token where id = #{id}
     </select>
 

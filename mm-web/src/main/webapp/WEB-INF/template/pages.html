@@ -10,6 +10,10 @@
     <script th:src="@{/statics/bootstrap/table/bootstrap-table.min.js}"></script>
     <script th:src="@{/statics/bootstrap/table/bootstrap-table-zh-CN.min.js}"></script>
     <link rel="stylesheet" th:href="@{/statics/system/common.css}">
+    <!-- 引入 layui.css -->
+    <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+    <!-- 引入 layui.js -->
+    <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
 </head>
 <body>
 <div class="page">
@@ -31,15 +35,10 @@
                     <div class="col-auto ms-auto d-print-none">
                         <div class="btn-list">
                             <div class="btn-list">
-                                <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#modal-report">
-                                    <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                                <button onclick="addPage()" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#modal-add">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path d="M5 12l14 0"></path></svg>
                                     新建调试页面
-                                </a>
-                                <a href="#" class="btn btn-primary d-sm-none btn-icon" data-bs-toggle="modal" data-bs-target="#modal-report" aria-label="Create new report">
-                                    <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path d="M5 12l14 0"></path></svg>
-                                </a>
+                                </button>
                         </div>
                         </div>
                     </div>
@@ -69,7 +68,7 @@
                                 <span style="font-weight: bolder;">请前往 Token 管理页面添加有效的Nmqs Token！</span>
                             </p>
                             <div class="btn-list">
-                                <a th:href="@{/token}" class="btn btn-danger">前往 Nmqs Token</a>
+                                <a th:href="@{/tokens}" class="btn btn-danger">前往 Nmqs Token</a>
                             </div>
                         </div>
                     </div>
@@ -81,65 +80,14 @@
                             <div class="card-body" style="display: inline-block">
                                 <div class="row">
                                     <div class="col-2">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h3 class="card-title">客户</h3>
-                                            </div>
-                                            <div class="list-group list-group-flush overflow-auto" style="height: 25rem">
-                                                <div class="list-group-item">
-                                                    <div class="row">
-                                                        <div class="col text-truncate">
-                                                            <a href="#" class="text-body d-block">全部客户</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="list-group-item">
-                                                    <div class="row">
-                                                        <div class="col text-truncate">
-                                                            <a href="#" class="text-body d-block">张三</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="list-group-item">
-                                                    <div class="row">
-                                                        <div class="col text-truncate">
-                                                            <a href="#" class="text-body d-block">李四</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="list-group-item">
-                                                    <div class="row">
-                                                        <div class="col text-truncate">
-                                                            <a href="#" class="text-body d-block">王五</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <div id="tree"></div>
                                     </div>
                                     <div class="col-10">
                                         <div class="table-responsive" style="height: 460px">
-                                            <table class="table table-vcenter" id="page_list">
-                                                <thead>
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>页面名称</th>
-                                                    <th>访问地址</th>
-                                                    <th>Token</th>
-                                                    <th>状态</th>
-                                                    <th>操作</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                </tbody>
-                                            </table>
+                                            <table class="table table-vcenter" id="page_list"></table>
                                         </div>
                                     </div>
                                 </div>
-
-
-
-
                             </div>
                         </div>
                     </div>
@@ -148,7 +96,7 @@
         </div>
     </div>
 
-    <div class="modal modal-blur fade" id="modal-report" tabindex="-1" aria-modal="true">
+    <div class="modal modal-blur fade" id="modal-showinfo" tabindex="-1" aria-modal="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content" style="box-shadow: 0px 5px 6px rgb(205, 205, 205);">
                 <div class="modal-header">
@@ -192,6 +140,125 @@
                         <table class="table table-vcenter" id="params_table" style="height: auto"></table>
                     </div>
 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="modal-edit" tabindex="-1" aria-modal="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="box-shadow: 0px 5px 6px rgb(205, 205, 205);">
+                <div class="modal-header">
+                    <h5 class="modal-title">编辑调试页面</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <input type="hidden" id="edit_id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">页面名称</label>
+                        <input id="edit_name" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">访问地址</label>
+                        <div class="input-group mb-2">
+                            <input id="edit_url" type="text" class="form-control">
+                            <button class="btn" type="button">生成</button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-label">Token</div>
+                        <select id="edit_token" class="form-select">
+                            <option value="1">114514 地址:121.201.35.120 发:sendTopic 收:receiveTopic</option>
+                            <option value="2">1919810 地址:121.201.35.120 发:sendTopic 收:receiveTopic</option>
+                            <option value="3">testToken 地址:121.201.35.120 发:sendTopic 收:receiveTopic</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-label">客户</div>
+                        <select id="edit_customer" class="form-select"></select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+                        取消
+                    </button>
+                    <button onclick="submitUpdate()" type="button" class="btn btn-primary ms-auto" id="edit_save">
+                        保存
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="modal-add" tabindex="-1" aria-modal="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="box-shadow: 0px 5px 6px rgb(205, 205, 205);">
+                <div class="modal-header">
+                    <h5 class="modal-title">添加调试页面</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">页面名称</label>
+                        <input id="add_name" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">访问地址</label>
+                        <div class="input-group mb-2">
+                            <input id="add_url" type="text" class="form-control">
+                            <button id="add_reseturl" class="btn" type="button">生成</button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-label">Token</div>
+                        <select id="add_token" class="form-select">
+
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-label">客户</div>
+                        <select id="add_customer" class="form-select">
+                            <option value="0">未分配</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+                        取消
+                    </button>
+                    <button onclick="submitAdd()" type="button" class="btn btn-primary ms-auto" id="add_save">
+                        保存
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="modal-message" tabindex="-1" aria-modal="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="box-shadow: 0px 5px 6px rgb(205, 205, 205);">
+                <div class="modal-header">
+                    <h5 class="modal-title">调试参数编辑</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <input type="hidden" id="param_page_id">
+                <div class="modal-body">
+                    <div class="fixed-table-container" style="padding-bottom: 0px;height: auto">
+                        <table class="table table-vcenter" id="message_table" style="height: auto"></table>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">参数</label>
+                        <input id="message_add" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">按钮名称</label>
+                        <input id="button_add" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <button onclick="submitAddMessage()" type="button" class="btn btn-primary">添加参数</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -281,10 +348,10 @@
             valign: 'middle',
             sortable: true,
             formatter: function (value, row, index) {
-                if (value === 1) {
-                    return '<span class="badge bg-green">启用</span>';
+                if (value === 0) {
+                    return '<a href="#" class="btn btn-sm btn-success">已启用</a> ';
                 } else {
-                    return '<span class="badge bg-red">禁用</span>';
+                    return '<a href="#" class="btn btn-sm btn-danger">已禁用</a> ';
                 }
             }
         }, {
@@ -292,15 +359,17 @@
             align: 'center',
             valign: 'middle',
             formatter: function (value, row, index) {
-                return  '<button onclick="showInfo('+ row.id +')" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-report">查看</button> ' +
-                        '<a href="#" class="btn btn-sm btn-info">编辑</a> ' +
-                        '<a href="#" class="btn btn-sm btn-danger">删除</a>';
+                return  '<button onclick="showInfo('+ row.id +')" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-showinfo">查看</button> ' +
+                        '<button onclick="showMessage('+ row.id +')" data-bs-toggle="modal" data-bs-target="#modal-message" class="btn btn-sm btn-warning">参数</button> ' +
+                        '<button onclick="editInfo('+ row.id +')" data-bs-toggle="modal" data-bs-target="#modal-edit" class="btn btn-sm btn-info">编辑</button> ' +
+                        '<button onclick="deletePage('+ row.id +')" class="btn btn-sm btn-danger">删除</button>';
             }
         }]
     })
 
     let params = [];
     function showInfo(row) {
+        $('#params_table').bootstrapTable('destroy')
         console.log(row)
         let url = "/page/info/" + row;
 
@@ -349,6 +418,320 @@
                 valign: 'middle',
             }],
         })
+    }
+
+    function editInfo(row) {
+        //获取token列表
+        $.ajax({
+            url: "/nmqs/list?pageNum=0",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                let tokenList = data.data.rows;
+                let tokenHtml = "";
+                for (let i = 0; i < tokenList.length; i++) {
+                    tokenHtml += '<option value="' + tokenList[i].id + '">' + tokenList[i].token + ' --- ' + tokenList[i].mqttServer + ' --- 发:' + tokenList[i].mqttSendTopic + ' --- 收: ' + tokenList[i].mqttReceiveTopic + '</option>';
+                }
+                $("#edit_token").html(tokenHtml);
+            }
+        })
+
+        //获取客户列表
+        $.ajax({
+            url: "/customer/list?pageNum=0",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                let customerList = data.data.rows;
+                let customerHtml = "";
+                customerHtml += '<option value="0">未分配</option>';
+                for (let i = 0; i < customerList.length; i++) {
+                    customerHtml += '<option value="' + customerList[i].id + '">' + customerList[i].name + '</option>';
+                }
+                console.log(customerList)
+                $("#edit_customer").html(customerHtml);
+            }
+        })
+
+        let url = "/page/info/" + row;
+        console.log($("#edit_customer").val())
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                params = data.data;
+                console.log(params);
+                $("#edit_id").val(params.id);
+                $("#edit_name").val(params.pageName);
+                $("#edit_url").val(params.pageUrl);
+                $("#edit_token").val(params.nmqsTokenID);
+                //设置客户
+                if (params.customer === null || params.customer === "" || params.customer === undefined) {
+                    $("#edit_customer").val("0");
+                } else {
+                    $("#edit_customer").val(params.customer.id);
+                }
+            }
+        })
+    }
+
+    function submitUpdate() {
+        let id = $("#edit_id").val();
+        let name = $("#edit_name").val();
+        let url = $("#edit_url").val();
+        let token = $("#edit_token").val();
+        let customerId = $("#edit_customer").val();
+        let customerName = $("#edit_customer").find("option:selected").text();
+
+
+        let data = {
+            "id": id,
+            "pageName": name,
+            "pageUrl": url,
+            "nmqsTokenID": token,
+            "customer": {
+                "id": customerId,
+                "name": customerName
+            }
+        }
+
+        $.ajax({
+            url: "/page/update",
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (data) {
+                if (data.code === 200) {
+                    layer.msg("修改成功");
+                    $('#modal-edit').modal('hide');
+                    $('#page_list').bootstrapTable('refresh');
+                } else {
+                    layer.msg("修改失败");
+                }
+            }
+        })
+    }
+
+    layui.use('tree', function(){
+        var tree = layui.tree;
+
+        //渲染
+        var inst1 = tree.render({
+            elem: '#tree',
+            data: [{
+                title: '全部客户',
+
+                spread: true,
+                children: [{
+                    title: '张三封'
+                },{
+                    title: '李四'
+                },{
+                    title: '王五'
+                }]
+            }]
+        });
+    });
+
+    function showMessage(row) {
+        let params = [];
+        $('#message_table').bootstrapTable('destroy')
+
+        $('#param_page_id').val(row)
+
+        $.getJSON(
+            '/page/info/' + row,
+            function (data) {
+                params = data.data.mqParams
+                console.log(params)
+
+                $('#message_table').bootstrapTable({
+                    data: params,
+                    columns: [{
+                        field: 'id',
+                        title: 'ID',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true
+                    }, {
+                        field: 'message',
+                        title: '调试参数',
+                        align: 'center',
+                        valign: 'middle',
+                    },{
+                        field: 'button',
+                        title: '按钮名称',
+                        align: 'center',
+                        valign: 'middle',
+                    },{
+                        title: '操作',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: function (value, row, index) {
+                            return  '<button onclick="submitDeleteMessage('+ row.id +')" class="btn btn-sm btn-danger">删除</button>';
+                        }
+                    }],
+                })
+            }
+        )
+    }
+
+    function submitDeleteMessage(row) {
+        let url = "/page/param/delete/" + row;
+        $.ajax({
+            url: url,
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                if (data.code === 200) {
+                    layer.msg("删除成功");
+                    //重新加载表格
+                    $('#message_table').bootstrapTable('remove', {
+                        field: 'id',
+                        values: [row]
+                    });
+                } else {
+                    layer.msg("删除失败");
+                }
+            }
+        })
+    }
+
+    function submitAddMessage() {
+        let pageId = $('#param_page_id').val();
+        let message = $('#message_add').val();
+        let button = $('#button_add').val();
+
+        let data = {
+            "message": message,
+            "button": button
+        }
+
+        $.ajax({
+            url: "/page/"+ pageId +"/param/add",
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (data) {
+                if (data.code === 200) {
+                    layer.msg("添加成功");
+                    $('#modal-message').modal('hide');
+                    //手动加载数据
+                    $('#message_add').val("");
+                    $('#button_add').val("");
+                } else {
+                    layer.msg("添加失败");
+                }
+            }
+        })
+    }
+
+    function addPage() {
+        //获取token列表
+        $.ajax({
+            url: "/nmqs/list?pageNum=0",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                let tokenList = data.data.rows;
+                let tokenHtml = "";
+                for (let i = 0; i < tokenList.length; i++) {
+                    tokenHtml += '<option value="' + tokenList[i].id + '">' + tokenList[i].token + ' --- ' + tokenList[i].mqttServer + ' --- 发:' + tokenList[i].mqttSendTopic + ' --- 收: ' + tokenList[i].mqttReceiveTopic + '</option>';
+                }
+                $("#add_token").html(tokenHtml);
+            }
+        })
+
+        //获取客户列表
+        $.ajax({
+            url: "/customer/list?pageNum=0",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                let customerList = data.data.rows;
+                let customerHtml = "";
+                for (let i = 0; i < customerList.length; i++) {
+                    customerHtml += '<option value="' + customerList[i].id + '">' + customerList[i].name + '</option>';
+                }
+                $("#add_customer").append(customerHtml);
+            }
+        })
+
+        //生成随机url，带大小写字母和数字
+        let url = "";
+        let chars = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
+        for(let i = 0; i < 12 ; i ++) {
+            let id = Math.ceil(Math.random()*61);
+            url += chars[id];
+        }
+        $("#add_url").val(url);
+
+        $('#add_reseturl').on('click', function () {
+            let url = "";
+            let chars = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
+            for(let i = 0; i < 12 ; i ++) {
+                let id = Math.ceil(Math.random()*61);
+                url += chars[id];
+            }
+            $("#add_url").val(url);
+        })
+    }
+
+    function submitAdd() {
+        let data = {
+            "pageName": $("#add_name").val(),
+            "pageUrl": $("#add_url").val(),
+            "nmqsTokenID": $("#add_token").val(),
+            "customer": {
+                "id": $("#add_customer").val(),
+                "name": $("#add_customer").find("option:selected").text()
+            }
+        }
+
+        $.ajax({
+            url: "/page/add",
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (data) {
+                if (data.code === 200) {
+                    layer.msg("添加成功");
+                    $('#modal-add').modal('hide');
+                    $('#page_list').bootstrapTable('refresh');
+                } else {
+                    layer.msg(data.msg);
+                }
+            }
+        })
+    }
+
+    function deletePage(row){
+        let url = "/page/delete/" + row;
+
+        layer.confirm('你确认要删除 ID:'+row+' 吗？', {
+            btn: ['确认','取消'] //按钮
+        }, function(){
+            $.ajax({
+                url: url,
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (data.code === 200) {
+                        $('#page_list').bootstrapTable('refresh');
+                        layer.msg('删除成功！', {icon: 1});
+                    } else {
+                        alert(data.msg);
+                    }
+                }
+            })
+        }, function(){
+            layer.msg('已取消', {icon: 1});
+        });
     }
 </script>
 <style>

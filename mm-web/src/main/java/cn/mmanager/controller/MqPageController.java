@@ -5,7 +5,9 @@ import cn.mmanager.common.core.domain.AjaxResult;
 import cn.mmanager.common.core.page.TableData;
 import cn.mmanager.model.dto.MqPageDto;
 import cn.mmanager.model.pojo.MQPage;
+import cn.mmanager.model.pojo.MQParam;
 import cn.mmanager.service.MQTT.MqPageService;
+import cn.mmanager.service.MQTT.MqParamService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +26,15 @@ import java.util.Map;
 @RequestMapping("/page")
 public class MqPageController {
     private MqPageService mqPageService;
+    private MqParamService mqParamService;
     @Autowired
     public void setMqPageService(MqPageService mqPageService) {
         this.mqPageService = mqPageService;
+    }
+
+    @Autowired
+    public void setMqParamService(MqParamService mqParamService) {
+        this.mqParamService = mqParamService;
     }
 
     @GetMapping("/list")
@@ -36,7 +44,6 @@ public class MqPageController {
         params.put("id", pageId);
         params.put("pageName", pageName);
         List<MQPage> list = mqPageService.select(params);
-        list.forEach(System.out::println);
         Page<Object> page = PageHelper.startPage(pageNum, PageConstants.DEFAULT_PAGE_SIZE);
         return AjaxResult.success(new TableData(list, pageNum, page.getPages()));
     }
@@ -46,5 +53,35 @@ public class MqPageController {
     public AjaxResult info(@PathVariable("id") int id) {
         MqPageDto pageDto = mqPageService.selectById((long) id);
         return AjaxResult.success(pageDto);
+    }
+
+    @PostMapping("/add")
+    @ResponseBody
+    public AjaxResult add(@RequestBody MQPage page) {
+        return mqPageService.insert(page) > 0 ? AjaxResult.success() : AjaxResult.error();
+    }
+
+    @PostMapping("/update")
+    @ResponseBody
+    public AjaxResult update(@RequestBody MqPageDto page) {
+        return mqPageService.update(page) > 0 ? AjaxResult.success() : AjaxResult.error();
+    }
+
+    @PostMapping("/delete/{id}")
+    @ResponseBody
+    public AjaxResult delete(@PathVariable("id") int id) {
+        return mqPageService.deleteById((long) id) > 0 ? AjaxResult.success() : AjaxResult.error();
+    }
+
+    @PostMapping("/{pageId}/param/add")
+    @ResponseBody
+    public AjaxResult addParam(@PathVariable("pageId") int pageId, @RequestBody MQParam param) {
+        return mqParamService.insert(param,(long) pageId) > 0 ? AjaxResult.success() : AjaxResult.error();
+    }
+
+    @PostMapping("/param/delete/{id}")
+    @ResponseBody
+    public AjaxResult deleteParam(@PathVariable("id") int id) {
+        return mqParamService.delete((long) id) > 0 ? AjaxResult.success() : AjaxResult.error();
     }
 }
