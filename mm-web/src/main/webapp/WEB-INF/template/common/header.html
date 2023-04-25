@@ -8,6 +8,21 @@
 </head>
 <body>
 <div th:fragment="header">
+    <script>
+        $.ajax({
+            url: "http://localhost:8081/ping",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                $("#status1_green").show()
+                $("#status1_red").hide()
+            },
+            error: function (data) {
+                $("#status1_green").hide()
+                $("#status1_red").show()
+            }
+        })
+    </script>
     <header class="navbar navbar-expand-sm navbar-light d-print-none">
         <div class="container-xl">
             <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
@@ -126,7 +141,7 @@
                                 </span>
                             </a>
                             <div class="dropdown-menu" data-bs-popper="static">
-                                <a class="dropdown-item" href="./docs/">
+                                <a class="dropdown-item" th:href="@{/admins}">
                                     管理员
                                 </a>
                                 <a class="dropdown-item" href="./changelog.html">
@@ -136,10 +151,14 @@
                         </li>
                     </ul>
                     <div class="my-2 my-md-0 flex-grow-1 flex-md-grow-0 order-first order-md-last">
-                        <span class="status status-green">
-                                  <span class="status-dot status-dot-animated"></span>
+                        <span id="status1_green" class="status status-green">
+                            <span class="status-dot status-dot-animated"></span>
                                   NMQS API 服务正常
-                                </span>
+                        </span>
+                        <span id="status1_red" class="status status-red">
+                            <span class="status-dot status-dot-animated"></span>
+                                  NMQS API 服务异常
+                        </span>
                     </div>
                 </div>
             </div>
@@ -147,4 +166,5 @@
     </header>
 </div>
 </body>
+
 </html>

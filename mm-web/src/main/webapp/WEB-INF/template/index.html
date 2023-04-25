@@ -43,17 +43,17 @@
                                 <div class="d-flex align-items-center">
                                     <div class="subheader">调试页面</div>
                                 </div>
-                                <div class="h1 mb-3">75个</div>
+                                <div class="h1 mb-3" th:text="|${pageCount}个|">75个</div>
                                 <div class="d-flex mb-2">
                                     <div>启用状态</div>
                                     <div class="ms-auto">
-                                        <span class="text-green d-inline-flex align-items-center lh-1">
-                                          69个 已启用
+                                        <span class="text-green d-inline-flex align-items-center lh-1" th:text="|${pageCount}个 已启用|" >
+                                            60个 已启用
                                         </span>
                                     </div>
                                 </div>
                                 <div class="progress progress-sm">
-                                    <div class="progress-bar bg-primary" style="width: 75%" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="75% Complete">
+                                    <div class="progress-bar bg-primary" style="width: 100%" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="75% Complete">
                                         <span class="visually-hidden">75% Complete</span>
                                     </div>
                                 </div>
@@ -91,9 +91,13 @@
                                 </div>
                                 <div class="d-flex align-items-baseline">
                                     <div class="h1 mb-3 me-2">
-                                        <span class="status status-green">
+                                        <span id="status2_green" class="status status-green">
                                             <span class="status-dot status-dot-animated"></span>
                                             服务正常
+                                        </span>
+                                        <span id="status2_red" class="status status-red">
+                                            <span class="status-dot status-dot-animated"></span>
+                                            服务异常
                                         </span>
                                     </div>
                                 </div>
@@ -138,7 +142,11 @@
                                     <div class="datagrid-item">
                                         <div class="datagrid-title">设备调试</div>
                                         <div class="datagrid-content">
-                                            <span class="status status-red">
+                                            <span id="status3_green" class="status status-green">
+                                                <span class="status-dot status-dot-animated"></span>
+                                                服务正常
+                                            </span>
+                                            <span id="status3_red" class="status status-red">
                                                 <span class="status-dot status-dot-animated"></span>
                                                 服务异常
                                             </span>
@@ -147,7 +155,11 @@
                                     <div class="datagrid-item">
                                         <div class="datagrid-title">调试页面管理</div>
                                         <div class="datagrid-content">
-                                            <span class="status status-red">
+                                           <span id="status4_green" class="status status-green">
+                                                <span class="status-dot status-dot-animated"></span>
+                                                服务正常
+                                            </span>
+                                            <span id="status4_red" class="status status-red">
                                                 <span class="status-dot status-dot-animated"></span>
                                                 服务异常
                                             </span>
@@ -156,7 +168,11 @@
                                     <div class="datagrid-item">
                                         <div class="datagrid-title">NMQS Token管理</div>
                                         <div class="datagrid-content">
-                                             <span class="status status-red">
+                                             <span id="status5_green" class="status status-green">
+                                                <span class="status-dot status-dot-animated"></span>
+                                                服务正常
+                                            </span>
+                                            <span id="status5_red" class="status status-red">
                                                 <span class="status-dot status-dot-animated"></span>
                                                 服务异常
                                             </span>
@@ -187,31 +203,30 @@
                                     </div>
                                     <div class="datagrid-item">
                                         <div class="datagrid-title">处理器</div>
-                                        <div class="datagrid-content">Intel® Xeon® Platinum 8180 Processor</div>
+                                        <div class="datagrid-content" th:text="${CPU}"></div>
                                     </div>
                                     <div class="datagrid-item">
                                         <div class="datagrid-title">CPU占用率</div>
-                                        <div class="datagrid-content">
-                                            85%
+                                        <div class="datagrid-content" th:text="|${CPUUsage}%|">
                                         </div>
                                         <div class="progress progress-sm">
-                                            <div class="progress-bar bg-primary" style="width: 75%" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="75% Complete">
-                                                <span class="visually-hidden">75% Complete</span>
+                                            <div class="progress-bar bg-primary" th:style="|width: ${CPUUsage}%|" role="progressbar" th:aria-valuenow="${CPUUsage}" aria-valuemin="0" aria-valuemax="100" aria-label="75% Complete">
+                                                <span class="visually-hidden" th:text="|${CPUUsage}%|"></span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="datagrid-item">
                                         <div class="datagrid-title">内存占用</div>
-                                        <div class="datagrid-content">8.13GB / 32.00GB</div>
+                                        <div class="datagrid-content" th:text="|${MemoryUsed}GB / ${Memory}GB|">8.13GB / 32.00GB</div>
                                         <div class="progress progress-sm">
-                                            <div class="progress-bar bg-primary" style="width: 75%" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="75% Complete">
+                                            <div class="progress-bar bg-primary" th:style="|width: ${MemoryUsage}%|" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="75% Complete">
                                                 <span class="visually-hidden">75% Complete</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="datagrid-item">
                                         <div class="datagrid-title">JRE Version</div>
-                                        <div class="datagrid-content">
+                                        <div class="datagrid-content" th:text="${JRE}">
                                             1.8.0_181
                                         </div>
                                     </div>
@@ -278,18 +293,39 @@
         let date = year + "-" + month + "-" + day;
         $("#today").text(date);
 
-        Toastify({
-            text: "欢迎回来，admin！",
-            duration: 3000,
-            avatar: "https://img.nicholasld.cn/i/2023/04/09/6432807ee7b23.jpg",
-            close: true,
-            gravity: "top", // `top` or `bottom`
-            position: "center", // `left`, `center` or `right`
-            stopOnFocus: true, // Prevents dismissing of toast on hover
-            style: {
-                background: "linear-gradient(to right, #00b09b, #96c93d)",
+        $.ajax({
+            url: "http://localhost:8081/ping",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+
+                $("#status2_green").show()
+                $("#status2_red").hide()
+
+                $("#status3_green").show()
+                $("#status3_red").hide()
+
+                $("#status4_green").show()
+                $("#status4_red").hide()
+
+                $("#status5_green").show()
+                $("#status5_red").hide()
+            },
+            error: function (data) {
+
+                $("#status2_green").hide()
+                $("#status2_red").show()
+
+                $("#status3_green").hide()
+                $("#status3_red").show()
+
+                $("#status4_green").hide()
+                $("#status4_red").show()
+
+                $("#status5_green").hide()
+                $("#status5_red").show()
             }
-        }).showToast();
+        })
     });
     //模拟数据
     let data = [

@@ -144,4 +144,12 @@
     <delete id="deletePage_Customer" parameterType="long">
         delete from mq_customer_page where page_id = #{pageId}
     </delete>
+
+    <select id="selectByURL" resultMap="mqPage" parameterType="string">
+        select * from mq_page where page_url = #{url}
+    </select>
+
+    <select id="count" resultType="int" parameterType="int">
+        select count(*) from mq_page
+    </select>
 </mapper>

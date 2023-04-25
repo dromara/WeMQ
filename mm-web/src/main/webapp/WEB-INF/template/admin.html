@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh" xml:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>管理员 - 物联网调试管理系统</title>
+    <script th:src="@{/statics/jquery-1.12.4.min.js}"></script>
+    <script th:src="@{/statics/tabler/tabler.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/statics/tabler/tabler.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/statics/bootstrap/table/bootstrap-table.min.css}">
+    <script th:src="@{/statics/bootstrap/table/bootstrap-table.min.js}"></script>
+    <script th:src="@{/statics/bootstrap/table/bootstrap-table-zh-CN.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/statics/system/common.css}">
+</head>
+<body>
+<div class="page">
+    <div th:replace="common/header :: header"></div>
+
+    <div class="page-wrapper">
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <!-- Page pre-title -->
+                        <div class="page-pretitle">
+                            物联网调试管理后台
+                        </div>
+                        <h2 class="page-title">
+                            管理员
+                        </h2>
+                    </div>
+                    <div class="col-auto ms-auto d-print-none">
+                        <div class="btn-list">
+                            <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#modal-report">
+                                <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path d="M5 12l14 0"></path></svg>
+                                新建管理员
+                            </a>
+                            <a href="#" class="btn btn-primary d-sm-none btn-icon" data-bs-toggle="modal" data-bs-target="#modal-report" aria-label="Create new report">
+                                <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path d="M5 12l14 0"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row row-deck row-cards">
+                    <div class="col-12">
+                        <div id="card" class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-vcenter" id="table_admin">
+                                        <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>管理员名称</th>
+                                            <th>管理员昵称</th>
+                                            <th>管理员密码</th>
+                                            <th>状态</th>
+                                            <th>操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    //菜单class追加属性
+    $(function () {
+        $("#menu_system").addClass("active");
+    });
+    //模拟数据
+    let data = [];
+    for (let i = 0; i < 10; i++) {
+        let item = {
+            id:i,
+            username:"admin"+i,
+            nickname:"nickname"+i,
+            password:"123456"+i,
+            status:1
+        }
+        data.push(item);
+    }
+
+    //渲染数据
+    $('#table_admin').bootstrapTable({
+        data:data,
+        pagination: true,
+        pageSize: 5,
+        pageList: [5, 10, 20],
+        columns: [{
+            field: 'id',
+            title: 'ID',
+            align: 'center',
+            valign: 'middle',
+            width: 50
+        },{
+            field: 'username',
+            title: '管理员名称',
+            align: 'center',
+            valign: 'middle',
+            width: 100
+        },{
+            field: 'nickname',
+            title: '管理员昵称',
+            align: 'center',
+            valign: 'middle',
+            width: 100
+        },{
+            field: 'password',
+            title: '密码',
+            align: 'center',
+            valign: 'middle',
+            width: 100
+        },{
+            field: 'status',
+            title: '状态',
+            align: 'center',
+            valign: 'middle',
+            width: 50
+        },{
+            field: 'operate',
+            title: '操作',
+            align: 'center',
+            valign: 'middle',
+            width: 100,
+            formatter: function (value, row, index) {
+                return '<a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-report">编辑</a> <a href="#" class="btn btn-danger btn-sm">删除</a>';
+            }
+        }]
+    });
+</script>
+</html>

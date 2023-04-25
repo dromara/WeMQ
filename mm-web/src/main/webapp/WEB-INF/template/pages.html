@@ -48,7 +48,7 @@
 
         <div class="page-body">
             <div class="container-xl">
-                <div class="row">
+                <div class="row" hidden="hidden">
                     <div class="col-12">
                         <div class="alert alert-danger alert-dismissible" role="alert">
                             <h3 class="mb-1">NMQS API 服务异常！<span class="status status-red">受影响的业务：调试、调试页面添加、NMQS Token管理</span></h3>
@@ -59,7 +59,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" hidden="hidden">
                     <div class="col-12">
                         <div class="alert alert-danger alert-dismissible" role="alert">
                             <h3 class="mb-1">调试页面不可用！<span class="status status-red">受影响的业务：调试、调试页面添加</span></h3>
@@ -315,7 +315,7 @@
             align: 'center',
             valign: 'middle',
             formatter: function (value, row, index) {
-                return '<a href="' + value + '" target="_blank">' + value + '</a>';
+                return '<a href="/page/' + value + '" target="_blank">' + value + '</a>';
             }
         }, {
             field: 'token',

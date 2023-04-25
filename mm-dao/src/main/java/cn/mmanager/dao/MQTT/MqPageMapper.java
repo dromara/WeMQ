@@ -52,9 +52,13 @@ public interface MqPageMapper {
      */
     int deleteById(Long id);
 
+    int count(int type);
+
     int insertPage_Customer(@Param("pageId") Long pageId, @Param("customerId") Long customerId);
 
     int updatePage_Customer(@Param("pageId") Long pageId, @Param("customerId") Long customerId);
 
     int deletePage_Customer(Long pageId);
+
+    MqPageDto selectByURL(String url);
 }
