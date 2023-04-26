@@ -1,5 +1,6 @@
 package cn.mmanager.controller;
 
+import cn.mmanager.common.annotation.RepeatSubmit;
 import cn.mmanager.common.constant.PageConstants;
 import cn.mmanager.common.core.domain.AjaxResult;
 import cn.mmanager.common.core.page.TableData;
@@ -48,18 +49,21 @@ public class NmqsController {
         return AjaxResult.success(nmqsToken);
     }
 
+    @RepeatSubmit(interval = 1000, message = "请勿重复提交")
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult add(@RequestBody NmqsToken nmqsToken) {
         return nmqsService.insert(nmqsToken) > 0 ? AjaxResult.success() : AjaxResult.error();
     }
 
+    @RepeatSubmit(interval = 1000, message = "请勿重复提交")
     @PostMapping("/update")
     @ResponseBody
     public AjaxResult update(@RequestBody NmqsToken nmqsToken) {
         return nmqsService.update(nmqsToken) > 0 ? AjaxResult.success() : AjaxResult.error();
     }
 
+    @RepeatSubmit(interval = 1000, message = "请勿重复提交")
     @PostMapping("/delete/{id}")
     @ResponseBody
     public AjaxResult delete(@PathVariable("id") int id) {

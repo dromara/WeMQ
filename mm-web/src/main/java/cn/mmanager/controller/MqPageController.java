@@ -1,5 +1,6 @@
 package cn.mmanager.controller;
 
+import cn.mmanager.common.annotation.RepeatSubmit;
 import cn.mmanager.common.constant.PageConstants;
 import cn.mmanager.common.core.domain.AjaxResult;
 import cn.mmanager.common.core.page.TableData;
@@ -59,30 +60,35 @@ public class MqPageController {
         return AjaxResult.success(pageDto);
     }
 
+    @RepeatSubmit(interval = 1000, message = "请勿重复提交")
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult add(@RequestBody MQPage page) {
         return mqPageService.insert(page) > 0 ? AjaxResult.success() : AjaxResult.error();
     }
 
+    @RepeatSubmit(interval = 1000, message = "请勿重复提交")
     @PostMapping("/update")
     @ResponseBody
     public AjaxResult update(@RequestBody MqPageDto page) {
         return mqPageService.update(page) > 0 ? AjaxResult.success() : AjaxResult.error();
     }
 
+    @RepeatSubmit(interval = 1000, message = "请勿重复提交")
     @PostMapping("/delete/{id}")
     @ResponseBody
     public AjaxResult delete(@PathVariable("id") int id) {
         return mqPageService.deleteById((long) id) > 0 ? AjaxResult.success() : AjaxResult.error();
     }
 
+    @RepeatSubmit(interval = 1000, message = "请勿重复提交")
     @PostMapping("/{pageId}/param/add")
     @ResponseBody
     public AjaxResult addParam(@PathVariable("pageId") int pageId, @RequestBody MQParam param) {
         return mqParamService.insert(param,(long) pageId) > 0 ? AjaxResult.success() : AjaxResult.error();
     }
 
+    @RepeatSubmit(interval = 1000, message = "请勿重复提交")
     @PostMapping("/param/delete/{id}")
     @ResponseBody
     public AjaxResult deleteParam(@PathVariable("id") int id) {

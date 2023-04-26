@@ -1,5 +1,6 @@
 package cn.mmanager.controller;
 
+import cn.mmanager.common.annotation.RepeatSubmit;
 import cn.mmanager.common.constant.PageConstants;
 import cn.mmanager.common.core.controller.BaseController;
 import cn.mmanager.common.core.domain.AjaxResult;
@@ -39,18 +40,21 @@ public class CustomerController extends BaseController {
         return AjaxResult.success(new TableData(list, pageNum, page.getPages()));
     }
 
+    @RepeatSubmit(interval = 1000, message = "请勿重复提交")
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult add(@RequestBody Customer customer) {
         return customerService.insertClient(customer) > 0 ? AjaxResult.success() : AjaxResult.error();
     }
 
+    @RepeatSubmit(interval = 1000, message = "请勿重复提交")
     @PostMapping("/update")
     @ResponseBody
     public AjaxResult update(@RequestBody Customer customer) {
         return customerService.updateClient(customer) > 0 ? AjaxResult.success() : AjaxResult.error();
     }
 
+    @RepeatSubmit(interval = 1000, message = "请勿重复提交")
     @PostMapping("/delete/{id}")
     @ResponseBody
     public AjaxResult delete(@PathVariable("id") int id) {
