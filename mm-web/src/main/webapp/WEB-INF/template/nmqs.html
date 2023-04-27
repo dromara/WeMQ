@@ -149,8 +149,8 @@
                     <div class="mb-3">
                         <label class="form-label">Token</label>
                         <div class="input-group mb-2">
-                            <input id="edit_token" type="text" class="form-control">
-                            <button class="btn" type="button">生成</button>
+                            <input readonly id="edit_token" type="text" class="form-control">
+                            <button id="edit_resettoken" class="btn" type="button">生成</button>
                         </div>
                     </div>
                 </div>
@@ -207,13 +207,13 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">Token名称</label>
-                        <input id="add_name" type="text" class="form-control" />
+                        <input readonly id="add_name" type="text" class="form-control" />
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Token</label>
                         <div class="input-group mb-2">
                             <input id="add_token" type="text" class="form-control">
-                            <button class="btn" type="button">生成</button>
+                            <button id="add_resettoken" class="btn" type="button">生成</button>
                         </div>
                     </div>
                 </div>
@@ -270,6 +270,16 @@
             $("#list_refresh").hide();
             $("#card").show();
         }, 1000);
+
+        $('#add_resettoken').on('click', function () {
+            let token = "";
+            let chars = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
+            for(let i = 0; i < 12 ; i ++) {
+                let id = Math.ceil(Math.random()*61);
+                token += chars[id];
+            }
+            $("#add_token").val(token);
+        });
     });
 
     //模拟数据
@@ -399,10 +409,30 @@
                 $("#edit_mqtt_qos").val(params.mqttQos);
             }
         })
+
+        $('#edit_resettoken').on('click', function () {
+            let token = "";
+            let chars = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
+            for(let i = 0; i < 12 ; i ++) {
+                let id = Math.ceil(Math.random()*61);
+                token += chars[id];
+            }
+            $("#edit_token").val(token);
+        })
     }
 
     //添加
     function submitAdd() {
+        if ($("#add_name").val() === "" || $("#add_name").val() === null || $("#add_name").val() === undefined) {
+            layer.msg("Token名称不能为空");
+            return;
+        }
+
+        if ($("#add_token").val() === "" || $("#add_token").val() === null || $("#add_token").val() === undefined) {
+            layer.msg("Token不能为空");
+            return;
+        }
+
         let data = {
             name: $("#add_name").val(),
             token: $("#add_token").val(),
@@ -433,6 +463,16 @@
     }
 
     function submitEdit() {
+        if ($("#edit_token").val() === "" || $("#edit_token").val() === null || $("#edit_token").val() === undefined) {
+            layer.msg("Token不能为空");
+            return;
+        }
+
+        if ($("#edit_name").val() === "" || $("#edit_name").val() === null || $("#edit_name").val() === undefined) {
+            layer.msg("名称不能为空");
+            return;
+        }
+
         let data = {
             id: $("#edit_id").val(),
             name: $("#edit_name").val(),

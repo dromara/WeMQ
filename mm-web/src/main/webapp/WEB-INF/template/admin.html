@@ -10,6 +10,7 @@
     <script th:src="@{/statics/bootstrap/table/bootstrap-table.min.js}"></script>
     <script th:src="@{/statics/bootstrap/table/bootstrap-table-zh-CN.min.js}"></script>
     <link rel="stylesheet" th:href="@{/statics/system/common.css}">
+    <script th:src="@{/statics/layer/layer.js}"></script>
 </head>
 <body>
 <div class="page">
@@ -30,15 +31,11 @@
                     </div>
                     <div class="col-auto ms-auto d-print-none">
                         <div class="btn-list">
-                            <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#modal-report">
+                            <button onclick="addAdmin()" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#modal-report">
                                 <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path d="M5 12l14 0"></path></svg>
                                 新建管理员
-                            </a>
-                            <a href="#" class="btn btn-primary d-sm-none btn-icon" data-bs-toggle="modal" data-bs-target="#modal-report" aria-label="Create new report">
-                                <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path d="M5 12l14 0"></path></svg>
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -53,18 +50,7 @@
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-vcenter" id="table_admin">
-                                        <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>管理员名称</th>
-                                            <th>管理员昵称</th>
-                                            <th>管理员密码</th>
-                                            <th>状态</th>
-                                            <th>操作</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
+
                                     </table>
                                 </div>
                             </div>
@@ -73,6 +59,46 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal modal-blur fade" id="modal-edit" tabindex="-1" aria-modal="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content" style="box-shadow: 0px 5px 6px rgb(205, 205, 205);">
+                    <div class="modal-header">
+                        <h5 class="modal-title">编辑管理员</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <input type="hidden" id="edit_id">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">账号</label>
+                            <input readonly id="edit_username" type="text" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">昵称</label>
+                            <div class="input-group mb-2">
+                                <input id="edit_nickname" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-label">密码</div>
+                            <div class="input-group mb-2">
+                                <input id="edit_password" type="text" class="form-control" placeholder="留空则为不修改">
+                                <button id="edit_resetpassword" class="btn" type="button">生成</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+                            取消
+                        </button>
+                        <button onclick="submitUpdate()" type="button" class="btn btn-primary ms-auto" id="edit_save">
+                            保存
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 </body>
@@ -81,25 +107,24 @@
     $(function () {
         $("#menu_system").addClass("active");
     });
-    //模拟数据
-    let data = [];
-    for (let i = 0; i < 10; i++) {
-        let item = {
-            id:i,
-            username:"admin"+i,
-            nickname:"nickname"+i,
-            password:"123456"+i,
-            status:1
-        }
-        data.push(item);
-    }
 
     //渲染数据
     $('#table_admin').bootstrapTable({
-        data:data,
+        url: '/admin/list',                      //请求后台的URL（*）
+        method: 'GET',
         pagination: true,
-        pageSize: 5,
-        pageList: [5, 10, 20],
+        sidePagination: "server",
+        queryParams: function (params) {
+            return {
+                pageNum: params.offset + 1
+            }
+        },
+        responseHandler: function (res) {
+            return {
+                "rows": res.data.rows,
+                "total": res.data.total
+            }
+        },
         columns: [{
             field: 'id',
             title: 'ID',
@@ -119,17 +144,18 @@
             valign: 'middle',
             width: 100
         },{
-            field: 'password',
-            title: '密码',
-            align: 'center',
-            valign: 'middle',
-            width: 100
-        },{
             field: 'status',
             title: '状态',
             align: 'center',
             valign: 'middle',
-            width: 50
+            width: 50,
+            formatter: function (value, row, index) {
+                if (value === 0) {
+                    return '<span class="badge bg-green">正常</span>';
+                } else {
+                    return '<span class="badge bg-red">禁用</span>';
+                }
+            }
         },{
             field: 'operate',
             title: '操作',
@@ -137,9 +163,130 @@
             valign: 'middle',
             width: 100,
             formatter: function (value, row, index) {
-                return '<a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-report">编辑</a> <a href="#" class="btn btn-danger btn-sm">删除</a>';
+                return '<button onclick="editInfo('+ row.id +')" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-edit">编辑</button> ' +
+                       '<button onclick="deleteAdmin('+ row.id +')" class="btn btn-danger btn-sm">删除</button>';
             }
         }]
     });
+
+    function addAdmin() {
+        layer.prompt({title: '请输入管理员名称', formType: 0}, function(username, index){
+            layer.close(index);
+            layer.prompt({title: '请输入管理员昵称', formType: 0}, function(nickname, index){
+                layer.close(index);
+                layer.prompt({title: '请输入管理员密码', formType: 1}, function(password, index){
+                    layer.close(index);
+                    $.ajax({
+                        url: "/admin/add",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            username: username,
+                            nickname: nickname,
+                            password: password
+                        }),
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.code === 200) {
+                                layer.msg(data.msg, {icon: 1});
+                                $('#table_admin').bootstrapTable('refresh');
+                            } else {
+                                layer.msg(data.msg, {icon: 2});
+                            }
+                        }
+                    });
+                });
+            });
+        });
+    }
+
+    function randomString(length) {
+        let str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let result = '';
+        for (let i = length; i > 0; --i) result += str[Math.floor(Math.random() * str.length)];
+        return result;
+    }
+
+    function editInfo(row) {
+        $('#edit_password').val('');
+        $.ajax({
+            url: "/admin/info/" + row,
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                if (data.code === 200) {
+                    $("#edit_id").val(data.data.id);
+                    $("#edit_username").val(data.data.username);
+                    $("#edit_nickname").val(data.data.nickname);
+                } else {
+                    layer.msg(data.msg, {icon: 2});
+                }
+            }
+        });
+
+        $("#edit_resetpassword").click(function () {
+            var password = randomString(12);
+            $("#edit_password").val(password);
+        });
+    }
+
+    function submitUpdate() {
+        var id = $("#edit_id").val();
+        var nickname = $("#edit_nickname").val();
+        var password = $("#edit_password").val();
+        $.ajax({
+            url: "/admin/update",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                id: id,
+                nickname: nickname,
+                password: password
+            }),
+            dataType: "json",
+            success: function (data) {
+                if (data.code === 200) {
+                    layer.msg(data.msg, {icon: 1});
+                    $('#table_admin').bootstrapTable('refresh');
+                    $("#modal-edit").modal('hide');
+                } else {
+                    layer.msg(data.msg, {icon: 2});
+                }
+            }
+        });
+    }
+
+    function deleteAdmin(row) {
+        if (row === 1) {
+            layer.msg('系统管理员不可删除', {icon: 2});
+            return;
+        }
+
+        layer.confirm('确定删除该管理员？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.ajax({
+                url: "/admin/delete/" + row,
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (data.code === 200) {
+                        layer.msg(data.msg, {icon: 1});
+                        $('#table_admin').bootstrapTable('refresh');
+                    } else {
+                        layer.msg(data.msg, {icon: 2});
+                    }
+                },
+                error: function (data) {
+                    layer.msg(data.msg, {icon: 2});
+                }
+            });
+        });
+    }
 </script>
+<style>
+    .fixed-table-container {
+        height: 400px;
+    }
+</style>
 </html>

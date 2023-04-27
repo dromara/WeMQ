@@ -161,8 +161,8 @@
                     <div class="mb-3">
                         <label class="form-label">访问地址</label>
                         <div class="input-group mb-2">
-                            <input id="edit_url" type="text" class="form-control">
-                            <button class="btn" type="button">生成</button>
+                            <input readonly id="edit_url" type="text" class="form-control">
+                            <button id="edit_reseturl" class="btn" type="button">生成</button>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -205,7 +205,7 @@
                     <div class="mb-3">
                         <label class="form-label">访问地址</label>
                         <div class="input-group mb-2">
-                            <input id="add_url" type="text" class="form-control">
+                            <input readonly id="add_url" type="text" class="form-control">
                             <button id="add_reseturl" class="btn" type="button">生成</button>
                         </div>
                     </div>
@@ -276,7 +276,10 @@
         //     $("#list_refresh").hide();
         //     $("#card").show();
         // }, 1000);
+
     });
+
+
 
     // let data = [];
     // $.getJSON(
@@ -468,6 +471,19 @@
                 }
             }
         })
+
+        $('#edit_reseturl').on('click', function () {
+            let url = "";
+            let chars = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O',
+                'P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e',
+                'f','g','h','i','j','k','l','m','n','o','p','q','r','s','t',
+                'u','v','w','x','y','z'];
+            for(let i = 0; i < 12 ; i ++) {
+                let id = Math.ceil(Math.random()*61);
+                url += chars[id];
+            }
+            $("#edit_url").val(url);
+        })
     }
 
     function submitUpdate() {
@@ -477,6 +493,21 @@
         let token = $("#edit_token").val();
         let customerId = $("#edit_customer").val();
         let customerName = $("#edit_customer").find("option:selected").text();
+
+        if (name === "" || name === null || name === undefined) {
+            layer.msg("页面名称不能为空");
+            return;
+        }
+
+        if (url === "" || url === null || url === undefined) {
+            layer.msg("页面地址不能为空");
+            return;
+        }
+
+        if (token === "" || token === null || token === undefined) {
+            layer.msg("token不能为空");
+            return;
+        }
 
 
         let data = {
@@ -686,9 +717,32 @@
             }
             $("#add_url").val(url);
         })
+
+
+
     }
 
     function submitAdd() {
+        if ($("#add_name").val() === "" || $("#add_name").val() === null || $("#add_name").val() === undefined) {
+            layer.msg("页面名称不能为空");
+            return;
+        }
+
+        if ($("#add_url").val() === "" || $("#add_url").val() === null || $("#add_url").val() === undefined) {
+            layer.msg("页面url不能为空");
+            return;
+        }
+
+        if ($("#add_token").val() === "" || $("#add_token").val() === null || $("#add_token").val() === undefined) {
+            layer.msg("token不能为空");
+            return;
+        }
+
+        if ($("#add_customer").val() === "" || $("#add_customer").val() === null || $("#add_customer").val() === undefined) {
+            layer.msg("客户不能为空");
+            return;
+        }
+
         let data = {
             "pageName": $("#add_name").val(),
             "pageUrl": $("#add_url").val(),

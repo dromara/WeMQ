@@ -1,19 +1,15 @@
-package cn.mmanager.dao.System;
-
+package cn.mmanager.service.MQTT;
 
 import cn.mmanager.model.pojo.Admin;
-import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * @author RR
- * @since 2023/4/8 15:49
+ * @author NicholasLD
+ * @createTime 2023/4/27 19:21
  */
-@Repository
-public interface AdminMapper {
+public interface AdminService {
     /**
      * 分页查询
      * @param params 参数条件
@@ -55,4 +51,6 @@ public interface AdminMapper {
      * @return 返回查询到的管理员信息
      */
     Admin getAdminByMap(Map<String,Object> params);
+
+    boolean checkPassword(String password, String hashPassword);
 }

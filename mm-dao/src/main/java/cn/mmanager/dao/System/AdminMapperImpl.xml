@@ -71,4 +71,22 @@
     <delete id="deleteAdminById" parameterType="long">
         delete from sys_admin where id = #{id}
     </delete>
+
+    <select id="getAdminByMap" resultType="cn.mmanager.model.pojo.Admin" parameterType="map">
+        select * from sys_admin
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null and id != ''">
+                and id = #{id}
+            </if>
+            <if test="username != null">
+                and username = #{username}
+            </if>
+            <if test="nickname != null">
+                and nickname = #{nickname}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </trim>
+    </select>
 </mapper>

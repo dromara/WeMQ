@@ -57,11 +57,13 @@
 
         <!--配置拦截器-->
         <mvc:interceptors>
-<!--            <mvc:interceptor>-->
-<!--                <mvc:mapping path="/**"/>-->
-<!--                <mvc:exclude-mapping path="/statics/**"/>-->
-<!--                <bean class="cn.mmanager.framework.interceptor.LoginInterceptor"/>-->
-<!--            </mvc:interceptor>-->
+            <mvc:interceptor>
+                <mvc:mapping path="/**"/>
+                <mvc:exclude-mapping path="/statics/**"/>
+                <mvc:exclude-mapping path="/dologin"/>
+                <mvc:exclude-mapping path="/login"/>
+                <bean class="cn.mmanager.framework.interceptor.LoginInterceptor"/>
+            </mvc:interceptor>
             <!--配置防重复提交注解拦截器-->
             <mvc:interceptor>
                 <mvc:mapping path="/**"/>

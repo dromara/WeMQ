@@ -3,19 +3,27 @@ package cn.mmanager.controller;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.system.oshi.CpuInfo;
 import cn.hutool.system.oshi.OshiUtil;
+import cn.mmanager.common.constant.UserConstants;
 import cn.mmanager.common.core.controller.BaseController;
 import cn.mmanager.dao.MQTT.MqPageMapper;
 import cn.mmanager.dao.MQTT.NmqsMapper;
 import cn.mmanager.model.dto.MqPageDto;
+import cn.mmanager.model.pojo.Admin;
 import cn.mmanager.model.pojo.NmqsToken;
+import cn.mmanager.service.MQTT.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import oshi.PlatformEnum;
 import oshi.SystemInfo;
+
+import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author NicholasLD
@@ -25,6 +33,7 @@ import oshi.SystemInfo;
 public class ViewController extends BaseController {
     private MqPageMapper mqPageMapper;
     private NmqsMapper nmqsMapper;
+    private AdminService adminService;
 
     @Autowired
     public void setMqPageMapper(MqPageMapper mqPageMapper) {
@@ -34,6 +43,11 @@ public class ViewController extends BaseController {
     @Autowired
     public void setNmqsMapper(NmqsMapper nmqsMapper) {
         this.nmqsMapper = nmqsMapper;
+    }
+
+    @Autowired
+    public void setAdminService(AdminService adminService) {
+        this.adminService = adminService;
     }
 
     @GetMapping("/")
@@ -73,7 +87,52 @@ public class ViewController extends BaseController {
         int count = mqPageMapper.count(0);
         model.addAttribute("pageCount", count);
 
+        int adminCount = adminService.getAdminCountByMap(null);
+        model.addAttribute("adminCount", adminCount);
+
         return "index";
+    }
+
+    @GetMapping("/login")
+    public String login(String redirect, Model model) {
+        if (!StrUtil.isEmpty(redirect)) {
+            model.addAttribute("redirect", redirect);
+        }
+        return "login";
+    }
+
+    @PostMapping("/dologin")
+    public String dologin(String username, String password, String redirect, HttpSession session, Model model) {
+        if (StrUtil.isEmpty(username) || StrUtil.isEmpty(password)) {
+            model.addAttribute("msg", "用户名或密码不能为空");
+            return "login";
+        }
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("username", username);
+        Admin admin = adminService.getAdminByMap(map);
+        if (admin == null) {
+            model.addAttribute("msg", "用户名或密码错误");
+            return "login";
+        }
+
+        if (!adminService.checkPassword(password, admin.getPassword())) {
+            model.addAttribute("msg", "用户名或密码错误");
+            return "login";
+        }
+
+        session.setAttribute(UserConstants.USER_SESSION, admin);
+
+        if (!StrUtil.isEmpty(redirect)) {
+            return "redirect:" + redirect;
+        }
+        return "redirect:/";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute(UserConstants.USER_SESSION);
+        return "redirect:/login";
     }
 
     @GetMapping("/customers")
