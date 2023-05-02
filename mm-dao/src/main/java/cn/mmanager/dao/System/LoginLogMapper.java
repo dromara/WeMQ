@@ -1,6 +1,9 @@
 package cn.mmanager.dao.System;
 
+import cn.mmanager.model.dto.LoginLogDto;
 import cn.mmanager.model.pojo.LoginLog;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Map;
@@ -38,4 +41,6 @@ public interface LoginLogMapper {
      * @return 删除结果
      */
     int deleteById(Long id);
+
+    List<LoginLogDto> getLoginLogList(@Param("time") String time);
 }

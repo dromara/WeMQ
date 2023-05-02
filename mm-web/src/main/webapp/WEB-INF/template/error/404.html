@@ -3,8 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>404 - 物联网调试管理系统</title>
+    <script th:src="@{/statics/jquery-1.12.4.min.js}"></script>
+    <script th:src="@{/statics/tabler/tabler.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/statics/tabler/tabler.min.css}">
 </head>
-<body>
-404
+<body class="border-top-wide border-primary d-flex flex-column theme-light">
+<div class="page page-center">
+    <div class="container-tight py-4">
+        <div class="empty">
+            <div class="empty-header">404</div>
+            <p class="empty-title">您要访问的页面不存在</p>
+<!--            <p class="empty-subtitle text-muted">-->
+<!--                We are sorry but the page you are looking for was not found-->
+<!--            </p>-->
+            <div class="empty-action">
+                <a th:href="@{/}" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l14 0"></path><path d="M5 12l6 6"></path><path d="M5 12l6 -6"></path></svg>
+                    返回
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

@@ -11,6 +11,7 @@ import cn.mmanager.model.dto.MqPageDto;
 import cn.mmanager.model.pojo.Admin;
 import cn.mmanager.model.pojo.NmqsToken;
 import cn.mmanager.service.MQTT.AdminService;
+import cn.mmanager.service.MQTT.LoginLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +22,9 @@ import org.springframework.web.servlet.ModelAndView;
 import oshi.PlatformEnum;
 import oshi.SystemInfo;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +37,7 @@ public class ViewController extends BaseController {
     private MqPageMapper mqPageMapper;
     private NmqsMapper nmqsMapper;
     private AdminService adminService;
+    private LoginLogService loginLogService;
 
     @Autowired
     public void setMqPageMapper(MqPageMapper mqPageMapper) {
@@ -48,6 +52,11 @@ public class ViewController extends BaseController {
     @Autowired
     public void setAdminService(AdminService adminService) {
         this.adminService = adminService;
+    }
+
+    @Autowired
+    public void setLoginLogService(LoginLogService loginLogService) {
+        this.loginLogService = loginLogService;
     }
 
     @GetMapping("/")
@@ -102,7 +111,7 @@ public class ViewController extends BaseController {
     }
 
     @PostMapping("/dologin")
-    public String dologin(String username, String password, String redirect, HttpSession session, Model model) {
+    public String dologin(String username, String password, String redirect, HttpSession session, Model model, HttpServletRequest request) {
         if (StrUtil.isEmpty(username) || StrUtil.isEmpty(password)) {
             model.addAttribute("msg", "用户名或密码不能为空");
             return "login";
@@ -118,10 +127,18 @@ public class ViewController extends BaseController {
 
         if (!adminService.checkPassword(password, admin.getPassword())) {
             model.addAttribute("msg", "用户名或密码错误");
+            loginLogService.log(request, admin, 1);
             return "login";
         }
 
+        //记录登录日志
+        loginLogService.log(request, admin, 0);
+
         session.setAttribute(UserConstants.USER_SESSION, admin);
+        model.addAttribute(UserConstants.USER_SESSION, admin);
+        //设置session不过期
+        session.setMaxInactiveInterval(-1);
+
 
         if (!StrUtil.isEmpty(redirect)) {
             return "redirect:" + redirect;
@@ -153,6 +170,16 @@ public class ViewController extends BaseController {
     @GetMapping("/admins")
     public String admin() {
         return "admin";
+    }
+
+    @GetMapping("/loginlogs")
+    public String loginLog() {
+        return "loginlog";
+    }
+
+    @GetMapping("/custommqtt")
+    public String customMqtt() {
+        return "custom_mqtt";
     }
 
     @GetMapping("/page/{url}")

@@ -20,7 +20,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         logger.info("拦截器拦截到请求：{}", request.getRequestURI());
 
-        if(request.getRequestURI().equals("/login") || request.getRequestURI().equals("/doLogin")){
+        if(request.getRequestURI().equals("/login") || request.getRequestURI().equals("/dologin")){
             //判断用户是否已经登录
             if (request.getSession().getAttribute(UserConstants.USER_SESSION) != null) {
                 logger.info("[登录] 用户已登录，跳转到主页");
@@ -30,7 +30,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        if (request.getRequestURI().equals("/api/auth/logout")) {
+        if (request.getRequestURI().equals("/logout")) {
             //判断用户是否已经登录
             if (request.getSession().getAttribute(UserConstants.USER_SESSION) != null) {
                 logger.info("[注销] 用户已登录，放行");

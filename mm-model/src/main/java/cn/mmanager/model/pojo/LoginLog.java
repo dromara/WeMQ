@@ -1,5 +1,7 @@
 package cn.mmanager.model.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.sql.Timestamp;
 
 /**
@@ -21,6 +23,7 @@ public class LoginLog {
     private String adminOS;
 
     /** 登录时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Timestamp loginTime;
 
     /** 登录状态 */
