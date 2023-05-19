@@ -11,6 +11,7 @@
     <script th:src="@{/statics/bootstrap/table/bootstrap-table-zh-CN.min.js}"></script>
     <link rel="stylesheet" th:href="@{/statics/system/common.css}">
     <script th:src="@{/statics/layer/layer.js}"></script>
+    <script th:src="@{/statics/system/common.js}"></script>
 </head>
 <body>
 <div class="page">
@@ -106,7 +107,7 @@
     });
 
     $.ajax({
-        url: 'http://localhost:8080/loginLog/list',
+        url: '/loginLog/list',
         type: 'get',
         dataType: 'json',
         success: function (res) {
@@ -130,9 +131,9 @@
     function changeTime() {
         var time = $("#select").val();
         if (time === "0") {
-            $('#loginlog_table').bootstrapTable('refresh', {url: 'http://localhost:8080/loginLog/list'});
+            $('#loginlog_table').bootstrapTable('refresh', {url: '/loginLog/list'});
         } else {
-            $('#loginlog_table').bootstrapTable('refresh', {url: 'http://localhost:8080/loginLog/list?time=' + time});
+            $('#loginlog_table').bootstrapTable('refresh', {url: '/loginLog/list?time=' + time});
         }
     }
 </script>

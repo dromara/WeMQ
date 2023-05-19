@@ -65,7 +65,6 @@ public class ViewController extends BaseController {
         CpuInfo cpuInfo = OshiUtil.getCpuInfo();
         //Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz
         String cpuModel = cpuInfo.getCpuModel();
-        cpuModel = cpuModel.substring(cpuModel.indexOf("Intel"), cpuModel.indexOf("GHz") + 3);
         cpuInfo.setCpuModel(cpuModel);
         model.addAttribute("platform", currentPlatform);
         //获取CPU型号

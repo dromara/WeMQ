@@ -41,6 +41,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+<script th:src="@{/statics/system/common.js}"></script>
 
 <script type="text/javascript">
     let websocket = null;
@@ -49,7 +50,7 @@
 
     //判断当前浏览器是否支持WebSocket
     if ('WebSocket' in window) {
-        websocket = new WebSocket("ws://localhost:8081/websocket/" + token);
+        websocket = new WebSocket( getNmqsWebsocket() + "/websocket/" + token);
     } else {
         alert('Not support websocket')
     }

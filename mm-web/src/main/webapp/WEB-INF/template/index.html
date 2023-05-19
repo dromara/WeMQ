@@ -12,6 +12,7 @@
     <script th:src="@{/statics/bootstrap/table/bootstrap-table.min.js}"></script>
     <script th:src="@{/statics/bootstrap/table/bootstrap-table-zh-CN.min.js}"></script>
     <link rel="stylesheet" th:href="@{/statics/system/common.css}">
+    <script th:src="@{/statics/system/common.js}"></script>
 </head>
 <body>
 <div class="page">
@@ -286,7 +287,7 @@
         $("#today").text(date);
 
         $.ajax({
-            url: "http://localhost:8081/ping",
+            url: getNmqsAPI() + "/ping",
             type: "GET",
             dataType: "json",
             success: function (data) {
@@ -322,7 +323,7 @@
 
     //初始化表格
     $('#login_log').bootstrapTable({
-        url: 'http://localhost:8080/loginLog/list',
+        url: '/loginLog/list',
         method: 'get',
         dataType: 'json',
         pagination: true,

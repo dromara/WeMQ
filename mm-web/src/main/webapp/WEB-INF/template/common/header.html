@@ -5,12 +5,13 @@
     <script th:src="@{/statics/jquery-1.12.4.min.js}"></script>
     <script th:src="@{/statics/tabler/tabler.min.js}"></script>
     <link rel="stylesheet" th:href="@{/statics/tabler/tabler.min.css}">
+    <script th:src="@{/statics/system/common.js}"></script>
 </head>
 <body>
 <div th:fragment="header">
     <script th:inline="javascript">
         $.ajax({
-            url: "http://localhost:8081/ping",
+            url: getNmqsAPI() + "/ping",
             type: "GET",
             dataType: "json",
             success: function (data) {

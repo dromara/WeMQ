@@ -62,6 +62,7 @@
                 <mvc:exclude-mapping path="/statics/**"/>
                 <mvc:exclude-mapping path="/dologin"/>
                 <mvc:exclude-mapping path="/login"/>
+                <mvc:exclude-mapping path="/page/**"/>
                 <bean class="cn.mmanager.framework.interceptor.LoginInterceptor"/>
             </mvc:interceptor>
             <!--配置防重复提交注解拦截器-->
