@@ -78,4 +78,4 @@ cn.mmanager
 ```
 
 ### 1.6 数据库结构
-![https://img.nicholasld.cn/i/2023/05/19/646712f025150.png](img.png)
+![https://img.nicholasld.cn/i/2023/05/19/646712f025150.png](https://img.nicholasld.cn/i/2023/05/19/646712f025150.png)
