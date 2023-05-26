@@ -3,22 +3,13 @@
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-    <!--
-        MyBatis核心配置文件中标签顺序：
-        properties?,settings?,typeAliases?,typeHandlers?,objectFactory?,objectWrapperFactory?,
-        reflectorFactory?,plugins?,environments?,databaseIdProvider?,mappers?
-    -->
-
-    <!--    配置mybatis懒加载和日志-->
     <settings>
         <setting name="lazyLoadingEnabled" value="false"/>
         <setting name="logImpl" value="SLF4J"/>
     </settings>
-    <!--    配置别名-->
     <typeAliases>
         <package name="cn.mmanager.model"/>
     </typeAliases>
-
     <plugins>
         <plugin interceptor="com.github.pagehelper.PageInterceptor">
             <property name="helperDialect" value="mysql"/>
