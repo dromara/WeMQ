@@ -69,3 +69,15 @@ cn.mmanager
 
 ### 1.5 数据库结构
 ![https://img.nicholasld.cn/i/2023/05/19/646712f025150.png](https://img.nicholasld.cn/i/2023/05/19/646712f025150.png)
+
+## 2. 部署文档
+
+### 2.1 如何部署
+
+首先导入项目根目录的 WeMQ.sql 文件到数据库，数据库名为 `WeMQ`，然后对数据库连接信息进行配置，在`mm-web`模块的`/src/main/resources/database.properties`文件中进行数据库连接信息的配置，然后就可以导入到Tomcat中进行运行
+
+### 2.2 如何修改 Nmqs服务地址
+
+本项目依赖于我的另一个开源项目 Nmqs 来实现对MQTT的转发和连接，如需部署Nmqs，[请访问](https://gitee.com/nicholasld/Nmqs/)。
+
+在`mm-web/src/main/webapp/statics/system/common.js`中修改第一行的url变量，如果需要https，则修改第三行的http为https
