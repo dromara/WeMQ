@@ -8,6 +8,10 @@
 
 其功能主要是对客户MQTT调试页面进行集中管理（连接信息、发送信息），系统管理员可在后台添加客户和调试页面，并设置调试页面的连接信息、发送消息和对应的发送按钮文字，并设置分享链接以及页面的开启状态，用户可通过分享链接打开配置好对应信息的页面，实现对自己设备的管理调试。
 
+![GitHub](https://img.shields.io/github/license/NicholasLD/WeMQ)
+[![star](https://gitee.com/nicholasld/WeMQ/badge/star.svg?theme=dark)](https://gitee.com/nicholasld/WeMQ/stargazers)
+[![fork](https://gitee.com/nicholasld/WeMQ/badge/fork.svg?theme=dark)](https://gitee.com/nicholasld/WeMQ/members)
+
 #### 项目截图：
 控制台
 ![D7CCC3CA-0B97-4A0F-8A03-8DC8A91F58A2.png](https://img.nicholasld.cn/i/2023/05/31/647643c75a2ff.png)
@@ -94,3 +98,24 @@ cn.mmanager
 使用Tomcat启动项目即可，访问`http://<你的项目地址>:8080`即可
 
 初始账号密码为`admin`/`admin`
+
+## 3. 开发规划
+
+- [ ] 迁移至Spring Boot
+- [ ] 优化调试页面的样式
+- [ ] 使Nmqs服务实现集群，实现高可用
+- [ ] 实现后台用户的权限管理
+
+## Issues & Pull Requests
+欢迎提交Issues和Pull Requests，开源大门永远向所有人敞开。
+
+## 联系作者
+- Email: 878639947@qq.com
+- QQ: 878639947
+- WeChat: NicholasLD505
+
+## License(开源许可证)
+Apache License Version 2.0 see http://www.apache.org/licenses/LICENSE-2.0.html
+
+## 版权使用说明
+WeMQ遵循Apache2.0开源协议，可用于个人学习、毕设、公司项目、商业产品等，但必须保留版权信息，如需去除版权信息，请联系作者购买商业授权。
