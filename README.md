@@ -89,3 +89,8 @@ cn.mmanager
 本项目依赖于我的另一个开源项目 Nmqs 来实现对MQTT的转发和连接，如需部署Nmqs，[请访问](https://gitee.com/nicholasld/nmqs)。
 
 在`mm-web/src/main/webapp/statics/system/common.js`中修改第一行的url变量，如果需要https，则修改第三行的http为https
+
+### 2.3 启动项目
+使用Tomcat启动项目即可，访问`http://<你的项目地址>:8080`即可
+
+初始账号密码为`admin`/`admin`
