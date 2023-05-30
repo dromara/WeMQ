@@ -8,6 +8,14 @@
 
 其功能主要是对客户MQTT调试页面进行集中管理（连接信息、发送信息），系统管理员可在后台添加客户和调试页面，并设置调试页面的连接信息、发送消息和对应的发送按钮文字，并设置分享链接以及页面的开启状态，用户可通过分享链接打开配置好对应信息的页面，实现对自己设备的管理调试。
 
+#### 项目截图：
+控制台
+![D7CCC3CA-0B97-4A0F-8A03-8DC8A91F58A2.png](https://img.nicholasld.cn/i/2023/05/31/647643c75a2ff.png)
+用户调试界面
+![QQ20230531-024439@2x.png](https://img.nicholasld.cn/i/2023/05/31/64764423835be.png)
+调试页面参数
+![QQ20230531-024618@2x.png](https://img.nicholasld.cn/i/2023/05/31/64764485019c2.png)
+
 ### 1.2 技术选型
 
 ##### 1. 系统环境
@@ -78,6 +86,6 @@ cn.mmanager
 
 ### 2.2 如何修改 Nmqs服务地址
 
-本项目依赖于我的另一个开源项目 Nmqs 来实现对MQTT的转发和连接，如需部署Nmqs，[请访问](https://gitee.com/nicholasld/Nmqs/)。
+本项目依赖于我的另一个开源项目 Nmqs 来实现对MQTT的转发和连接，如需部署Nmqs，[请访问](https://gitee.com/nicholasld/nmqs)。
 
 在`mm-web/src/main/webapp/statics/system/common.js`中修改第一行的url变量，如果需要https，则修改第三行的http为https
