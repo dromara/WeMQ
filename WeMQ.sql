@@ -1,18 +1,3 @@
-/*
- Navicat Premium Data Transfer
-
- Source Server         : localhost
- Source Server Type    : MySQL
- Source Server Version : 50731
- Source Host           : localhost:3306
- Source Schema         : WeMQ
-
- Target Server Type    : MySQL
- Target Server Version : 50731
- File Encoding         : 65001
-
- Date: 26/05/2023 20:43:14
-*/
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
@@ -105,6 +90,13 @@ CREATE TABLE `sys_admin` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of sys_admin
+-- ----------------------------
+BEGIN;
+INSERT INTO `sys_admin` (`id`, `username`, `nickname`, `password`, `status`) VALUES (1, 'admin', '系统管理员', '$2a$10$ArD7t.uralvYZXCH6piCfOb9KCxosM7j3czRuJKZ2oO05jO0Shrmy', 0);
+COMMIT;
+
+-- ----------------------------
 -- Table structure for sys_login_log
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_login_log`;
@@ -116,6 +108,6 @@ CREATE TABLE `sys_login_log` (
   `login_time` datetime NOT NULL COMMENT '登录时间',
   `login_status` int(11) NOT NULL COMMENT '登录状态',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 
 SET FOREIGN_KEY_CHECKS = 1;
