@@ -1,10 +1,13 @@
 # WeMQ - 物联网调试管理平台
 [![mqttlogo.png](https://img.nicholasld.cn/i/2023/04/08/6430b2aff1b11.png)](https://img.nicholasld.cn/i/2023/04/08/6430b2aff1b11.png)
+
+>本项目于2023年6月19日直接迁移至Spring Boot，原版本代码不再保留。
+
 ## 1. 项目介绍
 
 ### 1.1 项目简介
 
-**MQTT调试管理平台是一款基于Spring + Spring MVC + Mybatis开发的一款物联网设备调试管理平台。**
+**MQTT调试管理平台是一款基于SpringBoot开发的一款物联网设备调试管理平台。**
 
 其功能主要是对客户MQTT调试页面进行集中管理（连接信息、发送信息），系统管理员可在后台添加客户和调试页面，并设置调试页面的连接信息、发送消息和对应的发送按钮文字，并设置分享链接以及页面的开启状态，用户可通过分享链接打开配置好对应信息的页面，实现对自己设备的管理调试。
 
@@ -24,12 +27,13 @@
 
 ##### 1. 系统环境
 
-- Java 11
+- Java 8
 - Servlet 3.0
 - Apache Maven 3
 
 ##### 2. 主框架
 
+- Spring Boot 2.7.x
 - Spring Framework 5.3.x
 - Spring MVC 5.3.x
 
@@ -86,22 +90,22 @@ cn.mmanager
 
 ### 2.1 如何部署
 
-首先导入项目根目录的 WeMQ.sql 文件到数据库，数据库名为 `WeMQ`，然后对数据库连接信息进行配置，在`mm-web`模块的`/src/main/resources/database.properties`文件中进行数据库连接信息的配置，然后就可以导入到Tomcat中进行运行
+首先导入项目根目录的 WeMQ.sql 文件到数据库，数据库名为 `WeMQ`，然后对数据库连接信息进行配置，在`mm-web`模块的`/src/main/resources/application.yml`文件中进行数据库连接信息的配置
 
 ### 2.2 如何修改 Nmqs服务地址
 
-本项目依赖于我的另一个开源项目 Nmqs 来实现对MQTT的转发和连接，如需部署Nmqs，[请访问](https://gitee.com/nicholasld/nmqs)。
+本项目依赖于另一个开源项目 Nmqs 来实现对MQTT的转发和连接，如需部署Nmqs，[请访问](https://gitee.com/nicholasld/nmqs)。
 
 在`mm-web/src/main/webapp/statics/system/common.js`中修改第一行的url变量，如果需要https，则修改第三行的http为https
 
 ### 2.3 启动项目
-使用Tomcat启动项目即可，访问`http://<你的项目地址>:8080`即可
+启动`mm-web`中的`WeMQApplication`，访问`http://<你的项目地址>:8080`即可
 
 初始账号密码为`admin`/`admin`
 
 ## 3. 开发规划
 
-- [ ] 迁移至Spring Boot
+- [x] 迁移至Spring Boot
 - [ ] 优化调试页面的样式
 - [ ] 使Nmqs服务实现集群，实现高可用
 - [ ] 实现后台用户的权限管理
@@ -118,4 +122,4 @@ cn.mmanager
 Apache License Version 2.0 see http://www.apache.org/licenses/LICENSE-2.0.html
 
 ## 版权使用说明
-WeMQ遵循Apache2.0开源协议，可用于个人学习、毕设、公司项目、商业产品等，但必须保留版权信息，如需去除版权信息，请联系作者购买商业授权。
+WeMQ遵循Apache2.0开源协议，可用于个人学习、毕设、公司项目、商业产品等，但必须保留版权信息。
