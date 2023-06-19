@@ -2,7 +2,9 @@ package cn.mmanager.dao.System;
 
 import cn.mmanager.model.dto.LoginLogDto;
 import cn.mmanager.model.pojo.LoginLog;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
@@ -13,6 +15,8 @@ import java.util.Map;
  * @author NicholasLD
  * @createTime 2023/4/8 15:16
  */
+@Repository
+@Mapper
 public interface LoginLogMapper {
     /**
      * 根据条件查询所有

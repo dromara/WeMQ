@@ -1,6 +1,7 @@
 package cn.mmanager.dao.MQTT;
 
 import cn.mmanager.model.pojo.MQParam;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
@@ -13,6 +14,7 @@ import java.util.List;
  * @createTime 2023/4/8 15:16
  */
 @Repository
+@Mapper
 public interface MqParamMapper {
     /**
      * 添加

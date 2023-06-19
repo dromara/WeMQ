@@ -1,6 +1,8 @@
 package cn.mmanager.dao.MQTT;
 
 import cn.mmanager.model.pojo.NmqsToken;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
@@ -10,6 +12,8 @@ import java.util.Map;
  * @author NicholasLD
  * @createTime 2023/4/13 14:18
  */
+@Repository
+@Mapper
 public interface NmqsMapper {
     /**
      * 查询所有的Nmqs

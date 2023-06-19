@@ -2,6 +2,7 @@ package cn.mmanager.dao.System;
 
 
 import cn.mmanager.model.pojo.Admin;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -13,6 +14,7 @@ import java.util.Map;
  * @since 2023/4/8 15:49
  */
 @Repository
+@Mapper
 public interface AdminMapper {
     /**
      * 分页查询

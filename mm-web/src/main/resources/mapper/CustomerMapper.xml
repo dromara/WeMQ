@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mmanager.dao.MQTT.CustomerMapper">
+
+    <!--增加客户-->
+    <insert id="insertClient"
+            parameterType="cn.mmanager.model.pojo.Customer">
+        INSERT INTO mq_customer (name)
+        VALUES (#{name})
+    </insert>
+
+    <!--删除客户-->
+    <delete id="deleteClientById"
+            parameterType="Long">
+        delete
+        from mq_customer
+        where id = #{id}
+    </delete>
+
+    <select id="getCustomers" resultType="cn.mmanager.model.pojo.Customer">
+        SELECT * FROM `mq_customer`
+    </select>
+
+    <select id="getCustomerCount" resultType="int">
+        select count(1) from mq_customer
+    </select>
+
+    <!--修改客户-->
+    <update id="updateClient" parameterType="cn.mmanager.model.pojo.Customer">
+        UPDATE
+        mq_customer
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name}
+            </if>
+        </set>
+        <where>
+            id = #{id}
+        </where>
+    </update>
+</mapper>

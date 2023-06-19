@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="zh" xml:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>调试页面 - 物联网调试管理系统</title>
+    <script th:src="@{/statics/jquery-1.12.4.min.js}"></script>
+    <script th:src="@{/statics/tabler/tabler.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/statics/tabler/tabler.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/statics/bootstrap/table/bootstrap-table.min.css}">
+    <script th:src="@{/statics/bootstrap/table/bootstrap-table.min.js}"></script>
+    <script th:src="@{/statics/bootstrap/table/bootstrap-table-zh-CN.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/statics/system/common.css}">
+    <!-- 引入 layui.css -->
+    <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+    <!-- 引入 layui.js -->
+    <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+    <script th:src="@{/statics/system/common.js}"></script>
+</head>
+<body>
+<div class="page">
+    <div th:replace="common/header :: header"></div>
+
+    <div class="page-wrapper">
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <!-- Page pre-title -->
+                        <div class="page-pretitle">
+                            物联网调试管理后台
+                        </div>
+                        <h2 class="page-title">
+                            调试页面管理
+                        </h2>
+                    </div>
+                    <div class="col-auto ms-auto d-print-none">
+                        <div class="btn-list">
+                            <div class="btn-list">
+                                <button onclick="addPage()" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#modal-add">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path d="M5 12l14 0"></path></svg>
+                                    新建调试页面
+                                </button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row" hidden="hidden">
+                    <div class="col-12">
+                        <div class="alert alert-danger alert-dismissible" role="alert">
+                            <h3 class="mb-1">NMQS API 服务异常！<span class="status status-red">受影响的业务：调试、调试页面添加、NMQS Token管理</span></h3>
+                            <p>
+                                NicholasLD's Message Queue Service 服务异常，所有调试服务将不可用！<br>
+                                <span style="font-weight: bolder;">请联系系统管理员！</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" hidden="hidden">
+                    <div class="col-12">
+                        <div class="alert alert-danger alert-dismissible" role="alert">
+                            <h3 class="mb-1">调试页面不可用！<span class="status status-red">受影响的业务：调试、调试页面添加</span></h3>
+                            <p>
+                                没有找到有效的Nmqs Token，无法添加新调试页面，现有调试页面功能将不可用！<br>
+                                <span style="font-weight: bolder;">请前往 Token 管理页面添加有效的Nmqs Token！</span>
+                            </p>
+                            <div class="btn-list">
+                                <a th:href="@{/tokens}" class="btn btn-danger">前往 Nmqs Token</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row row-deck row-cards">
+                    <div class="col-12">
+                        <div class="spinner-border" id="list_refresh"></div>
+                        <div id="card" class="card">
+                            <div class="card-body" style="display: inline-block">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <div id="tree"></div>
+                                    </div>
+                                    <div class="col-10">
+                                        <div class="table-responsive" style="height: 460px">
+                                            <table class="table table-vcenter" id="page_list"></table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="modal-showinfo" tabindex="-1" aria-modal="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="box-shadow: 0px 5px 6px rgb(205, 205, 205);">
+                <div class="modal-header">
+                    <h5 class="modal-title">调试页面详情</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="datagrid">
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">服务器地址</div>
+                            <div class="datagrid-content" id="view_server"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">端口</div>
+                            <div class="datagrid-content" id="view_port"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">用户名</div>
+                            <div class="datagrid-content" id="view_username"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">密码</div>
+                            <div class="datagrid-content" id="view_password"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">发布订阅</div>
+                            <div class="datagrid-content" id="view_sendTopic"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">接收订阅</div>
+                            <div class="datagrid-content" id="view_receiveTopic"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">QoS</div>
+                            <div class="datagrid-content" id="view_qos"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="fixed-table-container" style="padding-bottom: 0px;height: auto">
+                        <table class="table table-vcenter" id="params_table" style="height: auto"></table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="modal-edit" tabindex="-1" aria-modal="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="box-shadow: 0px 5px 6px rgb(205, 205, 205);">
+                <div class="modal-header">
+                    <h5 class="modal-title">编辑调试页面</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <input type="hidden" id="edit_id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">页面名称</label>
+                        <input id="edit_name" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">访问地址</label>
+                        <div class="input-group mb-2">
+                            <input readonly id="edit_url" type="text" class="form-control">
+                            <button id="edit_reseturl" class="btn" type="button">生成</button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-label">Token</div>
+                        <select id="edit_token" class="form-select">
+                            <option value="1">114514 地址:121.201.35.120 发:sendTopic 收:receiveTopic</option>
+                            <option value="2">1919810 地址:121.201.35.120 发:sendTopic 收:receiveTopic</option>
+                            <option value="3">testToken 地址:121.201.35.120 发:sendTopic 收:receiveTopic</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-label">客户</div>
+                        <select id="edit_customer" class="form-select"></select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+                        取消
+                    </button>
+                    <button onclick="submitUpdate()" type="button" class="btn btn-primary ms-auto" id="edit_save">
+                        保存
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="modal-add" tabindex="-1" aria-modal="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="box-shadow: 0px 5px 6px rgb(205, 205, 205);">
+                <div class="modal-header">
+                    <h5 class="modal-title">添加调试页面</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">页面名称</label>
+                        <input id="add_name" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">访问地址</label>
+                        <div class="input-group mb-2">
+                            <input readonly id="add_url" type="text" class="form-control">
+                            <button id="add_reseturl" class="btn" type="button">生成</button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-label">Token</div>
+                        <select id="add_token" class="form-select">
+
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-label">客户</div>
+                        <select id="add_customer" class="form-select">
+                            <option value="0">未分配</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+                        取消
+                    </button>
+                    <button onclick="submitAdd()" type="button" class="btn btn-primary ms-auto" id="add_save">
+                        保存
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="modal-message" tabindex="-1" aria-modal="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="box-shadow: 0px 5px 6px rgb(205, 205, 205);">
+                <div class="modal-header">
+                    <h5 class="modal-title">调试参数编辑</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <input type="hidden" id="param_page_id">
+                <div class="modal-body">
+                    <div class="fixed-table-container" style="padding-bottom: 0px;height: auto">
+                        <table class="table table-vcenter" id="message_table" style="height: auto"></table>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">参数</label>
+                        <input id="message_add" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">按钮名称</label>
+                        <input id="button_add" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <button onclick="submitAddMessage()" type="button" class="btn btn-primary">添加参数</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    //菜单class追加属性
+    $(function () {
+        $("#menu_pages").addClass("active");
+        $("#list_refresh").hide();
+        // $("#card").hide();
+        //
+        // setTimeout(function () {
+        //     $("#list_refresh").hide();
+        //     $("#card").show();
+        // }, 1000);
+
+    });
+
+
+
+    // let data = [];
+    // $.getJSON(
+    //     "/page/list",
+    //     function (data) {
+    //         this.data = data;
+    //     }
+    //
+    // )
+
+    //渲染数据
+    $('#page_list').bootstrapTable({
+        url: '/page/list?pageNum=0',                      //请求后台的URL（*）
+        method: 'GET',
+        responseHandler: function (res) {
+            return {
+                "total": res.data.total,
+                "rows": res.data.rows
+            }
+        },
+        pageNumber: 1,
+        columns: [{
+            field: 'id',
+            title: 'ID',
+            align: 'center',
+            valign: 'middle',
+            sortable: true
+        }, {
+            field: 'pageName',
+            title: '页面名称',
+            align: 'center',
+            valign: 'middle',
+        }, {
+            field: 'pageUrl',
+            title: '访问地址',
+            align: 'center',
+            valign: 'middle',
+            formatter: function (value, row, index) {
+                return '<a href="/page/' + value + '" target="_blank">' + value + '</a>';
+            }
+        }, {
+            field: 'token',
+            title: 'Token',
+            align: 'center',
+            valign: 'middle',
+        }, {
+            field: 'customer',
+            title: '客户',
+            align: 'center',
+            valign: 'middle',
+            formatter: function (value, row, index) {
+                if  (value === null || value === "" || value === undefined) {
+                    return '<span class="badge bg-secondary">未分配</span>';
+                } else {
+                    return '<span class="badge bg-green">' + value.name + '</span>';
+                }
+            }
+        },{
+            field: 'status',
+            title: '状态',
+            align: 'center',
+            valign: 'middle',
+            sortable: true,
+            formatter: function (value, row, index) {
+                if (value === 0) {
+                    return '<a href="#" class="btn btn-sm btn-success">已启用</a> ';
+                } else {
+                    return '<a href="#" class="btn btn-sm btn-danger">已禁用</a> ';
+                }
+            }
+        }, {
+            title: '操作',
+            align: 'center',
+            valign: 'middle',
+            formatter: function (value, row, index) {
+                return  '<button onclick="showInfo('+ row.id +')" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-showinfo">查看</button> ' +
+                        '<button onclick="showMessage('+ row.id +')" data-bs-toggle="modal" data-bs-target="#modal-message" class="btn btn-sm btn-warning">参数</button> ' +
+                        '<button onclick="editInfo('+ row.id +')" data-bs-toggle="modal" data-bs-target="#modal-edit" class="btn btn-sm btn-info">编辑</button> ' +
+                        '<button onclick="deletePage('+ row.id +')" class="btn btn-sm btn-danger">删除</button>';
+            }
+        }]
+    })
+
+    let params = [];
+    function showInfo(row) {
+        $('#params_table').bootstrapTable('destroy')
+        console.log(row)
+        let url = "/page/info/" + row;
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                params = data.data;
+
+                console.log(params.settings);
+
+                $("#view_server").text(params.settings.mqttServer);
+                $("#view_port").text(params.settings.mqttPort);
+                $("#view_username").text(params.settings.mqttUsername);
+                $("#view_password").text(params.settings.mqttPassword);
+                $("#view_sendTopic").text(params.settings.mqttSendTopic);
+                $("#view_receiveTopic").text(params.settings.mqttReceiveTopic);
+                $("#view_qos").text(params.settings.mqttQos);
+            }
+        })
+
+        $('#params_table').bootstrapTable({
+            url: url,                      //请求后台的URL（*）
+            method: 'GET',
+            responseHandler: function (res) {
+                return {
+                    "rows": res.data.mqParams
+                }
+            },
+            columns: [{
+                field: 'id',
+                title: 'ID',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'message',
+                title: '调试参数',
+                align: 'center',
+                valign: 'middle',
+            },{
+                field: 'button',
+                title: '按钮名称',
+                align: 'center',
+                valign: 'middle',
+            }],
+        })
+    }
+
+    function editInfo(row) {
+        //获取token列表
+        $.ajax({
+            url: "/nmqs/list?pageNum=0",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                let tokenList = data.data.rows;
+                let tokenHtml = "";
+                for (let i = 0; i < tokenList.length; i++) {
+                    tokenHtml += '<option value="' + tokenList[i].id + '">' + tokenList[i].token + ' --- ' + tokenList[i].mqttServer + ' --- 发:' + tokenList[i].mqttSendTopic + ' --- 收: ' + tokenList[i].mqttReceiveTopic + '</option>';
+                }
+                $("#edit_token").html(tokenHtml);
+            }
+        })
+
+        //获取客户列表
+        $.ajax({
+            url: "/customer/list?pageNum=0",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                let customerList = data.data.rows;
+                let customerHtml = "";
+                customerHtml += '<option value="0">未分配</option>';
+                for (let i = 0; i < customerList.length; i++) {
+                    customerHtml += '<option value="' + customerList[i].id + '">' + customerList[i].name + '</option>';
+                }
+                console.log(customerList)
+                $("#edit_customer").html(customerHtml);
+            }
+        })
+
+        let url = "/page/info/" + row;
+        console.log($("#edit_customer").val())
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                params = data.data;
+                console.log(params);
+                $("#edit_id").val(params.id);
+                $("#edit_name").val(params.pageName);
+                $("#edit_url").val(params.pageUrl);
+                $("#edit_token").val(params.nmqsTokenID);
+                //设置客户
+                if (params.customer === null || params.customer === "" || params.customer === undefined) {
+                    $("#edit_customer").val("0");
+                } else {
+                    $("#edit_customer").val(params.customer.id);
+                }
+            }
+        })
+
+        $('#edit_reseturl').on('click', function () {
+            let url = "";
+            let chars = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O',
+                'P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e',
+                'f','g','h','i','j','k','l','m','n','o','p','q','r','s','t',
+                'u','v','w','x','y','z'];
+            for(let i = 0; i < 12 ; i ++) {
+                let id = Math.ceil(Math.random()*61);
+                url += chars[id];
+            }
+            $("#edit_url").val(url);
+        })
+    }
+
+    function submitUpdate() {
+        let id = $("#edit_id").val();
+        let name = $("#edit_name").val();
+        let url = $("#edit_url").val();
+        let token = $("#edit_token").val();
+        let customerId = $("#edit_customer").val();
+        let customerName = $("#edit_customer").find("option:selected").text();
+
+        if (name === "" || name === null || name === undefined) {
+            layer.msg("页面名称不能为空");
+            return;
+        }
+
+        if (url === "" || url === null || url === undefined) {
+            layer.msg("页面地址不能为空");
+            return;
+        }
+
+        if (token === "" || token === null || token === undefined) {
+            layer.msg("token不能为空");
+            return;
+        }
+
+
+        let data = {
+            "id": id,
+            "pageName": name,
+            "pageUrl": url,
+            "nmqsTokenID": token,
+            "customer": {
+                "id": customerId,
+                "name": customerName
+            }
+        }
+
+        $.ajax({
+            url: "/page/update",
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (data) {
+                if (data.code === 200) {
+                    layer.msg("修改成功");
+                    $('#modal-edit').modal('hide');
+                    $('#page_list').bootstrapTable('refresh');
+                } else {
+                    layer.msg("修改失败");
+                }
+            }
+        })
+    }
+
+    layui.use('tree', function(){
+        var tree = layui.tree;
+
+        $.ajax({
+            url: "/customer/list?pageNum=0",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                //把name字段改成title
+                let customerList = data.data.rows;
+                for (let i = 0; i < customerList.length; i++) {
+                    customerList[i].title = customerList[i].name;
+                    delete customerList[i].name;
+                }
+                //渲染
+                var inst1 = tree.render({
+                    elem: '#tree',
+                    data: [{
+                        title: '全部客户',
+                        spread: true,
+                        children: customerList
+                    }],
+                    click: function(obj){
+                        console.log(obj.data); //得到当前点击的节点数据
+                        if (obj.data.id === undefined) {
+                            $('#page_list').bootstrapTable('refresh', {url: '/page/list?pageNum=0'});
+                        } else {
+                            $('#page_list').bootstrapTable('refresh', {url: '/page/list?pageNum=0&customerId=' + obj.data.id});
+                        }
+                    }
+                });
+            }
+        })
+    });
+
+    function showMessage(row) {
+        let params = [];
+        $('#message_table').bootstrapTable('destroy')
+
+        $('#param_page_id').val(row)
+
+        $.getJSON(
+            '/page/info/' + row,
+            function (data) {
+                params = data.data.mqParams
+                console.log(params)
+
+                $('#message_table').bootstrapTable({
+                    data: params,
+                    columns: [{
+                        field: 'id',
+                        title: 'ID',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true
+                    }, {
+                        field: 'message',
+                        title: '调试参数',
+                        align: 'center',
+                        valign: 'middle',
+                    },{
+                        field: 'button',
+                        title: '按钮名称',
+                        align: 'center',
+                        valign: 'middle',
+                    },{
+                        title: '操作',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: function (value, row, index) {
+                            return  '<button onclick="submitDeleteMessage('+ row.id +')" class="btn btn-sm btn-danger">删除</button>';
+                        }
+                    }],
+                })
+            }
+        )
+    }
+
+    function submitDeleteMessage(row) {
+        let url = "/page/param/delete/" + row;
+        $.ajax({
+            url: url,
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                if (data.code === 200) {
+                    layer.msg("删除成功");
+                    //重新加载表格
+                    $('#message_table').bootstrapTable('remove', {
+                        field: 'id',
+                        values: [row]
+                    });
+                } else {
+                    layer.msg("删除失败");
+                }
+            }
+        })
+    }
+
+    function submitAddMessage() {
+        let pageId = $('#param_page_id').val();
+        let message = $('#message_add').val();
+        let button = $('#button_add').val();
+
+        let data = {
+            "message": message,
+            "button": button
+        }
+
+        $.ajax({
+            url: "/page/"+ pageId +"/param/add",
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (data) {
+                if (data.code === 200) {
+                    layer.msg("添加成功");
+                    $('#modal-message').modal('hide');
+                    //手动加载数据
+                    $('#message_add').val("");
+                    $('#button_add').val("");
+                } else {
+                    layer.msg("添加失败");
+                }
+            }
+        })
+    }
+
+    function addPage() {
+        //获取token列表
+        $.ajax({
+            url: "/nmqs/list?pageNum=0",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                let tokenList = data.data.rows;
+                let tokenHtml = "";
+                for (let i = 0; i < tokenList.length; i++) {
+                    tokenHtml += '<option value="' + tokenList[i].id + '">' + tokenList[i].token + ' --- ' + tokenList[i].mqttServer + ' --- 发:' + tokenList[i].mqttSendTopic + ' --- 收: ' + tokenList[i].mqttReceiveTopic + '</option>';
+                }
+                $("#add_token").html(tokenHtml);
+            }
+        })
+
+        //获取客户列表
+        $.ajax({
+            url: "/customer/list?pageNum=0",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                let customerList = data.data.rows;
+                let customerHtml = "";
+                for (let i = 0; i < customerList.length; i++) {
+                    customerHtml += '<option value="' + customerList[i].id + '">' + customerList[i].name + '</option>';
+                }
+                $("#add_customer").append(customerHtml);
+            }
+        })
+
+        //生成随机url，带大小写字母和数字
+        let url = "";
+        let chars = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
+        for(let i = 0; i < 12 ; i ++) {
+            let id = Math.ceil(Math.random()*61);
+            url += chars[id];
+        }
+        $("#add_url").val(url);
+
+        $('#add_reseturl').on('click', function () {
+            let url = "";
+            let chars = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
+            for(let i = 0; i < 12 ; i ++) {
+                let id = Math.ceil(Math.random()*61);
+                url += chars[id];
+            }
+            $("#add_url").val(url);
+        })
+
+
+
+    }
+
+    function submitAdd() {
+        if ($("#add_name").val() === "" || $("#add_name").val() === null || $("#add_name").val() === undefined) {
+            layer.msg("页面名称不能为空");
+            return;
+        }
+
+        if ($("#add_url").val() === "" || $("#add_url").val() === null || $("#add_url").val() === undefined) {
+            layer.msg("页面url不能为空");
+            return;
+        }
+
+        if ($("#add_token").val() === "" || $("#add_token").val() === null || $("#add_token").val() === undefined) {
+            layer.msg("token不能为空");
+            return;
+        }
+
+        if ($("#add_customer").val() === "" || $("#add_customer").val() === null || $("#add_customer").val() === undefined) {
+            layer.msg("客户不能为空");
+            return;
+        }
+
+        let data = {
+            "pageName": $("#add_name").val(),
+            "pageUrl": $("#add_url").val(),
+            "nmqsTokenID": $("#add_token").val(),
+            "customer": {
+                "id": $("#add_customer").val(),
+                "name": $("#add_customer").find("option:selected").text()
+            }
+        }
+
+        $.ajax({
+            url: "/page/add",
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (data) {
+                if (data.code === 200) {
+                    layer.msg("添加成功");
+                    $('#modal-add').modal('hide');
+                    $('#page_list').bootstrapTable('refresh');
+                } else {
+                    layer.msg(data.msg);
+                }
+            }
+        })
+    }
+
+    function deletePage(row){
+        let url = "/page/delete/" + row;
+
+        layer.confirm('你确认要删除 ID:'+row+' 吗？', {
+            btn: ['确认','取消'] //按钮
+        }, function(){
+            $.ajax({
+                url: url,
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (data.code === 200) {
+                        $('#page_list').bootstrapTable('refresh');
+                        layer.msg('删除成功！', {icon: 1});
+                    } else {
+                        alert(data.msg);
+                    }
+                }
+            })
+        }, function(){
+            layer.msg('已取消', {icon: 1});
+        });
+    }
+</script>
+<style>
+    .fixed-table-container {
+        height: 400px;
+    }
+
+    #tree {
+        height: 400px;
+        overflow: auto;
+    }
+
+    .list-group-item {
+        padding: 0.5rem 1rem;
+    }
+
+</style>
+</html>

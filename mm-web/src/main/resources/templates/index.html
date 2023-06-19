@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>控制台 - 物联网调试管理系统</title>
+    <script th:src="@{/statics/jquery-1.12.4.min.js}"></script>
+    <script th:src="@{/statics/tabler/tabler.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/statics/tabler/tabler.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/statics/toastify/toastify.min.css}">
+    <script type="text/javascript" th:src="@{/statics/toastify/toastify-js.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/statics/bootstrap/table/bootstrap-table.min.css}">
+    <script th:src="@{/statics/bootstrap/table/bootstrap-table.min.js}"></script>
+    <script th:src="@{/statics/bootstrap/table/bootstrap-table-zh-CN.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/statics/system/common.css}">
+    <script th:src="@{/statics/system/common.js}"></script>
+</head>
+<body>
+<div class="page">
+    <div th:replace="common/header :: header"></div>
+
+    <div class="page-wrapper">
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <!-- Page pre-title -->
+                        <div class="page-pretitle">
+                            物联网调试管理后台
+                        </div>
+                        <h2 class="page-title">
+                            控制台
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row row-deck row-cards">
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="subheader">调试页面</div>
+                                </div>
+                                <div class="h1 mb-3" th:text="|${pageCount}个|">75个</div>
+                                <div class="d-flex mb-2">
+                                    <div>启用状态</div>
+                                    <div class="ms-auto">
+                                        <span class="text-green d-inline-flex align-items-center lh-1" th:text="|${pageCount}个 已启用|" >
+                                            60个 已启用
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar bg-primary" style="width: 100%" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="75% Complete">
+                                        <span class="visually-hidden">75% Complete</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="subheader">管理员</div>
+                                </div>
+                                <div class="h1 mb-3" th:text="|${adminCount}个|">6个</div>
+                                <div class="d-flex mb-2">
+                                    <div>启用状态</div>
+                                    <div class="ms-auto">
+                                        <span class="text-green d-inline-flex align-items-center lh-1" th:text="|${adminCount}个 已启用|">
+                                          4个 已启用
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar bg-primary" style="width: 100%" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="75% Complete">
+                                        <span class="visually-hidden">75% Complete</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="subheader">Nmqs API服务状态</div>
+                                </div>
+                                <div class="d-flex align-items-baseline">
+                                    <div class="h1 mb-3 me-2">
+                                        <span id="status2_green" class="status status-green">
+                                            <span class="status-dot status-dot-animated"></span>
+                                            服务正常
+                                        </span>
+                                        <span id="status2_red" class="status status-red">
+                                            <span class="status-dot status-dot-animated"></span>
+                                            服务异常
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="tracking">
+                                        <div class="tracking-block bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Operational"></div>
+                                        <div class="tracking-block bg-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Downtime"></div>
+                                        <div class="tracking-block bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Operational"></div>
+                                        <div class="tracking-block bg-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Big load"></div>
+                                        <div class="tracking-block" data-bs-toggle="tooltip" data-bs-placement="top" title="No data"></div>
+                                        <div class="tracking-block" data-bs-toggle="tooltip" data-bs-placement="top" title="No data"></div>
+                                        <div class="tracking-block bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Operational"></div>
+                                        <div class="tracking-block bg-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Downtime"></div>
+                                        <div class="tracking-block bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Operational"></div>
+                                        <div class="tracking-block bg-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Big load"></div>
+                                        <div class="tracking-block" data-bs-toggle="tooltip" data-bs-placement="top" title="No data"></div>
+                                        <div class="tracking-block" data-bs-toggle="tooltip" data-bs-placement="top" title="No data"></div>
+                                        <div class="tracking-block bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Operational"></div>
+                                        <div class="tracking-block bg-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Downtime"></div>
+                                        <div class="tracking-block bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Operational"></div>
+                                        <div class="tracking-block bg-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Big load"></div>
+                                        <div class="tracking-block" data-bs-toggle="tooltip" data-bs-placement="top" title="No data"></div>
+                                        <div class="tracking-block" data-bs-toggle="tooltip" data-bs-placement="top" title="No data"></div>
+                                        <div class="tracking-block bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Operational"></div>
+                                        <div class="tracking-block bg-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Downtime"></div>
+                                        <div class="tracking-block bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Operational"></div>
+                                        <div class="tracking-block bg-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Big load"></div>
+                                        <div class="tracking-block" data-bs-toggle="tooltip" data-bs-placement="top" title="No data"></div>
+                                        <div class="tracking-block" data-bs-toggle="tooltip" data-bs-placement="top" title="No data"></div>
+                                        ...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">业务状态</h3>
+                                <div class="datagrid">
+                                    <div class="datagrid-item">
+                                        <div class="datagrid-title">设备调试</div>
+                                        <div class="datagrid-content">
+                                            <span id="status3_green" class="status status-green">
+                                                <span class="status-dot status-dot-animated"></span>
+                                                服务正常
+                                            </span>
+                                            <span id="status3_red" class="status status-red">
+                                                <span class="status-dot status-dot-animated"></span>
+                                                服务异常
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="datagrid-item">
+                                        <div class="datagrid-title">调试页面管理</div>
+                                        <div class="datagrid-content">
+                                           <span id="status4_green" class="status status-green">
+                                                <span class="status-dot status-dot-animated"></span>
+                                                服务正常
+                                            </span>
+                                            <span id="status4_red" class="status status-red">
+                                                <span class="status-dot status-dot-animated"></span>
+                                                服务异常
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="datagrid-item">
+                                        <div class="datagrid-title">NMQS Token管理</div>
+                                        <div class="datagrid-content">
+                                             <span id="status5_green" class="status status-green">
+                                                <span class="status-dot status-dot-animated"></span>
+                                                服务正常
+                                            </span>
+                                            <span id="status5_red" class="status status-red">
+                                                <span class="status-dot status-dot-animated"></span>
+                                                服务异常
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="datagrid-item">
+                                        <div class="datagrid-title">客户管理</div>
+                                        <div class="datagrid-content">
+                                            <span class="status status-green">
+                                                <span class="status-dot status-dot-animated"></span>
+                                                服务正常
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">系统信息</h3>
+                                <div class="datagrid">
+                                    <div class="datagrid-item">
+                                        <div class="datagrid-title">操作系统</div>
+                                        <div class="datagrid-content" th:text="${platform}"></div>
+                                    </div>
+                                    <div class="datagrid-item">
+                                        <div class="datagrid-title">处理器</div>
+                                        <div class="datagrid-content" th:text="${CPU}"></div>
+                                    </div>
+                                    <div class="datagrid-item">
+                                        <div class="datagrid-title">CPU占用率</div>
+                                        <div class="datagrid-content" th:text="|${CPUUsage}%|">
+                                        </div>
+                                        <div class="progress progress-sm">
+                                            <div class="progress-bar bg-primary" th:style="|width: ${CPUUsage}%|" role="progressbar" th:aria-valuenow="${CPUUsage}" aria-valuemin="0" aria-valuemax="100" aria-label="75% Complete">
+                                                <span class="visually-hidden" th:text="|${CPUUsage}%|"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="datagrid-item">
+                                        <div class="datagrid-title">内存占用</div>
+                                        <div class="datagrid-content" th:text="|${MemoryUsed}GB / ${Memory}GB|">8.13GB / 32.00GB</div>
+                                        <div class="progress progress-sm">
+                                            <div class="progress-bar bg-primary" th:style="|width: ${MemoryUsage}%|" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="75% Complete">
+                                                <span class="visually-hidden">75% Complete</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="datagrid-item">
+                                        <div class="datagrid-title">JRE Version</div>
+                                        <div class="datagrid-content" th:text="${JRE}">
+                                            1.8.0_181
+                                        </div>
+                                    </div>
+                                    <div class="datagrid-item">
+                                        <div class="datagrid-title">主机名</div>
+                                        <div class="datagrid-content">
+                                            localhost
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">登录日志 <span id="today" class="status status-blue"></span></h3>
+<!--                                <div class="table-responsive" style="padding: 0 30px">-->
+<!--                                    -->
+<!--                                </div>-->
+                                <table class="table table-vcenter" id="login_log">
+                                    <thead>
+                                    <tr>
+                                        <th>登录时间</th>
+                                        <th>用户名</th>
+                                        <th>IP</th>
+                                        <th>操作系统</th>
+                                        <th>状态</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script th:inline="javascript">
+    //获取今天日期
+    const addZero = num => num < 10 ? '0' + num : num;
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = addZero(today.getMonth() + 1);
+    const day = addZero(today.getDate());
+    const date = `${year}-${month}-${day}`;
+    //菜单class追加属性
+    $(function () {
+        $("#menu_dashboard").addClass("active");
+
+        $("#today").text(date);
+
+        $.ajax({
+            url: getNmqsAPI() + "/ping",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+
+                $("#status2_green").show()
+                $("#status2_red").hide()
+
+                $("#status3_green").show()
+                $("#status3_red").hide()
+
+                $("#status4_green").show()
+                $("#status4_red").hide()
+
+                $("#status5_green").show()
+                $("#status5_red").hide()
+            },
+            error: function (data) {
+
+                $("#status2_green").hide()
+                $("#status2_red").show()
+
+                $("#status3_green").hide()
+                $("#status3_red").show()
+
+                $("#status4_green").hide()
+                $("#status4_red").show()
+
+                $("#status5_green").hide()
+                $("#status5_red").show()
+            }
+        })
+    });
+
+    //初始化表格
+    $('#login_log').bootstrapTable({
+        url: '/loginLog/list',
+        method: 'get',
+        dataType: 'json',
+        pagination: true,
+        pageSize: 5,
+        pageList: [5, 10, 20],
+        queryParams: function (params) {
+            return {
+                time: date
+            }
+        },
+        responseHandler: function (res) {
+            return {
+                "rows": res.data.rows,
+                "total": res.data.total
+            }
+        },
+        columns: [{
+            field: 'loginTime',
+            title: '登录时间'
+        }, {
+            field: 'username',
+            title: '用户名'
+        }, {
+            field: 'adminIP',
+            title: 'IP'
+        }, {
+            field: 'adminOS',
+            title: '操作系统'
+        }, {
+            field: 'loginStatus',
+            title: '状态',
+            formatter: function (value, row, index) {
+                if (value === 0) {
+                    return '<span class="status status-green">成功</span>'
+                } else {
+                    return '<span class="status status-red">失败</span>'
+                }
+            }
+        }]
+    });
+
+</script>
+<style>
+    .pagination {
+        margin-right: 50px;
+    }
+
+    .fixed-table-container {
+        height: 250px;
+    }
+</style>
+</html>

@@ -1,11 +1,14 @@
 package cn.mmanager.dao.MQTT;
 
 import cn.mmanager.model.pojo.Customer;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
-
+@Repository
+@Mapper
 public interface CustomerMapper {
 
     /**

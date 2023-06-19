@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mmanager.dao.System.AdminMapper">
+    <select id="getAdminListByMap" resultType="cn.mmanager.model.pojo.Admin" parameterType="java.util.Map">
+      select * from sys_admin
+      <trim prefix="where" prefixOverrides="and || or">
+          <if test="id != null and id != ''">
+              and id = #{id}
+          </if>
+          <if test="username != null">
+              and username = #{username}
+          </if>
+          <if test="nickname != null">
+              and nickname = #{nickname}
+          </if>
+          <if test="password != null">
+              and password = #{password}
+          </if>
+          <if test="status != null and status != ''">
+              and status = #{status}
+          </if>
+      </trim>
+      <if test="beginPos != null and pageSize != null ">
+        limit #{beginPos},#{pageSize}
+      </if>
+    </select>
+    <select id="getAdminCountByMap" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from sys_admin
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null and id != ''">
+                and id = #{id}
+            </if>
+            <if test="username != null">
+                and username = #{username}
+            </if>
+            <if test="nickname != null">
+                and nickname = #{nickname}
+            </if>
+            <if test="password != null">
+                and password = #{password}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </trim>
+    </select>
+    <insert id="insertAdmin" parameterType="cn.mmanager.model.pojo.Admin">
+        insert into sys_admin(username,nickname,password,status) values(#{username},#{nickname},#{password},#{status})
+    </insert>
+
+    <update id="updateAdminById" parameterType="cn.mmanager.model.pojo.Admin">
+        update sys_admin
+        <trim prefix="set" suffixOverrides="," suffix="where id = #{id}">
+            <if test="username != null">
+                username=#{username},
+            </if>
+            <if test="nickname != null">
+                nickname=#{nickname},
+            </if>
+            <if test="password != null">
+                password=#{password},
+            </if>
+            <if test="status != null and status != ''">
+                status=#{status},
+            </if>
+        </trim>
+    </update>
+
+    <delete id="deleteAdminById" parameterType="long">
+        delete from sys_admin where id = #{id}
+    </delete>
+
+    <select id="getAdminByMap" resultType="cn.mmanager.model.pojo.Admin" parameterType="map">
+        select * from sys_admin
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null and id != ''">
+                and id = #{id}
+            </if>
+            <if test="username != null">
+                and username = #{username}
+            </if>
+            <if test="nickname != null">
+                and nickname = #{nickname}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </trim>
+    </select>
+</mapper>

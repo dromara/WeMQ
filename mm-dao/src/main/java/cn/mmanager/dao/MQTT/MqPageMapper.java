@@ -16,6 +16,7 @@ import java.util.Map;
  * @createTime 2023/4/13 08:22
  */
 @Repository
+@Mapper
 public interface MqPageMapper {
     /**
      * 根据条件查询所有
