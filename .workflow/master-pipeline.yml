@@ -20,16 +20,13 @@ stages:
         mavenVersion: 3.6.3
         commands:
           - mvn -B clean package -Dmaven.test.skip=true
-        artifacts:
-          - name: BUILD_ARTIFACT
-            path:
-              - ./target
         strategy: {}
       - step: publish@general_artifacts
         name: publish_general_artifacts
         displayName: 上传制品
         dependArtifact: BUILD_ARTIFACT
         artifactName: output
+        strategy: {}
         dependsOn: build_maven
   - name: release
     displayName: 发布
