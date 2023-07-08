@@ -18,7 +18,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        logger.info("拦截器拦截到请求：{}", request.getRequestURI());
+        logger.info("检测到请求：{}", request.getRequestURI());
 
         if(request.getRequestURI().equals("/login") || request.getRequestURI().equals("/dologin")){
             //判断用户是否已经登录
