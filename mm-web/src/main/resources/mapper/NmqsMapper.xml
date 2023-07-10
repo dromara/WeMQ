@@ -5,6 +5,7 @@
         <id column="id" property="id" />
         <result column="name" property="name" />
         <result column="token" property="token" />
+        <result column="protocol" property="protocol" />
         <result column="mqtt_server" property="mqttServer" />
         <result column="mqtt_port" property="mqttPort" />
         <result column="mqtt_username" property="mqttUsername" />
@@ -34,8 +35,8 @@
     </select>
 
     <insert id="insert" parameterType="NmqsToken">
-        insert into mq_nmqs_token (id, name, token, mqtt_server, mqtt_port, mqtt_username, mqtt_password, mqtt_sendTopic, mqtt_receiveTopic, mqtt_qos)
-        values (#{id}, #{name}, #{token}, #{mqttServer}, #{mqttPort}, #{mqttUsername}, #{mqttPassword}, #{mqttSendTopic}, #{mqttReceiveTopic}, #{mqttQos})
+        insert into mq_nmqs_token (id, name, token, protocol, mqtt_server, mqtt_port, mqtt_username, mqtt_password, mqtt_sendTopic, mqtt_receiveTopic, mqtt_qos)
+        values (#{id}, #{name}, #{token}, #{protocol}, #{mqttServer}, #{mqttPort}, #{mqttUsername}, #{mqttPassword}, #{mqttSendTopic}, #{mqttReceiveTopic}, #{mqttQos})
     </insert>
 
     <update id="update" parameterType="NmqsToken">
@@ -46,6 +47,9 @@
             </if>
             <if test="token != null">
                 token = #{token},
+            </if>
+            <if test="protocol != null">
+                protocol = #{protocol},
             </if>
             <if test="mqttServer != null">
                 mqtt_server = #{mqttServer},

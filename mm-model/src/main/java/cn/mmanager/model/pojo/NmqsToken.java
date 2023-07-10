@@ -15,6 +15,9 @@ public class NmqsToken {
     /** Token */
     private String token;
 
+    /** 协议 **/
+    private int protocol;
+
     /** 服务器地址 */
     private String mqttServer;
 
@@ -116,12 +119,21 @@ public class NmqsToken {
         this.mqttQos = mqttQos;
     }
 
+    public int getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(int protocol) {
+        this.protocol = protocol;
+    }
+
     @Override
     public String toString() {
         return "NmqsToken{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", token='" + token + '\'' +
+                ", protocol='" + protocol + '\'' +
                 ", mqttServer='" + mqttServer + '\'' +
                 ", mqttPort=" + mqttPort +
                 ", mqttUsername='" + mqttUsername + '\'' +

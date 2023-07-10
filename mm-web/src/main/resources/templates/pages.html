@@ -107,6 +107,10 @@
                 <div class="modal-body">
                     <div class="datagrid">
                         <div class="datagrid-item">
+                            <div class="datagrid-title">连接协议</div>
+                            <div class="datagrid-content"><span class="badge bg-green" id="view_protocol"></span></div>
+                        </div>
+                        <div class="datagrid-item">
                             <div class="datagrid-title">服务器地址</div>
                             <div class="datagrid-content" id="view_server"></div>
                         </div>
@@ -271,25 +275,7 @@
     $(function () {
         $("#menu_pages").addClass("active");
         $("#list_refresh").hide();
-        // $("#card").hide();
-        //
-        // setTimeout(function () {
-        //     $("#list_refresh").hide();
-        //     $("#card").show();
-        // }, 1000);
-
     });
-
-
-
-    // let data = [];
-    // $.getJSON(
-    //     "/page/list",
-    //     function (data) {
-    //         this.data = data;
-    //     }
-    //
-    // )
 
     //渲染数据
     $('#page_list').bootstrapTable({
@@ -379,6 +365,7 @@
 
                 console.log(params.settings);
 
+                $("#view_protocol").text(params.settings.protocol===0?"ws://":"mqtt://");
                 $("#view_server").text(params.settings.mqttServer);
                 $("#view_port").text(params.settings.mqttPort);
                 $("#view_username").text(params.settings.mqttUsername);

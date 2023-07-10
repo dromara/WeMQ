@@ -70,6 +70,7 @@
                                             <th>ID</th>
                                             <th>Token名称</th>
                                             <th>Token</th>
+                                            <th>协议</th>
                                             <th>服务器</th>
                                             <th>发布</th>
                                             <th>订阅</th>
@@ -98,6 +99,10 @@
                 </div>
                 <div class="modal-body">
                     <div class="datagrid">
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">连接协议</div>
+                            <div class="datagrid-content"><span class="badge bg-green" id="view_protocol"></span></div>
+                        </div>
                         <div class="datagrid-item">
                             <div class="datagrid-title">服务器地址</div>
                             <div class="datagrid-content" id="view_server"></div>
@@ -155,6 +160,13 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
+                        <label class="form-label">MQTT连接协议</label>
+                        <select id="edit_mqtt_protocol" class="form-select">
+                            <option value="0">ws:// (默认8083)</option>
+                            <option value="1">mqtt:// (默认1883)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">MQTT服务器地址</label>
                         <input id="edit_mqtt_server" type="text" class="form-control" />
                     </div>
@@ -180,7 +192,11 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">MQTT QoS</label>
-                        <input id="edit_mqtt_qos" type="text" class="form-control" />
+                        <select id="edit_mqtt_qos" class="form-select">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -218,6 +234,13 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
+                        <label class="form-label">MQTT连接协议</label>
+                        <select id="add_mqtt_protocol" class="form-select">
+                            <option value="0">ws:// (默认8083)</option>
+                            <option value="1">mqtt:// (默认1883)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">MQTT服务器地址</label>
                         <input id="add_mqtt_server" type="text" class="form-control" />
                     </div>
@@ -243,7 +266,11 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">MQTT QoS</label>
-                        <input id="add_mqtt_qos" type="text" class="form-control" />
+                        <select id="add_mqtt_qos" class="form-select">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -257,6 +284,7 @@
             </div>
         </div>
     </div>
+
 </div>
 </body>
 <script>
@@ -280,20 +308,6 @@
             $("#add_token").val(token);
         });
     });
-
-    //模拟数据
-    let data = [];
-    for (let i = 0; i < 10; i++) {
-        let item = {
-            id: i,
-            name: "token" + i,
-            token: "token" + i,
-            server: "127.0.0.1",
-            publish: "publish" + i,
-            subscribe: "subscribe" + i,
-        }
-        data.push(item);
-    }
 
     //渲染数据
     $('#token_list').bootstrapTable({
@@ -330,12 +344,24 @@
             align: 'center',
             valign: 'middle',
             width: 100
+        },{
+            field: 'protocol',
+            title: '协议',
+            align: 'center',
+            valign: 'middle',
+            width: 100,
+            formatter: function (value, row, index) {
+                return value === 0 ? '<span class="badge bg-green">ws://</span>':'<span class="badge bg-green">mqtt://</span>';
+            }
         }, {
             field: 'mqttServer',
             title: '服务器',
             align: 'center',
             valign: 'middle',
-            width: 100
+            width: 100,
+            formatter: function (value, row, index) {
+                return value + ":" + row.mqttPort;
+            }
         }, {
             field: 'mqttSendTopic',
             title: '发布',
@@ -375,6 +401,7 @@
 
                 console.log(params);
 
+                $("#view_protocol").text(params.protocol===0?"ws://":"mqtt://");
                 $("#view_server").text(params.mqttServer);
                 $("#view_port").text(params.mqttPort);
                 $("#view_username").text(params.mqttUsername);
@@ -399,6 +426,7 @@
                 $("#edit_id").val(params.id);
                 $("#edit_name").val(params.name);
                 $("#edit_token").val(params.token);
+                $("#edit_mqtt_protocol").val(params.protocol);
                 $("#edit_mqtt_server").val(params.mqttServer);
                 $("#edit_mqtt_port").val(params.mqttPort);
                 $("#edit_mqtt_username").val(params.mqttUsername);
@@ -432,9 +460,15 @@
             return;
         }
 
+        if ($("#add_mqtt_protocol").val() === "" || $("#add_mqtt_protocol").val() === null || $("#add_mqtt_protocol").val() === undefined) {
+            layer.msg("协议不能为空");
+            return;
+        }
+
         let data = {
             name: $("#add_name").val(),
             token: $("#add_token").val(),
+            protocol: $("#add_mqtt_protocol").val(),
             mqttServer: $("#add_mqtt_server").val(),
             mqttPort: $("#add_mqtt_port").val(),
             mqttUsername: $("#add_mqtt_username").val(),
@@ -472,10 +506,16 @@
             return;
         }
 
+        if ($("#edit_mqtt_protocol").val() === "" || $("#edit_mqtt_protocol").val() === null || $("#edit_mqtt_protocol").val() === undefined) {
+            layer.msg("协议不能为空");
+            return;
+        }
+
         let data = {
             id: $("#edit_id").val(),
             name: $("#edit_name").val(),
             token: $("#edit_token").val(),
+            protocol: $("#edit_mqtt_protocol").val(),
             mqttServer: $("#edit_mqtt_server").val(),
             mqttPort: $("#edit_mqtt_port").val(),
             mqttUsername: $("#edit_mqtt_username").val(),
