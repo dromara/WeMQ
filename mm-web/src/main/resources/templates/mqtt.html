@@ -3,11 +3,16 @@
 <head>
     <title>物联网设备调试</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css" />
+    <!--适配手机端-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 </head>
 
 <body>
 <div class="container">
     <h1>物联网设备调试</h1>
+    <div class="alert alert-info" role="alert">
+        <div class="text-muted">如果连接异常断开，可以<a href="javascript:location.reload()">刷新页面</a>重新进行连接。（请不要刷新太快）</div>
+    </div>
     <input type="hidden" name="token" id="token" th:value="${token}">
     <div class="form-group">
         <label for="text">自定义调试信息</label>
@@ -36,7 +41,7 @@
         </div>
     </div>
 
-    <textarea id="message" class="form-control" style="height: 400px" disabled></textarea>
+    <textarea wrap="off" id="message" class="form-control" style="height: 400px;margin-bottom: 20px" disabled></textarea>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

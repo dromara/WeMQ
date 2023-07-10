@@ -415,7 +415,7 @@
                 let tokenList = data.data.rows;
                 let tokenHtml = "";
                 for (let i = 0; i < tokenList.length; i++) {
-                    tokenHtml += '<option value="' + tokenList[i].id + '">' + tokenList[i].token + ' --- ' + tokenList[i].mqttServer + ' --- 发:' + tokenList[i].mqttSendTopic + ' --- 收: ' + tokenList[i].mqttReceiveTopic + '</option>';
+                    tokenHtml += '<option value="' + tokenList[i].id + '">'+ tokenList[i].name + ' --- ' + tokenList[i].token + ' --- ' + tokenList[i].mqttServer + ':' + tokenList[i].mqttPort + ' --- 发:' + tokenList[i].mqttSendTopic + ' --- 收: ' + tokenList[i].mqttReceiveTopic + '</option>';
                 }
                 $("#edit_token").html(tokenHtml);
             }
@@ -658,6 +658,11 @@
     }
 
     function addPage() {
+        //清空数据
+        $('#add_name').val("");
+        $('#add_url').val("");
+
+
         //获取token列表
         $.ajax({
             url: "/nmqs/list?pageNum=0",
@@ -667,7 +672,7 @@
                 let tokenList = data.data.rows;
                 let tokenHtml = "";
                 for (let i = 0; i < tokenList.length; i++) {
-                    tokenHtml += '<option value="' + tokenList[i].id + '">' + tokenList[i].token + ' --- ' + tokenList[i].mqttServer + ' --- 发:' + tokenList[i].mqttSendTopic + ' --- 收: ' + tokenList[i].mqttReceiveTopic + '</option>';
+                    tokenHtml += '<option value="' + tokenList[i].id + '">'+ tokenList[i].name + ' --- ' + tokenList[i].token + ' --- ' + tokenList[i].mqttServer + ':' + tokenList[i].mqttPort + ' --- 发:' + tokenList[i].mqttSendTopic + ' --- 收: ' + tokenList[i].mqttReceiveTopic + '</option>';
                 }
                 $("#add_token").html(tokenHtml);
             }
