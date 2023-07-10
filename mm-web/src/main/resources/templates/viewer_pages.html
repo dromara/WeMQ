@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh" xml:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>调试页面 - 物联网调试管理系统</title>
+    <script th:src="@{/statics/jquery-1.12.4.min.js}"></script>
+    <script th:src="@{/statics/tabler/tabler.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/statics/tabler/tabler.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/statics/bootstrap/table/bootstrap-table.min.css}">
+    <script th:src="@{/statics/bootstrap/table/bootstrap-table.min.js}"></script>
+    <script th:src="@{/statics/bootstrap/table/bootstrap-table-zh-CN.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/statics/system/common.css}">
+    <!-- 引入 layui.css -->
+    <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+    <!-- 引入 layui.js -->
+    <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+    <script th:src="@{/statics/system/common.js}"></script>
+</head>
+<body>
+<div class="page">
+    <header class="navbar navbar-expand-sm navbar-light d-print-none">
+        <div class="container-xl">
+            <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+                <a href="#">
+                    <img class="navbar-brand-image" height="32" th:src="@{/statics/images/mqttlogo.png}" width="110"/>
+                </a>
+            </h1>
+            <div class="dropdown">
+                <div class="navbar-nav flex-row order-md-last">
+                    <div class="nav-item">
+                        <a class="nav-link d-flex lh-1 text-reset p-0 dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <span class="avatar avatar-sm" style="background-image: url('/statics/images/head.gif')"></span>
+                            <div class="d-none d-xl-block ps-2">
+                                <div th:text="${session.get('userSession').username}">N/A</div>
+                                <div class="mt-1 small text-muted">调试者</div>
+                            </div>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" th:href="@{/logout}">退出登录</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="page-wrapper">
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <!-- Page pre-title -->
+                        <div class="page-pretitle">
+                            物联网调试管理后台
+                        </div>
+                        <h2 class="page-title">
+                            调试管理
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row row-deck row-cards">
+                    <div class="col-12">
+                        <div class="spinner-border" id="list_refresh"></div>
+                        <div id="card" class="card">
+                            <div class="card-body" style="display: inline-block">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <div id="tree"></div>
+                                    </div>
+                                    <div class="col-10">
+                                        <div class="table-responsive" style="height: 460px">
+                                            <table class="table table-vcenter" id="page_list"></table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="modal-showinfo" tabindex="-1" aria-modal="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="box-shadow: 0px 5px 6px rgb(205, 205, 205);">
+                <div class="modal-header">
+                    <h5 class="modal-title">调试页面详情</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="datagrid">
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">服务器地址</div>
+                            <div class="datagrid-content" id="view_server"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">端口</div>
+                            <div class="datagrid-content" id="view_port"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">用户名</div>
+                            <div class="datagrid-content" id="view_username"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">密码</div>
+                            <div class="datagrid-content" id="view_password"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">发布订阅</div>
+                            <div class="datagrid-content" id="view_sendTopic"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">接收订阅</div>
+                            <div class="datagrid-content" id="view_receiveTopic"></div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">QoS</div>
+                            <div class="datagrid-content" id="view_qos"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="fixed-table-container" style="padding-bottom: 0px;height: auto">
+                        <table class="table table-vcenter" id="params_table" style="height: auto"></table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    //菜单class追加属性
+    $(function () {
+        $("#list_refresh").hide();
+    });
+
+    //渲染数据
+    $('#page_list').bootstrapTable({
+        url: '/page/list?pageNum=0',                      //请求后台的URL（*）
+        method: 'GET',
+        responseHandler: function (res) {
+            return {
+                "total": res.data.total,
+                "rows": res.data.rows
+            }
+        },
+        pageNumber: 1,
+        columns: [{
+            field: 'id',
+            title: 'ID',
+            align: 'center',
+            valign: 'middle',
+            sortable: true
+        }, {
+            field: 'pageName',
+            title: '页面名称',
+            align: 'center',
+            valign: 'middle',
+        }, {
+            field: 'pageUrl',
+            title: '访问地址',
+            align: 'center',
+            valign: 'middle',
+            formatter: function (value, row, index) {
+                return '<a href="/page/' + value + '" target="_blank">' + value + '</a>';
+            }
+        }, {
+            field: 'token',
+            title: 'Token',
+            align: 'center',
+            valign: 'middle',
+        }, {
+            field: 'customer',
+            title: '客户',
+            align: 'center',
+            valign: 'middle',
+            formatter: function (value, row, index) {
+                if  (value === null || value === "" || value === undefined) {
+                    return '<span class="badge bg-secondary">未分配</span>';
+                } else {
+                    return '<span class="badge bg-green">' + value.name + '</span>';
+                }
+            }
+        },{
+            field: 'status',
+            title: '状态',
+            align: 'center',
+            valign: 'middle',
+            sortable: true,
+            formatter: function (value, row, index) {
+                if (value === 0) {
+                    return '<a href="#" class="btn btn-sm btn-success">已启用</a> ';
+                } else {
+                    return '<a href="#" class="btn btn-sm btn-danger">已禁用</a> ';
+                }
+            }
+        }, {
+            title: '操作',
+            align: 'center',
+            valign: 'middle',
+            formatter: function (value, row, index) {
+                return  '<button onclick="showInfo('+ row.id +')" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-showinfo">查看</button> ';
+            }
+        }]
+    })
+
+    let params = [];
+    function showInfo(row) {
+        $('#params_table').bootstrapTable('destroy')
+        console.log(row)
+        let url = "/page/info/" + row;
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                params = data.data;
+
+                console.log(params.settings);
+
+                $("#view_server").text(params.settings.mqttServer);
+                $("#view_port").text(params.settings.mqttPort);
+                $("#view_username").text(params.settings.mqttUsername);
+                $("#view_password").text(params.settings.mqttPassword);
+                $("#view_sendTopic").text(params.settings.mqttSendTopic);
+                $("#view_receiveTopic").text(params.settings.mqttReceiveTopic);
+                $("#view_qos").text(params.settings.mqttQos);
+            }
+        })
+
+        $('#params_table').bootstrapTable({
+            url: url,                      //请求后台的URL（*）
+            method: 'GET',
+            responseHandler: function (res) {
+                return {
+                    "rows": res.data.mqParams
+                }
+            },
+            columns: [{
+                field: 'id',
+                title: 'ID',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'message',
+                title: '调试参数',
+                align: 'center',
+                valign: 'middle',
+            },{
+                field: 'button',
+                title: '按钮名称',
+                align: 'center',
+                valign: 'middle',
+            }],
+        })
+    }
+
+    layui.use('tree', function(){
+        var tree = layui.tree;
+
+        $.ajax({
+            url: "/customer/list?pageNum=0",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                //把name字段改成title
+                let customerList = data.data.rows;
+                for (let i = 0; i < customerList.length; i++) {
+                    customerList[i].title = customerList[i].name;
+                    delete customerList[i].name;
+                }
+                //渲染
+                var inst1 = tree.render({
+                    elem: '#tree',
+                    data: [{
+                        title: '全部客户',
+                        spread: true,
+                        children: customerList
+                    }],
+                    click: function(obj){
+                        console.log(obj.data); //得到当前点击的节点数据
+                        if (obj.data.id === undefined) {
+                            $('#page_list').bootstrapTable('refresh', {url: '/page/list?pageNum=0'});
+                        } else {
+                            $('#page_list').bootstrapTable('refresh', {url: '/page/list?pageNum=0&customerId=' + obj.data.id});
+                        }
+                    }
+                });
+            }
+        })
+    });
+</script>
+<style>
+    .fixed-table-container {
+        height: 400px;
+    }
+
+    #tree {
+        height: 400px;
+        overflow: auto;
+    }
+
+    .list-group-item {
+        padding: 0.5rem 1rem;
+    }
+
+</style>
+</html>
