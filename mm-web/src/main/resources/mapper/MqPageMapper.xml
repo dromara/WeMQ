@@ -75,7 +75,7 @@
 
     <insert id="insert" parameterType="MQPage" useGeneratedKeys="true" keyProperty="id">
         insert into mq_page (page_name, page_url, page_filename, nmqs_id, status)
-        values (#{pageName}, #{pageUrl}, ${pageFileName}, #{nmqsTokenID}, #{status})
+        values (#{pageName}, #{pageUrl}, #{pageFileName}, #{nmqsTokenID}, #{status})
     </insert>
 
     <update id="update" parameterType="MQPageDto">
