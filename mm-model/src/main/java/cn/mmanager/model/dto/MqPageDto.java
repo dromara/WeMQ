@@ -25,6 +25,9 @@ public class MqPageDto implements Serializable {
     /** 页面URL */
     private String pageUrl;
 
+    /** 页面文件名 */
+    private String pageFileName;
+
     /** Nmqs Token ID */
     private Long nmqsTokenID;
 
@@ -104,14 +107,24 @@ public class MqPageDto implements Serializable {
         this.customer = customer;
     }
 
+    public String getPageFileName() {
+        return pageFileName;
+    }
+
+    public void setPageFileName(String pageFileName) {
+        this.pageFileName = pageFileName;
+    }
+
     @Override
     public String toString() {
-        return "MQPageDto{" +
+        return "MqPageDto{" +
                 "id=" + id +
                 ", pageName='" + pageName + '\'' +
                 ", pageUrl='" + pageUrl + '\'' +
-                ", nmqsTokenID='" + nmqsTokenID + '\'' +
+                ", pageFileName='" + pageFileName + '\'' +
+                ", nmqsTokenID=" + nmqsTokenID +
                 ", settings=" + settings +
+                ", customer=" + customer +
                 ", status=" + status +
                 ", mqParams=" + mqParams +
                 '}';

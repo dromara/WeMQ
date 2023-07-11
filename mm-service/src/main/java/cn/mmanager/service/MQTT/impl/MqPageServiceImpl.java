@@ -1,5 +1,6 @@
 package cn.mmanager.service.MQTT.impl;
 
+import cn.hutool.core.util.StrUtil;
 import cn.mmanager.dao.MQTT.MqPageMapper;
 import cn.mmanager.model.dto.MqPageDto;
 import cn.mmanager.model.pojo.MQPage;
@@ -11,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author NicholasLD
@@ -32,7 +35,10 @@ public class MqPageServiceImpl implements MqPageService {
 
     @Override
     public List<MQPage> select(Map<String, Object> params) {
-        return mqPageMapper.select(params);
+        if (params.get("commonPage") == null || (Integer) params.get("commonPage") == 0){
+            return mqPageMapper.select(params);
+        }
+        return mqPageMapper.select(params).stream().filter(mqPage -> !StrUtil.isEmpty(mqPage.getPageFileName())).collect(Collectors.toList());
     }
 
     @Override

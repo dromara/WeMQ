@@ -1,0 +1,157 @@
+﻿<!DOCTYPE HTML>
+<html lang="zh" xml:th="http://www.thymeleaf.org">
+<head>
+    <title>物联网设备调试</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css" />
+    <!--适配手机端-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+</head>
+
+<body>
+<div class="container">
+    <h1>电表调试（自定义页面测试）</h1>
+    <div class="alert alert-info" role="alert">
+        <div class="text-muted">如果连接异常断开，可以<a href="javascript:location.reload()">刷新页面</a>重新进行连接。（请不要刷新太快）</div>
+    </div>
+    <input type="hidden" name="token" id="token" th:value="${token}">
+    <div class="form-group">
+        <label for="text">自定义调试信息</label>
+        <input id="text" type="text" class="form-control" />
+    </div>
+    <div class="form-group">
+        <button onclick="send()" class="btn btn-primary">发送自定义调试信息</button>
+        <button onclick="closeWebSocket()" class="btn btn-danger">关闭连接</button>
+    </div>
+    <div class="form-group">
+        <div class="card">
+            <div class="card-header">
+                预设调试参数
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-10" th:each="p : ${params}">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" th:value='${p.message}' style="margin-right: 20px">
+                            <button onclick='sendOther(this)' class="btn btn-primary" type="button" th:text="${p.button}"></button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="card">
+            <div class="card-header">
+                电表调试
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-4">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" value='' id="check" style="margin-right: 20px">
+                            <button onclick='const checkNum = () =>  {
+                            $("#check").val("100.00");
+                        };
+                        checkNum(this)' class="btn btn-primary" type="button">查询度数（模拟）</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <textarea wrap="off" id="message" class="form-control" style="height: 400px;margin-bottom: 20px" disabled></textarea>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+<script th:src="@{/statics/system/common.js}"></script>
+
+<script type="text/javascript">
+    let websocket = null;
+
+    let token = $('#token').val();
+
+    //判断当前浏览器是否支持WebSocket
+    if ('WebSocket' in window) {
+        websocket = new WebSocket( getNmqsWebsocket() + "/websocket/" + token);
+    } else {
+        alert('Not support websocket')
+    }
+
+    //连接发生错误的回调方法
+    websocket.onerror = function () {
+        setMessageInnerHTML("error");
+    };
+
+    //连接成功建立的回调方法
+    websocket.onopen = function (event) {
+        //获取当前时间，格式为：12:00:00
+        let date = new Date();
+        let hours = date.getHours().toString().length < 2 ? "0" + date.getHours() : date.getHours();
+        let min = date.getMinutes().toString().length < 2 ? "0" + date.getMinutes() : date.getMinutes();
+        let sec = date.getSeconds().toString().length < 2 ? "0" + date.getSeconds() : date.getSeconds();
+
+        let time = hours + ":" + min + ":" + sec;
+        let prefix = "[System]["+ time +"] ";
+        setMessageInnerHTML(prefix + "开始建立连接");
+    }
+
+    //接收到消息的回调方法
+    websocket.onmessage = function (event) {
+        //获取当前时间，格式为：12:00:00
+        let date = new Date();
+        let hours = date.getHours().toString().length < 2 ? "0" + date.getHours() : date.getHours();
+        let min = date.getMinutes().toString().length < 2 ? "0" + date.getMinutes() : date.getMinutes();
+        let sec = date.getSeconds().toString().length < 2 ? "0" + date.getSeconds() : date.getSeconds();
+
+        let time = hours + ":" + min + ":" + sec;
+
+        let prefix = "[Receive]["+ time +"] ";
+        setMessageInnerHTML(prefix + event.data);
+    }
+
+    //连接关闭的回调方法
+    websocket.onclose = function () {
+        //获取当前时间，格式为：12:00:00
+        let date = new Date();
+        let hours = date.getHours().toString().length < 2 ? "0" + date.getHours() : date.getHours();
+        let min = date.getMinutes().toString().length < 2 ? "0" + date.getMinutes() : date.getMinutes();
+        let sec = date.getSeconds().toString().length < 2 ? "0" + date.getSeconds() : date.getSeconds();
+
+        let time = hours + ":" + min + ":" + sec;
+        let prefix = "[System]["+ time +"] ";
+        setMessageInnerHTML(prefix + "连接关闭");
+    }
+
+    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+    window.onbeforeunload = function () {
+        websocket.close();
+
+    }
+
+    //将消息显示在网页上
+    function setMessageInnerHTML(innerHTML) {
+        $('#message').val(innerHTML + '\n' + $('#message').val());
+    }
+
+    //关闭连接
+    function closeWebSocket() {
+        websocket.close();
+    }
+
+    //发送消息
+    function send() {
+        var message = document.getElementById('text').value;
+        websocket.send(message);
+    }
+
+    function sendOther(this1) {
+        //获取按钮上面的input的值
+        var message = $(this1).prev('input').val();
+        console.log(message)
+        websocket.send(message);
+    }
+</script>

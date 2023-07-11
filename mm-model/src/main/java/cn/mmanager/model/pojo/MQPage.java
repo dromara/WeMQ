@@ -17,6 +17,9 @@ public class MQPage {
     /** 页面URL */
     private String pageUrl;
 
+    /** 页面文件名 */
+    private String pageFileName;
+
     /** Nmqs Token ID */
     private Long nmqsTokenID;
 
@@ -97,12 +100,21 @@ public class MQPage {
         this.customer = customer;
     }
 
+    public String getPageFileName() {
+        return pageFileName;
+    }
+
+    public void setPageFileName(String pageFileName) {
+        this.pageFileName = pageFileName;
+    }
+
     @Override
     public String toString() {
         return "MQPage{" +
                 "id=" + id +
                 ", pageName='" + pageName + '\'' +
                 ", pageUrl='" + pageUrl + '\'' +
+                ", pageFileName='" + pageFileName + '\'' +
                 ", nmqsTokenID=" + nmqsTokenID +
                 ", token='" + token + '\'' +
                 ", customer=" + customer +

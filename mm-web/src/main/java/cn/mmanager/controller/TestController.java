@@ -37,6 +37,10 @@ public class TestController extends BaseController {
         this.mqPageService = mqPageService;
     }
 
+    @GetMapping("/test")
+    public String test(Model model) {
+        return "12121";
+    }
 
     @RepeatSubmit(interval = 1000, message = "请勿重复提交")
     @PostMapping("/testPOST")

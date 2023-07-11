@@ -178,6 +178,14 @@
                             <option value="3">testToken 地址:121.201.35.120 发:sendTopic 收:receiveTopic</option>
                         </select>
                     </div>
+                    <div class="alert alert-info" role="alert">
+                        <div class="alert-title">新功能！</div>
+                        <div class="text-muted">现在支持自定义调试页面，只需要将自定义调试页面文件(.html后缀)放到项目pages文件夹，并将文件名填写在下方即可（不带后缀名）。<span style="color: red;font-weight: bolder">留空则使用系统默认调试页面。</span></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">外部文件名(.html)</label>
+                        <input id="edit_filename" placeholder="留空则使用默认调试页面 (不带后缀名)" type="text" class="form-control" />
+                    </div>
                     <div class="mb-3">
                         <div class="form-label">客户</div>
                         <select id="edit_customer" class="form-select"></select>
@@ -219,6 +227,14 @@
                         <select id="add_token" class="form-select">
 
                         </select>
+                    </div>
+                    <div class="alert alert-info" role="alert">
+                        <div class="alert-title">新功能！</div>
+                        <div class="text-muted">现在支持自定义调试页面，只需要将自定义调试页面文件(.html后缀)放到项目pages文件夹，并将文件名填写在下方即可（不带后缀名）。<span style="color: red;font-weight: bolder">留空则使用系统默认调试页面。</span></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">外部文件名(.html)</label>
+                        <input id="add_filename" placeholder="留空则使用默认调试页面 (不带后缀名)" type="text" class="form-control" />
                     </div>
                     <div class="mb-3">
                         <div class="form-label">客户</div>
@@ -452,6 +468,7 @@
                 $("#edit_name").val(params.pageName);
                 $("#edit_url").val(params.pageUrl);
                 $("#edit_token").val(params.nmqsTokenID);
+                $("#edit_filename").val(params.pageFileName);
                 //设置客户
                 if (params.customer === null || params.customer === "" || params.customer === undefined) {
                     $("#edit_customer").val("0");
@@ -482,6 +499,7 @@
         let token = $("#edit_token").val();
         let customerId = $("#edit_customer").val();
         let customerName = $("#edit_customer").find("option:selected").text();
+        let filename = $("#edit_filename").val();
 
         if (name === "" || name === null || name === undefined) {
             layer.msg("页面名称不能为空");
@@ -504,6 +522,7 @@
             "pageName": name,
             "pageUrl": url,
             "nmqsTokenID": token,
+            "pageFileName": filename,
             "customer": {
                 "id": customerId,
                 "name": customerName
@@ -546,6 +565,10 @@
                 var inst1 = tree.render({
                     elem: '#tree',
                     data: [{
+                        title: '自定义页面',
+                        id: 0,
+                        spread: true
+                    },{
                         title: '全部客户',
                         spread: true,
                         children: customerList
@@ -554,6 +577,8 @@
                         console.log(obj.data); //得到当前点击的节点数据
                         if (obj.data.id === undefined) {
                             $('#page_list').bootstrapTable('refresh', {url: '/page/list?pageNum=0'});
+                        } else if(obj.data.id === 0){
+                            $('#page_list').bootstrapTable('refresh', {url: '/page/list?pageNum=0&commonPage=1'});
                         } else {
                             $('#page_list').bootstrapTable('refresh', {url: '/page/list?pageNum=0&customerId=' + obj.data.id});
                         }
@@ -661,6 +686,7 @@
         //清空数据
         $('#add_name').val("");
         $('#add_url').val("");
+        $('#add_filename').val("");
 
 
         //获取token列表
@@ -741,6 +767,7 @@
             "pageName": $("#add_name").val(),
             "pageUrl": $("#add_url").val(),
             "nmqsTokenID": $("#add_token").val(),
+            "pageFileName": $("#add_filename").val(),
             "customer": {
                 "id": $("#add_customer").val(),
                 "name": $("#add_customer").find("option:selected").text()

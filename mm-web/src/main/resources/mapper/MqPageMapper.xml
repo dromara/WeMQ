@@ -6,6 +6,7 @@
         <result column="page_name" property="pageName"/>
         <result column="page_url" property="pageUrl"/>
         <result column="nmqs_id" property="nmqsTokenID"/>
+        <result column="page_filename" property="pageFileName"/>
         <result column="status" property="status"/>
         <association property="customer" javaType="cn.mmanager.model.pojo.Customer">
             <result column="customer_id" property="id"/>
@@ -29,6 +30,7 @@
         <id column="id" property="id"/>
         <result column="page_name" property="pageName"/>
         <result column="page_url" property="pageUrl"/>
+        <result column="page_filename" property="pageFileName"/>
         <result column="nmqs_id" property="nmqsTokenID"/>
         <result column="token" property="token"/>
         <result column="status" property="status"/>
@@ -72,8 +74,8 @@
     </select>
 
     <insert id="insert" parameterType="MQPage" useGeneratedKeys="true" keyProperty="id">
-        insert into mq_page (page_name, page_url, nmqs_id, status)
-        values (#{pageName}, #{pageUrl}, #{nmqsTokenID}, #{status})
+        insert into mq_page (page_name, page_url, page_filename, nmqs_id, status)
+        values (#{pageName}, #{pageUrl}, ${pageFileName}, #{nmqsTokenID}, #{status})
     </insert>
 
     <update id="update" parameterType="MQPageDto">
@@ -84,6 +86,9 @@
             </if>
             <if test="pageUrl != null">
                 page_url = #{pageUrl},
+            </if>
+            <if test="pageFileName != null">
+                page_filename = #{pageFileName},
             </if>
             <if test="nmqsTokenID != null">
                 nmqs_id = #{nmqsTokenID},

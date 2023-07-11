@@ -208,7 +208,12 @@ public class ViewController extends BaseController {
         mav.addObject("params", mqPageDto.getMqParams());
         mav.addObject("token", nmqsToken.getToken());
 
-        mav.setViewName("mqtt");
+        if (StrUtil.isEmpty(mqPageDto.getPageFileName())){
+            mav.setViewName("mqtt");
+        } else {
+            mav.setViewName(mqPageDto.getPageFileName());
+        }
+
         return mav;
 
     }

@@ -4,18 +4,6 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-  thymeleaf:
-      cache: false
-      check-template: true
-      check-template-location: true
-      enabled: true
-      encoding: UTF-8
-      excluded-view-names:
-      mode: HTML5
-      prefix: classpath:/templates/
-      suffix: .html
-      servlet:
-          content-type: text/html
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/wemq?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
@@ -31,3 +19,6 @@ pagehelper:
   reasonable: true
   supportMethodsArguments: true
   params: count=countSql
+logging:
+  file:
+    name: logs/logs.log
