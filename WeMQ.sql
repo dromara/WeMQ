@@ -1,3 +1,19 @@
+/*
+ Navicat Premium Data Transfer
+
+ Source Server         : localhost
+ Source Server Type    : MySQL
+ Source Server Version : 50731
+ Source Host           : localhost:3306
+ Source Schema         : WeMQ
+
+ Target Server Type    : MySQL
+ Target Server Version : 50731
+ File Encoding         : 65001
+
+ Date: 12/07/2023 01:32:25
+*/
+
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -12,10 +28,6 @@ CREATE TABLE `mq_customer` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of mq_customer
--- ----------------------------
-
--- ----------------------------
 -- Table structure for mq_customer_page
 -- ----------------------------
 DROP TABLE IF EXISTS `mq_customer_page`;
@@ -24,11 +36,7 @@ CREATE TABLE `mq_customer_page` (
   `customer_id` int(11) NOT NULL,
   `page_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of mq_customer_page
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for mq_nmqs_token
@@ -47,11 +55,7 @@ CREATE TABLE `mq_nmqs_token` (
   `mqtt_receiveTopic` varchar(255) DEFAULT NULL COMMENT 'MQTT接收订阅',
   `mqtt_qos` int(11) DEFAULT NULL COMMENT 'MQTT Qos',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of mq_nmqs_token
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for mq_page
@@ -61,14 +65,11 @@ CREATE TABLE `mq_page` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '页面ID',
   `page_name` varchar(255) NOT NULL COMMENT '页面名称',
   `page_url` varchar(255) NOT NULL COMMENT '访问URL',
+  `page_filename` varchar(255) DEFAULT NULL,
   `nmqs_id` int(11) NOT NULL COMMENT 'NmqsTokenID',
   `status` int(11) NOT NULL COMMENT '页面启用状态',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of mq_page
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for mq_page_param
@@ -79,11 +80,7 @@ CREATE TABLE `mq_page_param` (
   `page_id` int(11) DEFAULT NULL,
   `param_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of mq_page_param
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for mq_param
@@ -94,11 +91,7 @@ CREATE TABLE `mq_param` (
   `message` varchar(255) NOT NULL,
   `button` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of mq_param
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for sys_admin
@@ -113,13 +106,10 @@ CREATE TABLE `sys_admin` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- ----------------------------
--- Records of sys_admin
--- ----------------------------
+
 BEGIN;
 INSERT INTO `sys_admin` (`id`, `username`, `nickname`, `password`, `status`) VALUES (1, 'admin', '系统管理员', '$2a$10$YEvJNZMSNbkNPCPN2oBQ6ufZjBJum/jeUreAXEsOmn7.1gsUFE33q', 0);
 COMMIT;
-
 -- ----------------------------
 -- Table structure for sys_login_log
 -- ----------------------------
@@ -132,10 +122,6 @@ CREATE TABLE `sys_login_log` (
   `login_time` datetime NOT NULL COMMENT '登录时间',
   `login_status` int(11) NOT NULL COMMENT '登录状态',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sys_login_log
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
 
 SET FOREIGN_KEY_CHECKS = 1;
