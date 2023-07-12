@@ -283,6 +283,10 @@
                 var inst1 = tree.render({
                     elem: '#tree',
                     data: [{
+                        title: '自定义页面',
+                        id: 0,
+                        spread: true
+                    },{
                         title: '全部客户',
                         spread: true,
                         children: customerList
@@ -291,6 +295,8 @@
                         console.log(obj.data); //得到当前点击的节点数据
                         if (obj.data.id === undefined) {
                             $('#page_list').bootstrapTable('refresh', {url: '/page/list?pageNum=0'});
+                        } else if(obj.data.id === 0){
+                            $('#page_list').bootstrapTable('refresh', {url: '/page/list?pageNum=0&commonPage=1'});
                         } else {
                             $('#page_list').bootstrapTable('refresh', {url: '/page/list?pageNum=0&customerId=' + obj.data.id});
                         }
