@@ -5,13 +5,13 @@
  Source Server Type    : MySQL
  Source Server Version : 50731
  Source Host           : localhost:3306
- Source Schema         : WeMQ
+ Source Schema         : WeMQ_Old
 
  Target Server Type    : MySQL
  Target Server Version : 50731
  File Encoding         : 65001
 
- Date: 12/07/2023 01:32:25
+ Date: 15/07/2023 23:06:03
 */
 
 SET NAMES utf8mb4;
@@ -25,7 +25,13 @@ CREATE TABLE `mq_customer` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of mq_customer
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for mq_customer_page
@@ -36,7 +42,13 @@ CREATE TABLE `mq_customer_page` (
   `customer_id` int(11) NOT NULL,
   `page_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of mq_customer_page
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for mq_nmqs_token
@@ -51,11 +63,14 @@ CREATE TABLE `mq_nmqs_token` (
   `mqtt_port` int(11) DEFAULT NULL COMMENT 'MQTT端口',
   `mqtt_username` varchar(255) DEFAULT NULL COMMENT 'MQTT用户名',
   `mqtt_password` varchar(255) DEFAULT NULL COMMENT 'MQTT密码',
-  `mqtt_sendTopic` varchar(255) DEFAULT NULL COMMENT 'MQTT发布订阅',
-  `mqtt_receiveTopic` varchar(255) DEFAULT NULL COMMENT 'MQTT接收订阅',
-  `mqtt_qos` int(11) DEFAULT NULL COMMENT 'MQTT Qos',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of mq_nmqs_token
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for mq_page
@@ -68,8 +83,17 @@ CREATE TABLE `mq_page` (
   `page_filename` varchar(255) DEFAULT NULL,
   `nmqs_id` int(11) NOT NULL COMMENT 'NmqsTokenID',
   `status` int(11) NOT NULL COMMENT '页面启用状态',
+  `mqtt_sendtopic` varchar(255) NOT NULL COMMENT 'MQTT发布订阅',
+  `mqtt_receivetopic` varchar(255) NOT NULL COMMENT 'MQTT接收订阅',
+  `mqtt_qos` int(11) NOT NULL DEFAULT '0' COMMENT 'QoS',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of mq_page
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for mq_page_param
@@ -80,7 +104,13 @@ CREATE TABLE `mq_page_param` (
   `page_id` int(11) DEFAULT NULL,
   `param_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of mq_page_param
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for mq_param
@@ -91,7 +121,13 @@ CREATE TABLE `mq_param` (
   `message` varchar(255) NOT NULL,
   `button` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of mq_param
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for sys_admin
@@ -106,10 +142,13 @@ CREATE TABLE `sys_admin` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
-
+-- ----------------------------
+-- Records of sys_admin
+-- ----------------------------
 BEGIN;
-INSERT INTO `sys_admin` (`id`, `username`, `nickname`, `password`, `status`) VALUES (1, 'admin', '系统管理员', '$2a$10$YEvJNZMSNbkNPCPN2oBQ6ufZjBJum/jeUreAXEsOmn7.1gsUFE33q', 0);
+INSERT INTO `sys_admin` (`id`, `username`, `nickname`, `password`, `status`) VALUES (1, 'admin', '系统管理员', '$2a$10$YC4Pe1xIqBdsfKmVOql1burSsOYbKQr3XKocquaM5HmFO7Byw53Mi', 0);
 COMMIT;
+
 -- ----------------------------
 -- Table structure for sys_login_log
 -- ----------------------------
@@ -122,6 +161,12 @@ CREATE TABLE `sys_login_log` (
   `login_time` datetime NOT NULL COMMENT '登录时间',
   `login_status` int(11) NOT NULL COMMENT '登录状态',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_login_log
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
