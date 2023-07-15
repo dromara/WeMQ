@@ -23,3 +23,4 @@ bin/
 rebel.xml
 */.idea/
 */.id
+logs/
