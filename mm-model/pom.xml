@@ -23,6 +23,13 @@
             <version>2.15.0-rc2</version>
             <scope>compile</scope>
         </dependency>
+        <!--lombok-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.28</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>

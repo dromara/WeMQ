@@ -208,6 +208,12 @@ public class ViewController extends BaseController {
         mav.addObject("params", mqPageDto.getMqParams());
         mav.addObject("token", nmqsToken.getToken());
 
+        mav.addObject("sendTopic", mqPageDto.getSendTopic());
+        mav.addObject("receiveTopic", mqPageDto.getReceiveTopic());
+        mav.addObject("qos", mqPageDto.getQos());
+
+        mav.addObject("serverInfo", (nmqsToken.getProtocol()==0?"ws://":"mqtt://")+nmqsToken.getMqttServer()+":"+nmqsToken.getMqttPort());
+
         if (StrUtil.isEmpty(mqPageDto.getPageFileName())){
             mav.setViewName("mqtt");
         } else {

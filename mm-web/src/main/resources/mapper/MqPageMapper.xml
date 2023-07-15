@@ -7,6 +7,9 @@
         <result column="page_url" property="pageUrl"/>
         <result column="nmqs_id" property="nmqsTokenID"/>
         <result column="page_filename" property="pageFileName"/>
+        <result column="mqtt_sendTopic" property="sendTopic"/>
+        <result column="mqtt_receiveTopic" property="receiveTopic"/>
+        <result column="mqtt_qos" property="qos"/>
         <result column="status" property="status"/>
         <association property="customer" javaType="cn.mmanager.model.pojo.Customer">
             <result column="customer_id" property="id"/>
@@ -19,9 +22,6 @@
             <result column="mqtt_port" property="mqttPort"/>
             <result column="mqtt_username" property="mqttUsername"/>
             <result column="mqtt_password" property="mqttPassword"/>
-            <result column="mqtt_sendTopic" property="mqttSendTopic"/>
-            <result column="mqtt_receiveTopic" property="mqttReceiveTopic"/>
-            <result column="mqtt_qos" property="mqttQos"/>
         </association>
         <collection property="mqParams" javaType="arraylist" ofType="MQParam" select="selectParamsByPageId" column="id"/>
     </resultMap>
@@ -33,6 +33,9 @@
         <result column="page_filename" property="pageFileName"/>
         <result column="nmqs_id" property="nmqsTokenID"/>
         <result column="token" property="token"/>
+        <result column="mqtt_sendTopic" property="sendTopic"/>
+        <result column="mqtt_receiveTopic" property="receiveTopic"/>
+        <result column="mqtt_qos" property="qos"/>
         <result column="status" property="status"/>
         <association property="customer" javaType="cn.mmanager.model.pojo.Customer">
             <result column="customer_id" property="id"/>
@@ -74,8 +77,8 @@
     </select>
 
     <insert id="insert" parameterType="MQPage" useGeneratedKeys="true" keyProperty="id">
-        insert into mq_page (page_name, page_url, page_filename, nmqs_id, status)
-        values (#{pageName}, #{pageUrl}, #{pageFileName}, #{nmqsTokenID}, #{status})
+        insert into mq_page (page_name, page_url, page_filename, nmqs_id, mqtt_sendtopic, mqtt_receivetopic, mqtt_qos, status)
+        values (#{pageName}, #{pageUrl}, #{pageFileName}, #{nmqsTokenID}, #{sendTopic}, #{receiveTopic}, #{qos}, #{status})
     </insert>
 
     <update id="update" parameterType="MQPageDto">
@@ -92,6 +95,15 @@
             </if>
             <if test="nmqsTokenID != null">
                 nmqs_id = #{nmqsTokenID},
+            </if>
+            <if test="sendTopic != null">
+                mqtt_sendtopic = #{sendTopic},
+            </if>
+            <if test="receiveTopic != null">
+                mqtt_receivetopic = #{receiveTopic},
+            </if>
+            <if test="qos != null">
+                mqtt_qos = #{qos},
             </if>
             <if test="status != null">
                 status = #{status},
@@ -113,9 +125,6 @@
         nmqs.mqtt_port,
         nmqs.mqtt_username,
         nmqs.mqtt_password,
-        nmqs.mqtt_sendTopic,
-        nmqs.mqtt_receiveTopic,
-        nmqs.mqtt_qos,
         customer.id as customer_id,
         customer.name as customer_name
         from mq_page page

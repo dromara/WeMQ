@@ -2,113 +2,219 @@
 <html lang="zh" xml:th="http://www.thymeleaf.org">
 <head>
     <title>物联网设备调试</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css" />
-    <!--适配手机端-->
+    <link rel="stylesheet" th:href="@{/statics/bootstrap/4.6.0/bootstrap.min.css}" />
+    <script th:src="@{/statics/jquery-1.12.4.min.js}"></script>
+    <script th:src="@{/statics/bootstrap/4.6.0/bootstrap.min.js}"></script>
+    <script th:src="@{/statics/system/common.js}"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 </head>
 
 <body>
-<div class="container">
-    <h1>物联网设备调试</h1>
-    <div class="alert alert-info" role="alert">
-        <div class="text-muted">如果连接异常断开，可以<a href="javascript:location.reload()">刷新页面</a>重新进行连接。（请不要刷新太快）</div>
-    </div>
-    <input type="hidden" name="token" id="token" th:value="${token}">
-    <div class="form-group">
-        <label for="text">自定义调试信息</label>
-        <input id="text" type="text" class="form-control" />
-    </div>
-    <div class="form-group">
-        <button onclick="send()" class="btn btn-primary">发送自定义调试信息</button>
-        <button onclick="closeWebSocket()" class="btn btn-danger">关闭连接</button>
-    </div>
-    <div class="form-group">
-        <div class="card">
-            <div class="card-header">
-                预设调试参数
+    <div class="container">
+        <div class="form-group">
+            <h1>物联网设备调试</h1>
+            <h4 th:text="${serverInfo}"></h4>
+            <div class="alert alert-info" role="alert">
+                <div class="text-muted">如果连接异常断开，可以<a href="javascript:location.reload()">刷新页面</a>重新进行连接。（请不要刷新太快）</div>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-10" th:each="p : ${params}">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" th:value='${p.message}' style="margin-right: 20px">
-                            <button onclick='sendOther(this)' class="btn btn-primary" type="button" th:text="${p.button}"></button>
+            <input type="hidden" name="token" id="token" th:value="${token}">
+        </div>
+
+        <div class="form-group">
+            <div class="card">
+                <div class="card-header">
+                    自定义订阅
+                </div>
+                <div class="card-body" style="display: flex;flex-wrap: wrap">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">发送订阅</div>
+                            </div>
+                            <input id="sendTopic" type="text" class="form-control" th:value="${sendTopic}" />
                         </div>
                     </div>
-                </div>
 
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">接收订阅</div>
+                            </div>
+                            <input id="receiveTopic" type="text" class="form-control" th:value="${receiveTopic}" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">QoS</div>
+                            </div>
+                            <input id="qos" min="0" max="2" type="number" class="form-control" th:value="${qos}" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button onclick="reConnect()" class="btn btn-primary">修改订阅</button>
+                        <button onclick="closeWebSocket()" class="btn btn-danger">关闭连接</button>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">自定义调试信息</div>
+                </div>
+                <input id="text" type="text" class="form-control" placeholder="请输入调试信息">
+                <div class="input-group-append">
+                    <button onclick="send()" class="btn btn-primary" type="button">发送</button>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="card">
+                <div class="card-header">
+                    预设调试参数
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-10" th:each="p : ${params}">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" th:value='${p.message}' style="margin-right: 20px">
+                                <button onclick='sendOther(this)' class="btn btn-primary" type="button" th:text="${p.button}"></button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <textarea wrap="off" id="message" class="form-control" style="height: 400px;margin-bottom: 20px" disabled></textarea>
     </div>
-
-    <textarea wrap="off" id="message" class="form-control" style="height: 400px;margin-bottom: 20px" disabled></textarea>
-</div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
-<script th:src="@{/statics/system/common.js}"></script>
+</body>
 
 <script type="text/javascript">
     let websocket = null;
 
     let token = $('#token').val();
+    let sendTopic = $('#sendTopic').val();
+    let receiveTopic = $('#receiveTopic').val();
+    let qos = $('#qos').val();
+
+    function base64encode(text) {
+        //确保/不会被转义
+        return btoa(text).replace(/\//g, "_");
+    }
+
+    //base64
+    let sendTopic_base64 = base64encode(sendTopic);
+    let receiveTopic_base64 = base64encode(receiveTopic);
 
     //判断当前浏览器是否支持WebSocket
     if ('WebSocket' in window) {
-        websocket = new WebSocket( getNmqsWebsocket() + "/websocket/" + token);
+        websocket = new WebSocket( getNmqsWebsocket() + `/websocket/${token}/${sendTopic_base64}/${receiveTopic_base64}/${qos}`);
+
+        console.log(getNmqsWebsocket() + `/websocket/${token}/${sendTopic_base64}/${receiveTopic_base64}/${qos}`)
     } else {
-        alert('Not support websocket')
+        alert('您的浏览器不支持WebSocket协议，建议您更换 Chrome 浏览器')
     }
 
-    //连接发生错误的回调方法
-    websocket.onerror = function () {
-        setMessageInnerHTML("error");
-    };
+    //如果连接成功
+    if (websocket != null) {
+        //连接发生错误的回调方法
+        websocket.onerror = function () {
+            setMessageInnerHTML("error");
+        };
 
-    //连接成功建立的回调方法
-    websocket.onopen = function (event) {
-        //获取当前时间，格式为：12:00:00
-        let date = new Date();
-        let hours = date.getHours().toString().length < 2 ? "0" + date.getHours() : date.getHours();
-        let min = date.getMinutes().toString().length < 2 ? "0" + date.getMinutes() : date.getMinutes();
-        let sec = date.getSeconds().toString().length < 2 ? "0" + date.getSeconds() : date.getSeconds();
+        //连接成功建立的回调方法
+        websocket.onopen = function (event) {
+            let prefix = "[System]["+ getTime() +"] ";
+            setMessageInnerHTML(prefix + "开始建立连接");
+        }
 
-        let time = hours + ":" + min + ":" + sec;
-        let prefix = "[System]["+ time +"] ";
-        setMessageInnerHTML(prefix + "开始建立连接");
+        //接收到消息的回调方法
+        websocket.onmessage = function (event) {
+            let prefix = "[Receive]["+ getTime() +"] ";
+            setMessageInnerHTML(prefix + event.data);
+        }
+
+        //连接关闭的回调方法
+        websocket.onclose = function () {
+            let prefix = "[System]["+ getTime() +"] ";
+            setMessageInnerHTML(prefix + "连接关闭");
+        }
+
+        //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+        window.onbeforeunload = function () {
+            websocket.close();
+
+        }
     }
 
-    //接收到消息的回调方法
-    websocket.onmessage = function (event) {
-        //获取当前时间，格式为：12:00:00
-        let date = new Date();
-        let hours = date.getHours().toString().length < 2 ? "0" + date.getHours() : date.getHours();
-        let min = date.getMinutes().toString().length < 2 ? "0" + date.getMinutes() : date.getMinutes();
-        let sec = date.getSeconds().toString().length < 2 ? "0" + date.getSeconds() : date.getSeconds();
+    function reConnect() {
+        if ($('#sendTopic').val() === "" || $('#sendTopic').val() === null || $('#sendTopic').val() === undefined){
+            alert("发送订阅不能为空！")
+            return
+        }
 
-        let time = hours + ":" + min + ":" + sec;
+        if ($('#receiveTopic').val() === "" || $('#receiveTopic').val() === null || $('#receiveTopic').val() === undefined){
+            alert("接收订阅不能为空！")
+            return
+        }
 
-        let prefix = "[Receive]["+ time +"] ";
-        setMessageInnerHTML(prefix + event.data);
-    }
+        if ($('#qos').val() === "" || $('#qos').val() === null || $('#qos').val() === undefined || $('#qos').val()>2 || $('#qos').val() <0){
+            alert("QoS不正确")
+            return;
+        }
 
-    //连接关闭的回调方法
-    websocket.onclose = function () {
-        //获取当前时间，格式为：12:00:00
-        let date = new Date();
-        let hours = date.getHours().toString().length < 2 ? "0" + date.getHours() : date.getHours();
-        let min = date.getMinutes().toString().length < 2 ? "0" + date.getMinutes() : date.getMinutes();
-        let sec = date.getSeconds().toString().length < 2 ? "0" + date.getSeconds() : date.getSeconds();
+        closeWebSocket();
 
-        let time = hours + ":" + min + ":" + sec;
-        let prefix = "[System]["+ time +"] ";
-        setMessageInnerHTML(prefix + "连接关闭");
-    }
+        setTimeout(function () {
+            let sendTopic = $('#sendTopic').val();
+            let receiveTopic = $('#receiveTopic').val();
+            let qos = $('#qos').val();
 
-    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
-    window.onbeforeunload = function () {
-        websocket.close();
+            //base64
+            let sendTopic_base64 = base64encode(sendTopic);
+            let receiveTopic_base64 = base64encode(receiveTopic);
 
+            websocket = new WebSocket( getNmqsWebsocket() + `/websocket/${token}/${sendTopic_base64}/${receiveTopic_base64}/${qos}`);
+
+            console.log(getNmqsWebsocket() + `/websocket/${token}/${sendTopic_base64}/${receiveTopic_base64}/${qos}`)
+
+            //如果连接成功
+            if (websocket != null) {
+                //连接发生错误的回调方法
+                websocket.onerror = function () {
+                    setMessageInnerHTML("error");
+                };
+
+                //连接成功建立的回调方法
+                websocket.onopen = function (event) {
+                    let prefix = "[System][" + getTime() + "] ";
+                    setMessageInnerHTML(prefix + "开始建立连接");
+                }
+
+                //接收到消息的回调方法
+                websocket.onmessage = function (event) {
+                    let prefix = "[Receive][" + getTime() + "] ";
+                    setMessageInnerHTML(prefix + event.data);
+                }
+
+                //连接关闭的回调方法
+                websocket.onclose = function () {
+                    let prefix = "[System][" + getTime() + "] ";
+                    setMessageInnerHTML(prefix + "连接关闭");
+                }
+
+                //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+                window.onbeforeunload = function () {
+                    websocket.close();
+                }
+            }
+        }, 1000)
     }
 
     //将消息显示在网页上
@@ -123,14 +229,48 @@
 
     //发送消息
     function send() {
-        var message = document.getElementById('text').value;
+        let message = document.getElementById('text').value;
         websocket.send(message);
+        //如果发送成功
+        if (websocket.readyState === 1) {
+            let prefix = "[Send]["+ getTime() +"] ";
+            setMessageInnerHTML(prefix + message);
+        }
     }
 
     function sendOther(this1) {
         //获取按钮上面的input的值
-        var message = $(this1).prev('input').val();
-        console.log(message)
+        let message = $(this1).prev('input').val();
         websocket.send(message);
+        //如果发送成功
+        if (websocket.readyState === 1) {
+            let prefix = "[Send]["+ getTime() +"] ";
+            setMessageInnerHTML(prefix + message);
+        }
+    }
+
+    function getTime() {
+        let date = new Date();
+        let hours = String(date.getHours()).padStart(2, "0");
+        let min = String(date.getMinutes()).padStart(2, "0");
+        let sec = String(date.getSeconds()).padStart(2, "0");
+
+        return `${hours}:${min}:${sec}`;
     }
 </script>
+
+<style>
+
+    .form-group {
+        flex: 1 0 33.33%;
+        padding: 5px;
+        margin-bottom: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .form-group {
+            flex-basis: 100%;
+        }
+    }
+</style>
+</html>

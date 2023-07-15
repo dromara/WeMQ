@@ -72,8 +72,6 @@
                                             <th>Token</th>
                                             <th>协议</th>
                                             <th>服务器</th>
-                                            <th>发布</th>
-                                            <th>订阅</th>
                                             <th>操作</th>
                                         </tr>
                                         </thead>
@@ -118,18 +116,6 @@
                         <div class="datagrid-item">
                             <div class="datagrid-title">密码</div>
                             <div class="datagrid-content" id="view_password"></div>
-                        </div>
-                        <div class="datagrid-item">
-                            <div class="datagrid-title">发布订阅</div>
-                            <div class="datagrid-content" id="view_sendTopic"></div>
-                        </div>
-                        <div class="datagrid-item">
-                            <div class="datagrid-title">接收订阅</div>
-                            <div class="datagrid-content" id="view_receiveTopic"></div>
-                        </div>
-                        <div class="datagrid-item">
-                            <div class="datagrid-title">QoS</div>
-                            <div class="datagrid-content" id="view_qos"></div>
                         </div>
                     </div>
                 </div>
@@ -181,22 +167,6 @@
                     <div class="mb-3">
                         <label class="form-label">MQTT服务器密码</label>
                         <input id="edit_mqtt_password" type="text" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">MQTT发送订阅</label>
-                        <input id="edit_mqtt_sendTopic" type="text" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">MQTT接收订阅</label>
-                        <input id="edit_mqtt_receiveTopic" type="text" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">MQTT QoS</label>
-                        <select id="edit_mqtt_qos" class="form-select">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -255,22 +225,6 @@
                     <div class="mb-3">
                         <label class="form-label">MQTT服务器密码</label>
                         <input id="add_mqtt_password" type="text" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">MQTT发送订阅</label>
-                        <input id="add_mqtt_sendTopic" type="text" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">MQTT接收订阅</label>
-                        <input id="add_mqtt_receiveTopic" type="text" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">MQTT QoS</label>
-                        <select id="add_mqtt_qos" class="form-select">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -363,18 +317,6 @@
                 return value + ":" + row.mqttPort;
             }
         }, {
-            field: 'mqttSendTopic',
-            title: '发布',
-            align: 'center',
-            valign: 'middle',
-            width: 100
-        }, {
-            field: 'mqttReceiveTopic',
-            title: '订阅',
-            align: 'center',
-            valign: 'middle',
-            width: 100
-        }, {
             field: 'operate',
             title: '操作',
             align: 'center',
@@ -396,13 +338,8 @@
         $("#add_mqtt_port").val("");
         $("#add_mqtt_username").val("");
         $("#add_mqtt_password").val("");
-        $("#add_mqtt_sendTopic").val("");
-        $("#add_mqtt_receiveTopic").val("");
-        $("#add_mqtt_qos").val(0);
 
         $("#add_resettoken").click();
-
-
     }
 
     function showInfo(row) {
@@ -423,9 +360,6 @@
                 $("#view_port").text(params.mqttPort);
                 $("#view_username").text(params.mqttUsername);
                 $("#view_password").text(params.mqttPassword);
-                $("#view_sendTopic").text(params.mqttSendTopic);
-                $("#view_receiveTopic").text(params.mqttReceiveTopic);
-                $("#view_qos").text(params.mqttQos);
             }
         })
     }
@@ -448,9 +382,6 @@
                 $("#edit_mqtt_port").val(params.mqttPort);
                 $("#edit_mqtt_username").val(params.mqttUsername);
                 $("#edit_mqtt_password").val(params.mqttPassword);
-                $("#edit_mqtt_sendTopic").val(params.mqttSendTopic);
-                $("#edit_mqtt_receiveTopic").val(params.mqttReceiveTopic);
-                $("#edit_mqtt_qos").val(params.mqttQos);
             }
         })
 
@@ -489,10 +420,7 @@
             mqttServer: $("#add_mqtt_server").val(),
             mqttPort: $("#add_mqtt_port").val(),
             mqttUsername: $("#add_mqtt_username").val(),
-            mqttPassword: $("#add_mqtt_password").val(),
-            mqttSendTopic: $("#add_mqtt_sendTopic").val(),
-            mqttReceiveTopic: $("#add_mqtt_receiveTopic").val(),
-            mqttQos: $("#add_mqtt_qos").val(),
+            mqttPassword: $("#add_mqtt_password").val()
         }
 
         $.post({
@@ -536,10 +464,7 @@
             mqttServer: $("#edit_mqtt_server").val(),
             mqttPort: $("#edit_mqtt_port").val(),
             mqttUsername: $("#edit_mqtt_username").val(),
-            mqttPassword: $("#edit_mqtt_password").val(),
-            mqttSendTopic: $("#edit_mqtt_sendTopic").val(),
-            mqttReceiveTopic: $("#edit_mqtt_receiveTopic").val(),
-            mqttQos: $("#edit_mqtt_qos").val(),
+            mqttPassword: $("#edit_mqtt_password").val()
         }
 
         layer.confirm('你确认要修改 ID:'+data.id+' 吗？', {

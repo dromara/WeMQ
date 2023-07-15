@@ -6,7 +6,7 @@ function getNmqsAPI() {
     }
     return `http://${url}`;
 }
- 
+
 function getNmqsWebsocket() {
     //判断浏览器是http还是https
     if (window.location.protocol === 'https:') {

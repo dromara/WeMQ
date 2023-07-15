@@ -10,9 +10,6 @@
         <result column="mqtt_port" property="mqttPort" />
         <result column="mqtt_username" property="mqttUsername" />
         <result column="mqtt_password" property="mqttPassword" />
-        <result column="mqtt_sendTopic" property="mqttSendTopic" />
-        <result column="mqtt_receiveTopic" property="mqttReceiveTopic" />
-        <result column="mqtt_qos" property="mqttQos" />
     </resultMap>
 
     <select id="select" resultType="cn.mmanager.model.pojo.NmqsToken" resultMap="select">
@@ -35,8 +32,8 @@
     </select>
 
     <insert id="insert" parameterType="NmqsToken">
-        insert into mq_nmqs_token (id, name, token, protocol, mqtt_server, mqtt_port, mqtt_username, mqtt_password, mqtt_sendTopic, mqtt_receiveTopic, mqtt_qos)
-        values (#{id}, #{name}, #{token}, #{protocol}, #{mqttServer}, #{mqttPort}, #{mqttUsername}, #{mqttPassword}, #{mqttSendTopic}, #{mqttReceiveTopic}, #{mqttQos})
+        insert into mq_nmqs_token (id, name, token, protocol, mqtt_server, mqtt_port, mqtt_username, mqtt_password)
+        values (#{id}, #{name}, #{token}, #{protocol}, #{mqttServer}, #{mqttPort}, #{mqttUsername}, #{mqttPassword})
     </insert>
 
     <update id="update" parameterType="NmqsToken">
@@ -62,15 +59,6 @@
             </if>
             <if test="mqttPassword != null">
                 mqtt_password = #{mqttPassword},
-            </if>
-            <if test="mqttSendTopic != null">
-                mqtt_sendTopic = #{mqttSendTopic},
-            </if>
-            <if test="mqttReceiveTopic != null">
-                mqtt_receiveTopic = #{mqttReceiveTopic},
-            </if>
-            <if test="mqttQos != null">
-                mqtt_qos = #{mqttQos},
             </if>
         </set>
         where id = #{id}

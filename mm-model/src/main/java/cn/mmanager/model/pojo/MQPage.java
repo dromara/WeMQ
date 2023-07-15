@@ -1,5 +1,7 @@
 package cn.mmanager.model.pojo;
 
+import lombok.Data;
+
 import java.util.List;
 
 /**
@@ -7,6 +9,7 @@ import java.util.List;
  * @author NicholasLD
  * @createTime 2023/4/8 13:20
  */
+@Data
 public class MQPage {
     /** 页面ID */
     private Long id;
@@ -26,6 +29,14 @@ public class MQPage {
     /** Token */
     private String token;
 
+    /** 发布订阅 */
+    private String sendTopic;
+
+    /** 接收订阅 */
+    private String receiveTopic;
+
+    /** QoS */
+    private int qos;
 
     /** 客户 */
     private Customer customer;
@@ -35,91 +46,4 @@ public class MQPage {
 
     /** 页面参数 */
     List<MQParam> mqParams;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getPageName() {
-        return pageName;
-    }
-
-    public void setPageName(String pageName) {
-        this.pageName = pageName;
-    }
-
-    public String getPageUrl() {
-        return pageUrl;
-    }
-
-    public void setPageUrl(String pageUrl) {
-        this.pageUrl = pageUrl;
-    }
-
-    public Long getNmqsTokenID() {
-        return nmqsTokenID;
-    }
-
-    public void setNmqsTokenID(Long nmqsTokenID) {
-        this.nmqsTokenID = nmqsTokenID;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public List<MQParam> getMqParams() {
-        return mqParams;
-    }
-
-    public void setMqParams(List<MQParam> mqParams) {
-        this.mqParams = mqParams;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public String getPageFileName() {
-        return pageFileName;
-    }
-
-    public void setPageFileName(String pageFileName) {
-        this.pageFileName = pageFileName;
-    }
-
-    @Override
-    public String toString() {
-        return "MQPage{" +
-                "id=" + id +
-                ", pageName='" + pageName + '\'' +
-                ", pageUrl='" + pageUrl + '\'' +
-                ", pageFileName='" + pageFileName + '\'' +
-                ", nmqsTokenID=" + nmqsTokenID +
-                ", token='" + token + '\'' +
-                ", customer=" + customer +
-                ", status=" + status +
-                ", mqParams=" + mqParams +
-                '}';
-    }
 }

@@ -172,10 +172,22 @@
                     </div>
                     <div class="mb-3">
                         <div class="form-label">Token</div>
-                        <select id="edit_token" class="form-select">
-                            <option value="1">114514 地址:121.201.35.120 发:sendTopic 收:receiveTopic</option>
-                            <option value="2">1919810 地址:121.201.35.120 发:sendTopic 收:receiveTopic</option>
-                            <option value="3">testToken 地址:121.201.35.120 发:sendTopic 收:receiveTopic</option>
+                        <select id="edit_token" class="form-select"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">MQTT发送订阅</label>
+                        <input id="edit_mqtt_sendTopic" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">MQTT接收订阅</label>
+                        <input id="edit_mqtt_receiveTopic" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">MQTT QoS</label>
+                        <select id="edit_mqtt_qos" class="form-select">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
                         </select>
                     </div>
                     <div class="alert alert-info" role="alert">
@@ -226,6 +238,22 @@
                         <div class="form-label">Token</div>
                         <select id="add_token" class="form-select">
 
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">MQTT发送订阅</label>
+                        <input id="add_mqtt_sendTopic" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">MQTT接收订阅</label>
+                        <input id="add_mqtt_receiveTopic" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">MQTT QoS</label>
+                        <select id="add_mqtt_qos" class="form-select">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
                         </select>
                     </div>
                     <div class="alert alert-info" role="alert">
@@ -315,17 +343,30 @@
             title: '页面名称',
             align: 'center',
             valign: 'middle',
+            formatter: function (value, row, index) {
+                return '<a class="page_a" href="/page/' + row.pageUrl + '" target="_blank">' + value + '</a>';
+            }
         }, {
             field: 'pageUrl',
-            title: '访问地址',
+            title: '访问地址(点击复制)',
             align: 'center',
             valign: 'middle',
             formatter: function (value, row, index) {
-                return '<a href="/page/' + value + '" target="_blank">' + value + '</a>';
+                return '<button class="btn btn-link" onclick="copyUrl(this)" data-clipboard-text="' + value + '">' + value + '</button>';
             }
         }, {
             field: 'token',
             title: 'Token',
+            align: 'center',
+            valign: 'middle',
+        }, {
+            field: 'sendTopic',
+            title: '发布订阅',
+            align: 'center',
+            valign: 'middle',
+        }, {
+            field: 'receiveTopic',
+            title: '接收订阅',
             align: 'center',
             valign: 'middle',
         }, {
@@ -340,20 +381,22 @@
                     return '<span class="badge bg-green">' + value.name + '</span>';
                 }
             }
-        },{
-            field: 'status',
-            title: '状态',
-            align: 'center',
-            valign: 'middle',
-            sortable: true,
-            formatter: function (value, row, index) {
-                if (value === 0) {
-                    return '<a href="#" class="btn btn-sm btn-success">已启用</a> ';
-                } else {
-                    return '<a href="#" class="btn btn-sm btn-danger">已禁用</a> ';
-                }
-            }
-        }, {
+        },
+        // {
+        //     field: 'status',
+        //     title: '状态',
+        //     align: 'center',
+        //     valign: 'middle',
+        //     sortable: true,
+        //     formatter: function (value, row, index) {
+        //         if (value === 0) {
+        //             return '<a href="#" class="btn btn-sm btn-success">已启用</a> ';
+        //         } else {
+        //             return '<a href="#" class="btn btn-sm btn-danger">已禁用</a> ';
+        //         }
+        //     }
+        // },
+            {
             title: '操作',
             align: 'center',
             valign: 'middle',
@@ -386,9 +429,9 @@
                 $("#view_port").text(params.settings.mqttPort);
                 $("#view_username").text(params.settings.mqttUsername);
                 $("#view_password").text(params.settings.mqttPassword);
-                $("#view_sendTopic").text(params.settings.mqttSendTopic);
-                $("#view_receiveTopic").text(params.settings.mqttReceiveTopic);
-                $("#view_qos").text(params.settings.mqttQos);
+                $("#view_sendTopic").text(params.sendTopic);
+                $("#view_receiveTopic").text(params.receiveTopic);
+                $("#view_qos").text(params.qos);
 
             }
         })
@@ -468,6 +511,8 @@
                 $("#edit_name").val(params.pageName);
                 $("#edit_url").val(params.pageUrl);
                 $("#edit_token").val(params.nmqsTokenID);
+                $("#edit_mqtt_sendTopic").val(params.sendTopic);
+                $("#edit_mqtt_receiveTopic").val(params.receiveTopic);
                 $("#edit_filename").val(params.pageFileName);
                 //设置客户
                 if (params.customer === null || params.customer === "" || params.customer === undefined) {
@@ -497,6 +542,8 @@
         let name = $("#edit_name").val();
         let url = $("#edit_url").val();
         let token = $("#edit_token").val();
+        let sendTopic = $("#edit_mqtt_sendTopic").val();
+        let receiveTopic = $("#edit_mqtt_receiveTopic").val();
         let customerId = $("#edit_customer").val();
         let customerName = $("#edit_customer").find("option:selected").text();
         let filename = $("#edit_filename").val();
@@ -516,12 +563,24 @@
             return;
         }
 
+        if (sendTopic === "" || sendTopic === null || sendTopic === undefined) {
+            layer.msg("发送主题不能为空");
+            return;
+        }
+
+        if (receiveTopic === "" || receiveTopic === null || receiveTopic === undefined) {
+            layer.msg("接收主题不能为空");
+            return;
+        }
+
 
         let data = {
             "id": id,
             "pageName": name,
             "pageUrl": url,
             "nmqsTokenID": token,
+            "sendTopic": sendTopic,
+            "receiveTopic": receiveTopic,
             "pageFileName": filename,
             "customer": {
                 "id": customerId,
@@ -562,7 +621,7 @@
                     delete customerList[i].name;
                 }
                 //渲染
-                var inst1 = tree.render({
+                tree.render({
                     elem: '#tree',
                     data: [{
                         title: '自定义页面',
@@ -589,46 +648,9 @@
     });
 
     function showMessage(row) {
-        let params = [];
-        $('#message_table').bootstrapTable('destroy')
-
         $('#param_page_id').val(row)
 
-        $.getJSON(
-            '/page/info/' + row,
-            function (data) {
-                params = data.data.mqParams
-                console.log(params)
-
-                $('#message_table').bootstrapTable({
-                    data: params,
-                    columns: [{
-                        field: 'id',
-                        title: 'ID',
-                        align: 'center',
-                        valign: 'middle',
-                        sortable: true
-                    }, {
-                        field: 'message',
-                        title: '调试参数',
-                        align: 'center',
-                        valign: 'middle',
-                    },{
-                        field: 'button',
-                        title: '按钮名称',
-                        align: 'center',
-                        valign: 'middle',
-                    },{
-                        title: '操作',
-                        align: 'center',
-                        valign: 'middle',
-                        formatter: function (value, row, index) {
-                            return  '<button onclick="submitDeleteMessage('+ row.id +')" class="btn btn-sm btn-danger">删除</button>';
-                        }
-                    }],
-                })
-            }
-        )
+        reloadMessagesTable(row);
     }
 
     function submitDeleteMessage(row) {
@@ -641,10 +663,7 @@
                 if (data.code === 200) {
                     layer.msg("删除成功");
                     //重新加载表格
-                    $('#message_table').bootstrapTable('remove', {
-                        field: 'id',
-                        values: [row]
-                    });
+                    reloadMessagesTable($('#param_page_id').val())
                 } else {
                     layer.msg("删除失败");
                 }
@@ -671,8 +690,9 @@
             success: function (data) {
                 if (data.code === 200) {
                     layer.msg("添加成功");
-                    $('#modal-message').modal('hide');
-                    //手动加载数据
+                    //重新加载表格
+                    reloadMessagesTable(pageId)
+
                     $('#message_add').val("");
                     $('#button_add').val("");
                 } else {
@@ -687,6 +707,8 @@
         $('#add_name').val("");
         $('#add_url').val("");
         $('#add_filename').val("");
+        $("#add_mqtt_sendTopic").val("");
+        $("#add_mqtt_receiveTopic").val("");
 
 
         //获取token列表
@@ -763,10 +785,22 @@
             return;
         }
 
+        if ($("#add_mqtt_sendTopic").val() === "" || $("#add_mqtt_sendTopic").val() === null || $("#add_mqtt_sendTopic").val() === undefined) {
+            layer.msg("发送主题不能为空");
+            return;
+        }
+
+        if ($("#add_mqtt_receiveTopic").val() === "" || $("#add_mqtt_receiveTopic").val() === null || $("#add_mqtt_receiveTopic").val() === undefined) {
+            layer.msg("接收主题不能为空");
+            return;
+        }
+
         let data = {
             "pageName": $("#add_name").val(),
             "pageUrl": $("#add_url").val(),
             "nmqsTokenID": $("#add_token").val(),
+            "sendTopic": $("#add_mqtt_sendTopic").val(),
+            "receiveTopic": $("#add_mqtt_receiveTopic").val(),
             "pageFileName": $("#add_filename").val(),
             "customer": {
                 "id": $("#add_customer").val(),
@@ -815,6 +849,72 @@
             layer.msg('已取消', {icon: 1});
         });
     }
+
+    function reloadMessagesTable(pageId) {
+        //重新加载表格
+        $('#message_table').bootstrapTable('destroy')
+        $.getJSON(
+            '/page/info/' + pageId,
+            function (data) {
+                params = data.data.mqParams
+                console.log(params)
+
+                $('#message_table').bootstrapTable({
+                    data: params,
+                    columns: [{
+                        field: 'id',
+                        title: 'ID',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true
+                    }, {
+                        field: 'message',
+                        title: '调试参数',
+                        align: 'center',
+                        valign: 'middle',
+                    },{
+                        field: 'button',
+                        title: '按钮名称',
+                        align: 'center',
+                        valign: 'middle',
+                    },{
+                        title: '操作',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: function (value, row, index) {
+                            return  '<button onclick="submitDeleteMessage('+ row.id +')" class="btn btn-sm btn-danger">删除</button>';
+                        }
+                    }],
+                })
+            }
+        )
+    }
+
+    const copyUrl = async (element) => {
+        //取data-clipboard-text的值，也就是需要复制的内容
+        let ele = $(element)
+        let val = ele.attr("data-clipboard-text")
+        //拼接url
+        let url = window.location.protocol + "//" + window.location.host + "/page/" + val
+        if (navigator.clipboard && navigator.permissions) {
+            await navigator.clipboard.writeText(url)
+            layer.msg("复制成功")
+        } else {
+            const textArea = document.createElement('textArea')
+            textArea.value = url
+            textArea.style.width = '0px'
+            textArea.style.position = 'fixed'
+            textArea.style.left = '-999px'
+            textArea.style.top = '10px'
+            textArea.setAttribute('readonly', 'readonly')
+            document.body.appendChild(textArea)
+
+            textArea.select()
+            document.execCommand('copy')
+            document.body.removeChild(textArea)
+            layer.msg("复制成功")
+        }
+    }
 </script>
 <style>
     .fixed-table-container {
@@ -828,6 +928,10 @@
 
     .list-group-item {
         padding: 0.5rem 1rem;
+    }
+
+    .page_a:hover {
+        color: #0a53be;
     }
 
 </style>
