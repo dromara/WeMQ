@@ -205,6 +205,7 @@ public class ViewController extends BaseController {
             return mav;
         }
 
+        mav.addObject("pageName", mqPageDto.getPageName());
         mav.addObject("params", mqPageDto.getMqParams());
         mav.addObject("token", nmqsToken.getToken());
 
