@@ -353,7 +353,7 @@
             align: 'center',
             valign: 'middle',
             formatter: function (value, row, index) {
-                return '<a class="page_a" href="/page/' + row.pageUrl + '" target="_blank">' + value + '</a>';
+                return '<a class="page_a" href="/mq/' + row.pageUrl + '" target="_blank">' + value + '</a>';
             }
         }, {
             field: 'pageUrl',
@@ -916,7 +916,7 @@
         let ele = $(element)
         let val = ele.attr("data-clipboard-text")
         //拼接url
-        let url = window.location.protocol + "//" + window.location.host + "/page/" + val
+        let url = window.location.protocol + "//" + window.location.host + "/mq/" + val
         if (navigator.clipboard && navigator.permissions) {
             await navigator.clipboard.writeText(url)
             layer.msg("复制成功")
