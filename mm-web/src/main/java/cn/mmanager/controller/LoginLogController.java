@@ -32,9 +32,9 @@ public class LoginLogController extends BaseController {
         List<LoginLogDto> loginLogList;
         if (StrUtil.isEmpty(time)) {
             loginLogList = loginLogService.getLoginLogList(null);
-            return AjaxResult.success(new TableData(loginLogList, 1, 1));
+            return AjaxResult.success(new TableData(loginLogList, 1, 1, loginLogList.size()));
         }
         loginLogList = loginLogService.getLoginLogList(time);
-        return AjaxResult.success(new TableData(loginLogList, 1, 1));
+        return AjaxResult.success(new TableData(loginLogList, 1, 1, loginLogList.size()));
     }
 }

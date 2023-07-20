@@ -60,7 +60,7 @@ public class TestController extends BaseController {
         PageHelper.startPage(pageNum, PageConstants.DEFAULT_PAGE_SIZE);
         PageInfo<String> pageInfo = new PageInfo<>(list);
 
-        return AjaxResult.success(new TableData(list, pageNum, pageInfo.getPages()));
+        return AjaxResult.success(new TableData(list, pageNum, pageInfo.getPages(), pageInfo.getTotal()));
     }
 
     @GetMapping("/testPage2")

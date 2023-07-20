@@ -37,9 +37,10 @@ public class NmqsController {
         Map<String, Object> params = new HashMap<>();
         params.put("id", pageId);
         params.put("pageName", pageName);
-        List<NmqsToken> list = nmqsService.select(params);
         Page<Object> page = PageHelper.startPage(pageNum, PageConstants.DEFAULT_PAGE_SIZE);
-        return AjaxResult.success(new TableData(list, pageNum, page.getPages()));
+        List<NmqsToken> list = nmqsService.select(params);
+
+        return AjaxResult.success(new TableData(list, pageNum, page.getPages(), page.getTotal()));
     }
 
     @GetMapping("/info/{id}")

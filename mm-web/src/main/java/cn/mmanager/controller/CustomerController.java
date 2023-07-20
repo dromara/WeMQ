@@ -35,9 +35,9 @@ public class CustomerController extends BaseController {
     @RequestMapping("/list")
     @ResponseBody
     public AjaxResult list(@RequestParam("pageNum") int pageNum) {
-        List<Customer> list = customerService.getCustomers();
         Page<Object> page = PageHelper.startPage(pageNum, PageConstants.DEFAULT_PAGE_SIZE);
-        return AjaxResult.success(new TableData(list, pageNum, page.getPages()));
+        List<Customer> list = customerService.getCustomers();
+        return AjaxResult.success(new TableData(list, pageNum, page.getPages(), page.getTotal()));
     }
 
     @RepeatSubmit(interval = 1000, message = "请勿重复提交")

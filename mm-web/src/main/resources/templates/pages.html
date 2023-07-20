@@ -323,8 +323,17 @@
 
     //渲染数据
     $('#page_list').bootstrapTable({
-        url: '/page/list?pageNum=0',                      //请求后台的URL（*）
+        url: '/page/list',                      //请求后台的URL（*）
         method: 'GET',
+        pagination: true,
+        sidePagination: "server",
+        pageSize: 10,
+        pageList: [10],
+        queryParams: function (params) {
+            return {
+                pageNum: (params.offset / params.limit) + 1,
+            }
+        },
         responseHandler: function (res) {
             return {
                 "total": res.data.total,
@@ -634,12 +643,24 @@
                     }],
                     click: function(obj){
                         console.log(obj.data); //得到当前点击的节点数据
-                        if (obj.data.id === undefined) {
-                            $('#page_list').bootstrapTable('refresh', {url: '/page/list?pageNum=0'});
-                        } else if(obj.data.id === 0){
-                            $('#page_list').bootstrapTable('refresh', {url: '/page/list?pageNum=0&commonPage=1'});
-                        } else {
-                            $('#page_list').bootstrapTable('refresh', {url: '/page/list?pageNum=0&customerId=' + obj.data.id});
+                        if (obj.data.id === undefined) {//全部客户
+                            $('#page_list').bootstrapTable('refresh', {
+                                url: '/page/list',//后台 请求url地址
+                                pagination: true,//启用分页
+                                pageNumber: 1, //初始化加载第一页 默认第一页，并记录
+                            });
+                        } else if(obj.data.id === 0){//自定义
+                            $('#page_list').bootstrapTable('refresh', {
+                                url: '/page/list?commonPage=1',
+                                pagination: true,//启用分页
+                                pageNumber: 1, //初始化加载第一页 默认第一页，并记录
+                            });
+                        } else {//单独的客户
+                            $('#page_list').bootstrapTable('refresh', {
+                                url: '/page/list?customerId=' + obj.data.id,
+                                pagination: true,//启用分页
+                                pageNumber: 1, //初始化加载第一页 默认第一页，并记录
+                            });
                         }
                     }
                 });
