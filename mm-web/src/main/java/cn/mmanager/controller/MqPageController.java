@@ -50,9 +50,10 @@ public class MqPageController {
         params.put("pageName", pageName);
         params.put("customerID", customerId);
         params.put("commonPage", commonPage);
+        PageHelper.startPage(pageNum, PageConstants.DEFAULT_PAGE_SIZE);
         List<MQPage> list = mqPageService.select(params);
-        Page<Object> page = PageHelper.startPage(pageNum, PageConstants.DEFAULT_PAGE_SIZE);
-        return AjaxResult.success(new TableData(list, pageNum, page.getPages()));
+        PageInfo<MQPage> pageInfo = new PageInfo<>(list);
+        return AjaxResult.success(new TableData(list, pageNum, pageInfo.getPages(), pageInfo.getTotal()));
     }
 
     @GetMapping("/info/{id}")

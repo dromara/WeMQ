@@ -35,9 +35,10 @@ public class AdminController extends BaseController {
     @RequestMapping("/list")
     @ResponseBody
     public AjaxResult list(@RequestParam("pageNum") int pageNum) {
-        List<Admin> list = adminService.getAdminListByMap(null);
         Page<Object> page = PageHelper.startPage(pageNum, PageConstants.DEFAULT_PAGE_SIZE);
-        return AjaxResult.success(new TableData(list, pageNum, page.getPages()));
+        List<Admin> list = adminService.getAdminListByMap(null);
+
+        return AjaxResult.success(new TableData(list, pageNum, page.getPages(), page.getTotal()));
     }
 
     @RequestMapping("/info/{id}")
