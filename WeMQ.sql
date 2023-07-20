@@ -11,7 +11,7 @@
  Target Server Version : 50731
  File Encoding         : 65001
 
- Date: 15/07/2023 23:06:03
+ Date: 21/07/2023 00:08:14
 */
 
 SET NAMES utf8mb4;
@@ -118,7 +118,7 @@ COMMIT;
 DROP TABLE IF EXISTS `mq_param`;
 CREATE TABLE `mq_param` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `message` varchar(255) NOT NULL,
+  `message` varchar(1000) NOT NULL,
   `button` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
