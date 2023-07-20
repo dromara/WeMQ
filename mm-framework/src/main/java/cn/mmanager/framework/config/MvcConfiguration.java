@@ -25,7 +25,7 @@ public class MvcConfiguration implements WebMvcConfigurer {
         // 配置LoginInterceptor拦截器
         registry.addInterceptor(new LoginInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/statics/**", "/dologin", "/login", "/page/**", "/error/**","/static/**");
+                .excludePathPatterns("/statics/**", "/dologin", "/login", "/pages/**", "/error/**","/static/**");
 
         // 配置RepeatSubmitInterceptor拦截器
         registry.addInterceptor(new RepeatSubmitInterceptor())

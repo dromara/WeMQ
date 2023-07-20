@@ -12,10 +12,9 @@
 <body>
     <div class="container">
         <div class="form-group">
-            <h1 th:text="${pageName}">物联网设备调试</h1>
-            <h4 th:text="${serverInfo}"></h4>
+            <h2 th:text="${pageName}">物联网设备调试</h2>
             <div class="alert alert-info" role="alert">
-                <div class="text-muted">如果连接异常断开，可以<a href="javascript:location.reload()">刷新页面</a>重新进行连接。（请不要刷新太快）</div>
+                <div class="text-muted"><span th:text="|连接到 ${serverInfo}|"></span><br>如果连接异常断开，可以<a href="javascript:location.reload()">刷新页面</a>重新进行连接。（请不要刷新太快）</div>
             </div>
             <input type="hidden" name="token" id="token" th:value="${token}">
         </div>
@@ -23,7 +22,7 @@
         <div class="form-group">
             <div class="card">
                 <div class="card-header">
-                    自定义订阅
+                    自定义
                 </div>
                 <div class="card-body" style="display: flex;flex-wrap: wrap">
                     <div class="form-group">
@@ -44,7 +43,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" hidden="hidden">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">QoS</div>

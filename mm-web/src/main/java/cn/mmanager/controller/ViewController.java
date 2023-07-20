@@ -186,7 +186,7 @@ public class ViewController extends BaseController {
         return "viewer_pages";
     }
 
-    @GetMapping("/page/{url}")
+    @GetMapping("/mq/{url}")
     public ModelAndView mqttPage(@PathVariable("url") String url){
         ModelAndView mav = new ModelAndView();
         if (StrUtil.isEmpty(url)){

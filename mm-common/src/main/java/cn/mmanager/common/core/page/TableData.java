@@ -40,10 +40,10 @@ public class TableData implements Serializable {
      * @param list 列表数据
      * @param pageNum 当前页码
      */
-    public TableData(List<?> list, int pageNum, int pages)
+    public TableData(List<?> list, int pageNum, int pages, long total)
     {
         this.rows = list;
-        this.total = list.size();
+        this.total = total;
         this.pageNum = pageNum;
         this.pageSize = PageConstants.DEFAULT_PAGE_SIZE;
         this.pages = pages;

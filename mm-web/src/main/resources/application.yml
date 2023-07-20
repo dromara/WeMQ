@@ -19,6 +19,9 @@ pagehelper:
   reasonable: true
   supportMethodsArguments: true
   params: count=countSql
+  pageSizeZero: true
 logging:
   file:
     name: logs/logs.log
+  level:
+    cn.mmanager: debug
