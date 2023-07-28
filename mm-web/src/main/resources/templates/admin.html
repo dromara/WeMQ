@@ -117,7 +117,8 @@
         sidePagination: "server",
         queryParams: function (params) {
             return {
-                pageNum: params.offset + 1
+                pageNum: params.offset + 1,
+                pageSize: params.limit,
             }
         },
         responseHandler: function (res) {

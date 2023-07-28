@@ -33,11 +33,14 @@ public class NmqsController {
 
     @GetMapping("/list")
     @ResponseBody
-    public AjaxResult list(@RequestParam("pageNum") int pageNum, @RequestParam(required = false) Integer pageId, @RequestParam(required = false) String pageName) {
+    public AjaxResult list(@RequestParam("pageNum") int pageNum,
+                           @RequestParam("pageSize") int pageSize,
+                           @RequestParam(required = false) Integer pageId,
+                           @RequestParam(required = false) String pageName) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", pageId);
         params.put("pageName", pageName);
-        Page<Object> page = PageHelper.startPage(pageNum, PageConstants.DEFAULT_PAGE_SIZE);
+        Page<Object> page = PageHelper.startPage(pageNum, pageSize);
         List<NmqsToken> list = nmqsService.select(params);
 
         return AjaxResult.success(new TableData(list, pageNum, page.getPages(), page.getTotal()));

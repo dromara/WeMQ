@@ -73,6 +73,9 @@
             <if test="customerID != null">
                 and customer.id = #{customerID}
             </if>
+        	<if test="commonPage == 1">
+        	    and page_filename != ''
+            </if>
         </where>
     </select>
 

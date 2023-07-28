@@ -35,10 +35,7 @@ public class MqPageServiceImpl implements MqPageService {
 
     @Override
     public List<MQPage> select(Map<String, Object> params) {
-        if (params.get("commonPage") == null || (Integer) params.get("commonPage") == 0){
-            return mqPageMapper.select(params);
-        }
-        return mqPageMapper.select(params).stream().filter(mqPage -> !StrUtil.isEmpty(mqPage.getPageFileName())).collect(Collectors.toList());
+        return mqPageMapper.select(params);
     }
 
     @Override

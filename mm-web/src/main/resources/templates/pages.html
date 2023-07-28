@@ -10,6 +10,7 @@
     <script th:src="@{/statics/bootstrap/table/bootstrap-table.min.js}"></script>
     <script th:src="@{/statics/bootstrap/table/bootstrap-table-zh-CN.min.js}"></script>
     <link rel="stylesheet" th:href="@{/statics/system/common.css}">
+
     <!-- 引入 layui.css -->
     <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
     <!-- 引入 layui.js -->
@@ -84,7 +85,7 @@
                                         <div id="tree"></div>
                                     </div>
                                     <div class="col-10">
-                                        <div class="table-responsive" style="height: 460px">
+                                        <div class="table-responsive" style="height: 560px">
                                             <table class="table table-vcenter" id="page_list"></table>
                                         </div>
                                     </div>
@@ -328,10 +329,11 @@
         pagination: true,
         sidePagination: "server",
         pageSize: 10,
-        pageList: [10],
+        pageList: [10, 25, 50, 100],
         queryParams: function (params) {
             return {
                 pageNum: (params.offset / params.limit) + 1,
+                pageSize: params.limit,
             }
         },
         responseHandler: function (res) {
@@ -476,14 +478,14 @@
     function editInfo(row) {
         //获取token列表
         $.ajax({
-            url: "/nmqs/list?pageNum=0",
+            url: "/nmqs/list?pageNum=0&pageSize=0",
             type: "GET",
             dataType: "json",
             success: function (data) {
                 let tokenList = data.data.rows;
                 let tokenHtml = "";
                 for (let i = 0; i < tokenList.length; i++) {
-                    tokenHtml += '<option value="' + tokenList[i].id + '">'+ tokenList[i].name + ' --- ' + tokenList[i].token + ' --- ' + tokenList[i].mqttServer + ':' + tokenList[i].mqttPort + ' --- 发:' + tokenList[i].mqttSendTopic + ' --- 收: ' + tokenList[i].mqttReceiveTopic + '</option>';
+                    tokenHtml += '<option value="' + tokenList[i].id + '">'+ tokenList[i].name + ' --- ' + tokenList[i].token + ' --- ' + tokenList[i].mqttServer + ':' + tokenList[i].mqttPort + '</option>';
                 }
                 $("#edit_token").html(tokenHtml);
             }
@@ -491,7 +493,7 @@
 
         //获取客户列表
         $.ajax({
-            url: "/customer/list?pageNum=0",
+            url: "/customer/list?pageNum=0&pageSize=0",
             type: "GET",
             dataType: "json",
             success: function (data) {
@@ -619,7 +621,7 @@
         var tree = layui.tree;
 
         $.ajax({
-            url: "/customer/list?pageNum=0",
+            url: "/customer/list?pageNum=0&pageSize=0",
             type: "GET",
             dataType: "json",
             success: function (data) {
@@ -648,18 +650,22 @@
                                 url: '/page/list',//后台 请求url地址
                                 pagination: true,//启用分页
                                 pageNumber: 1, //初始化加载第一页 默认第一页，并记录
+                                //设置pageSize
+                                pageSize: 10,
                             });
                         } else if(obj.data.id === 0){//自定义
                             $('#page_list').bootstrapTable('refresh', {
                                 url: '/page/list?commonPage=1',
                                 pagination: true,//启用分页
                                 pageNumber: 1, //初始化加载第一页 默认第一页，并记录
+                                pageSize: 10,
                             });
                         } else {//单独的客户
                             $('#page_list').bootstrapTable('refresh', {
                                 url: '/page/list?customerId=' + obj.data.id,
                                 pagination: true,//启用分页
                                 pageNumber: 1, //初始化加载第一页 默认第一页，并记录
+                                pageSize: 10,
                             });
                         }
                     }
@@ -741,7 +747,7 @@
                 let tokenList = data.data.rows;
                 let tokenHtml = "";
                 for (let i = 0; i < tokenList.length; i++) {
-                    tokenHtml += '<option value="' + tokenList[i].id + '">'+ tokenList[i].name + ' --- ' + tokenList[i].token + ' --- ' + tokenList[i].mqttServer + ':' + tokenList[i].mqttPort + ' --- 发:' + tokenList[i].mqttSendTopic + ' --- 收: ' + tokenList[i].mqttReceiveTopic + '</option>';
+                    tokenHtml += '<option value="' + tokenList[i].id + '">'+ tokenList[i].name + ' --- ' + tokenList[i].token + ' --- ' + tokenList[i].mqttServer + ':' + tokenList[i].mqttPort + '</option>';
                 }
                 $("#add_token").html(tokenHtml);
             }
@@ -893,6 +899,13 @@
                         title: '调试参数',
                         align: 'center',
                         valign: 'middle',
+                        editable: {
+                            type: 'text',
+                            title: '修改调试参数',
+                            validate: function (v) {
+                                if (!v) return '参数不能为空';
+                            }
+                        }
                     },{
                         field: 'button',
                         title: '按钮名称',
@@ -939,7 +952,8 @@
 </script>
 <style>
     .fixed-table-container {
-        height: 400px;
+        height: 500px;
+        border: 1px solid #ddd;
     }
 
     #tree {
@@ -953,6 +967,18 @@
 
     .page_a:hover {
         color: #0a53be;
+    }
+
+    #modal-message tr td:nth-child(2){
+        width: 400px;
+        word-break:break-all;
+        text-align: left !important;
+    }
+
+    #modal-showinfo tr td:nth-child(2) {
+        width: 400px;
+        word-break: break-all;
+        text-align: left !important;
     }
 
 </style>

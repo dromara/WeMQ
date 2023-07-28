@@ -41,6 +41,7 @@ public class MqPageController {
     @GetMapping("/list")
     @ResponseBody
     public AjaxResult list(@RequestParam("pageNum") int pageNum,
+                           @RequestParam("pageSize") int pageSize,
                            @RequestParam(required = false) Integer customerId ,
                            @RequestParam(required = false) Integer pageId,
                            @RequestParam(required = false) String pageName,
@@ -50,8 +51,9 @@ public class MqPageController {
         params.put("pageName", pageName);
         params.put("customerID", customerId);
         params.put("commonPage", commonPage);
-        Page<Object> page = PageHelper.startPage(pageNum, PageConstants.DEFAULT_PAGE_SIZE);
+        Page<Object> page = PageHelper.startPage(pageNum, pageSize);
         List<MQPage> list = mqPageService.select(params);
+        System.out.println(page);
 
         return AjaxResult.success(new TableData(list, pageNum, page.getPages(), page.getTotal()));
     }
