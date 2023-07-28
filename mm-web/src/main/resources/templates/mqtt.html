@@ -3,6 +3,7 @@
 <head>
     <title>物联网设备调试</title>
     <link rel="stylesheet" th:href="@{/statics/bootstrap/4.6.0/bootstrap.min.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script th:src="@{/statics/jquery-1.12.4.min.js}"></script>
     <script th:src="@{/statics/bootstrap/4.6.0/bootstrap.min.js}"></script>
     <script th:src="@{/statics/system/common.js}"></script>
@@ -24,9 +25,9 @@
                 <div class="card-header">
                     自定义
                 </div>
-                <div class="card-body" style="display: flex;flex-wrap: wrap">
+                <div class="card-body" style="display: flex;flex-wrap: wrap;padding: 6px 6px">
                     <div class="form-group">
-                        <div class="input-group">
+                        <div class="input-group input-group-sm">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">发送订阅</div>
                             </div>
@@ -35,7 +36,7 @@
                     </div>
 
                     <div class="form-group">
-                        <div class="input-group">
+                        <div class="input-group input-group-sm">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">接收订阅</div>
                             </div>
@@ -44,7 +45,7 @@
                     </div>
 
                     <div class="form-group" hidden="hidden">
-                        <div class="input-group">
+                        <div class="input-group input-group-sm">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">QoS</div>
                             </div>
@@ -53,21 +54,21 @@
                     </div>
 
                     <div class="form-group">
-                        <button onclick="reConnect()" class="btn btn-primary">修改订阅</button>
-                        <button onclick="closeWebSocket()" class="btn btn-danger">关闭连接</button>
+                        <button onclick="reConnect()" class="btn btn-primary btn-sm">修改订阅</button>
+                        <button onclick="closeWebSocket()" class="btn btn-danger btn-sm">关闭连接</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="form-group">
-            <div class="input-group">
+            <div class="input-group input-group-sm">
                 <div class="input-group-prepend">
                     <div class="input-group-text">自定义调试信息</div>
                 </div>
                 <input id="text" type="text" class="form-control" placeholder="请输入调试信息">
                 <div class="input-group-append">
-                    <button onclick="send()" class="btn btn-primary" type="button">发送</button>
+                    <button onclick="send()" class="btn btn-primary btn-sm" type="button">发送</button>
                 </div>
             </div>
         </div>
@@ -76,21 +77,28 @@
                 <div class="card-header">
                     预设调试参数
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-10" th:each="p : ${params}">
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" th:value='${p.message}' style="margin-right: 20px">
-                                <button onclick='sendOther(this)' class="btn btn-primary" type="button" th:text="${p.button}"></button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="card-body" style="padding: 6px 6px;">
+                    <table class="table">
+                        <tbody>
+                        <tr th:each="p : ${params}">
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control" th:value="${p.message}">
+                                </div>
+
+                            </td>
+                            <td style="width: 180px">
+                                <button style="width: 150px;" onclick="sendOther(this)" class="btn btn-primary btn-sm" size="mini" type="button" th:text="${p.button}"></button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
 
                 </div>
             </div>
         </div>
 
-        <textarea wrap="off" id="message" class="form-control" style="height: 400px;margin-bottom: 20px" disabled></textarea>
+        <textarea wrap="off" id="message" class="form-control" style="height: 400px;margin-bottom: 20px;font-size: 13px" disabled></textarea>
     </div>
 </body>
 
@@ -270,6 +278,15 @@
         .form-group {
             flex-basis: 100%;
         }
+    }
+
+    table.table {
+        border: none; /* 去掉表格边框 */
+    }
+
+    table.table td {
+        border: none; /* 去掉单元格边框 */
+        padding: 5px 5px;
     }
 </style>
 </html>
