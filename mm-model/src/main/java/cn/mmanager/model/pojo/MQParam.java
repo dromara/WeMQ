@@ -17,4 +17,7 @@ public class MQParam {
 
     /** 按钮消息 */
     private String button;
+
+    /** 排序 */
+    private Integer sort;
 }

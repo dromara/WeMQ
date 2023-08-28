@@ -99,4 +99,11 @@ public class MqPageController {
     public AjaxResult deleteParam(@PathVariable("id") int id) {
         return mqParamService.delete((long) id) > 0 ? AjaxResult.success() : AjaxResult.error();
     }
+
+    @RepeatSubmit(interval = 1000, message = "请勿重复提交")
+    @PostMapping("/param/update")
+    @ResponseBody
+    public AjaxResult updateParam(@RequestBody MQParam param) {
+        return mqParamService.update(param) > 0 ? AjaxResult.success() : AjaxResult.error();
+    }
 }

@@ -12,10 +12,11 @@
     <link rel="stylesheet" th:href="@{/statics/system/common.css}">
 
     <!-- 引入 layui.css -->
-    <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+    <link href="//unpkg.com/layui@2.8.15/dist/css/layui.css" rel="stylesheet">
     <!-- 引入 layui.js -->
-    <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+    <script src="//unpkg.com/layui@2.8.15/dist/layui.js"></script>
     <script th:src="@{/statics/system/common.js}"></script>
+    <script th:src="@{/statics/system/pages/menu.js}"></script>
 </head>
 <body>
 <div class="page">
@@ -294,7 +295,12 @@
                 <input type="hidden" id="param_page_id">
                 <div class="modal-body">
                     <div class="fixed-table-container" style="padding-bottom: 0px;height: auto">
-                        <table class="table table-vcenter" id="message_table" style="height: auto"></table>
+                        <script type="text/html" id="barDemo">
+                            <div class="layui-clear-space">
+                                <a class="layui-btn layui-btn-xs" lay-event="del">删除</a>
+                            </div>
+                        </script>
+                        <table class="layui-hide" id="test" lay-filter="test"></table>
                     </div>
                 </div>
                 <div class="modal-body">
@@ -476,22 +482,7 @@
     }
 
     function editInfo(row) {
-        //获取token列表
-        $.ajax({
-            url: "/nmqs/list?pageNum=0&pageSize=0",
-            type: "GET",
-            dataType: "json",
-            success: function (data) {
-                let tokenList = data.data.rows;
-                let tokenHtml = "";
-                for (let i = 0; i < tokenList.length; i++) {
-                    tokenHtml += '<option value="' + tokenList[i].id + '">'+ tokenList[i].name + ' --- ' + tokenList[i].token + ' --- ' + tokenList[i].mqttServer + ':' + tokenList[i].mqttPort + '</option>';
-                }
-                $("#edit_token").html(tokenHtml);
-            }
-        })
-
-        //获取客户列表
+        // 获取客户列表
         $.ajax({
             url: "/customer/list?pageNum=0&pageSize=0",
             type: "GET",
@@ -505,35 +496,52 @@
                 }
                 console.log(customerList)
                 $("#edit_customer").html(customerHtml);
+
+                // 在获取客户列表成功后，获取token列表
+                let url = "/page/info/" + row;
+                console.log($("#edit_customer").val())
+
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        params = data.data;
+                        console.log(params);
+                        $("#edit_id").val(params.id);
+                        $("#edit_name").val(params.pageName);
+                        $("#edit_url").val(params.pageUrl);
+                        $("#edit_mqtt_sendTopic").val(params.sendTopic);
+                        $("#edit_mqtt_receiveTopic").val(params.receiveTopic);
+                        $("#edit_filename").val(params.pageFileName);
+                        // 设置客户
+                        if (params.customer === null || params.customer === "" || params.customer === undefined) {
+                            $("#edit_customer").val("0");
+                        } else {
+                            $("#edit_customer").val(params.customer.id);
+                        }
+
+                        // 获取token列表
+                        $.ajax({
+                            url: "/nmqs/list?pageNum=0&pageSize=0",
+                            type: "GET",
+                            dataType: "json",
+                            success: function (data) {
+                                let tokenList = data.data.rows;
+                                let tokenHtml = "";
+                                for (let i = 0; i < tokenList.length; i++) {
+                                    tokenHtml += '<option value="' + tokenList[i].id + '">' + tokenList[i].name + ' --- ' + tokenList[i].token + ' --- ' + tokenList[i].mqttServer + ':' + tokenList[i].mqttPort + '</option>';
+                                }
+                                console.log(tokenList)
+                                $("#edit_token").html(tokenHtml);
+
+                                $("#edit_token").val(params.nmqsTokenID);
+                            }
+                        })
+                    }
+                })
             }
         })
-
-        let url = "/page/info/" + row;
-        console.log($("#edit_customer").val())
-
-        $.ajax({
-            url: url,
-            type: "GET",
-            dataType: "json",
-            success: function (data) {
-                params = data.data;
-                console.log(params);
-                $("#edit_id").val(params.id);
-                $("#edit_name").val(params.pageName);
-                $("#edit_url").val(params.pageUrl);
-                $("#edit_token").val(params.nmqsTokenID);
-                $("#edit_mqtt_sendTopic").val(params.sendTopic);
-                $("#edit_mqtt_receiveTopic").val(params.receiveTopic);
-                $("#edit_filename").val(params.pageFileName);
-                //设置客户
-                if (params.customer === null || params.customer === "" || params.customer === undefined) {
-                    $("#edit_customer").val("0");
-                } else {
-                    $("#edit_customer").val(params.customer.id);
-                }
-            }
-        })
-
         $('#edit_reseturl').on('click', function () {
             let url = "";
             let chars = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O',
@@ -634,6 +642,7 @@
                 //渲染
                 tree.render({
                     elem: '#tree',
+                    onlyIconControl: true,
                     data: [{
                         title: '自定义页面',
                         id: 0,
@@ -677,7 +686,7 @@
     function showMessage(row) {
         $('#param_page_id').val(row)
 
-        reloadMessagesTable(row);
+        openParamMenu(row);
     }
 
     function submitDeleteMessage(row) {
@@ -691,6 +700,7 @@
                     layer.msg("删除成功");
                     //重新加载表格
                     reloadMessagesTable($('#param_page_id').val())
+                    openParamMenu($('#param_page_id').val())
                 } else {
                     layer.msg("删除失败");
                 }
@@ -719,6 +729,7 @@
                     layer.msg("添加成功");
                     //重新加载表格
                     reloadMessagesTable(pageId)
+                    openParamMenu(pageId)
 
                     $('#message_add').val("");
                     $('#button_add').val("");
@@ -740,7 +751,7 @@
 
         //获取token列表
         $.ajax({
-            url: "/nmqs/list?pageNum=0",
+            url: "/nmqs/list?pageNum=0&pageSize=0",
             type: "GET",
             dataType: "json",
             success: function (data) {
@@ -755,7 +766,7 @@
 
         //获取客户列表
         $.ajax({
-            url: "/customer/list?pageNum=0",
+            url: "/customer/list?pageNum=0&pageSize=0",
             type: "GET",
             dataType: "json",
             success: function (data) {
@@ -980,6 +991,8 @@
         word-break: break-all;
         text-align: left !important;
     }
+
+    .layui-card .layui-card-body .layui-table td { max-width: 100%;}
 
 </style>
 </html>

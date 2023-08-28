@@ -16,6 +16,9 @@
             <if test="button!=null">
                 button=#{button},
             </if>
+            <if test="sort!=null">
+                sort=#{sort},
+            </if>
         </set>
         <where>
             id=#{id}
@@ -31,7 +34,7 @@
     </delete>
     <!--    查询-->
     <select id="select" parameterType="long" resultType="MQParam">
-        SELECT * FROM mq_param WHERE id=#{id}
+        SELECT * FROM mq_param WHERE id=#{id} order by sort desc
     </select>
 
     <delete id="deletePage_Param" parameterType="long">

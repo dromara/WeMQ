@@ -45,4 +45,9 @@ public class MqParamServiceImpl implements MqParamService {
             return 0;
         return mqParamMapper.deleteById(id);
     }
+
+    @Override
+    public int update(MQParam param) {
+        return mqParamMapper.update(param);
+    }
 }

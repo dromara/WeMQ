@@ -77,6 +77,7 @@
         	    and page_filename != ''
             </if>
         </where>
+        order by id desc
     </select>
 
     <insert id="insert" parameterType="MQPage" useGeneratedKeys="true" keyProperty="id">
@@ -138,9 +139,9 @@
     </select>
 
     <select id="selectParamsByPageId" resultType="MQParam" parameterType="long">
-        select mq_param.id,mq_param.message,mq_param.button from mq_param
+        select mq_param.id,mq_param.message,mq_param.button,mq_param.sort from mq_param
         left join mq_page_param on mq_param.id = mq_page_param.param_id
-        where mq_page_param.page_id = #{id}
+        where mq_page_param.page_id = #{id} order by mq_param.sort
     </select>
 
     <insert id="insertPage_Customer" parameterType="long">

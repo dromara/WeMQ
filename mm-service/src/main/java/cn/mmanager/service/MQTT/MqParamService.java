@@ -15,4 +15,6 @@ public interface MqParamService {
     int insert(MQParam mqParam, Long pageId);
 
     int delete(Long id);
+
+    int update(MQParam param);
 }
