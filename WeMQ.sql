@@ -11,7 +11,7 @@
  Target Server Version : 50731
  File Encoding         : 65001
 
- Date: 21/07/2023 00:08:14
+ Date: 28/08/2023 08:59:49
 */
 
 SET NAMES utf8mb4;
@@ -120,6 +120,7 @@ CREATE TABLE `mq_param` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `message` varchar(1000) NOT NULL,
   `button` varchar(255) NOT NULL,
+  `sort` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
