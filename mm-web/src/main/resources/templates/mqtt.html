@@ -85,7 +85,6 @@
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control" th:value="${p.message}">
                                 </div>
-
                             </td>
                             <td style="width: 180px">
                                 <button style="width: 150px;" onclick="sendOther(this)" class="btn btn-primary btn-sm" size="mini" type="button" th:text="${p.button}"></button>
@@ -247,7 +246,7 @@
 
     function sendOther(this1) {
         //获取按钮上面的input的值
-        let message = $(this1).prev('input').val();
+        let message = $(this1).parent().parent().find('input').val();
         websocket.send(message);
         //如果发送成功
         if (websocket.readyState === 1) {
