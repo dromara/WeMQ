@@ -12,6 +12,7 @@
     <link rel="stylesheet" th:href="@{/statics/system/common.css}">
     <script th:src="@{/statics/layer/layer.js}"></script>
     <script th:src="@{/statics/system/common.js}"></script>
+    <script th:src="@{/statics/system/utils.js}"></script>
 </head>
 <body>
 <div class="page">
@@ -59,8 +60,6 @@
                 </div>
                 <div class="row row-deck row-cards">
                     <div class="col-12">
-                        <div class="spinner-border" id="list_refresh"></div>
-
                         <div id="card" class="card">
                             <div class="card-body">
                                 <div class="table-responsive" style="height: 560px">
@@ -245,21 +244,9 @@
     //菜单class追加属性
     $(function () {
         $("#menu_nmqs").addClass("active");
-        $("#card").hide();
-
-        setTimeout(function () {
-            $("#list_refresh").hide();
-            $("#card").show();
-        }, 1000);
 
         $('#add_resettoken').on('click', function () {
-            let token = "";
-            let chars = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
-            for(let i = 0; i < 12 ; i ++) {
-                let id = Math.ceil(Math.random()*61);
-                token += chars[id];
-            }
-            $("#add_token").val(token);
+            $("#add_token").val(randomString(12));
         });
     });
 
@@ -387,32 +374,25 @@
         })
 
         $('#edit_resettoken').on('click', function () {
-            let token = "";
-            let chars = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
-            for(let i = 0; i < 12 ; i ++) {
-                let id = Math.ceil(Math.random()*61);
-                token += chars[id];
-            }
-            $("#edit_token").val(token);
+            $("#edit_token").val(randomString(12));
         })
     }
 
     //添加
     function submitAdd() {
-        if ($("#add_name").val() === "" || $("#add_name").val() === null || $("#add_name").val() === undefined) {
-            layer.msg("Token名称不能为空");
-            return;
+        const fields = [
+            { selector: "#add_name", message: "Token名称不能为空" },
+            { selector: "#add_token", message: "Token不能为空" },
+            { selector: "#add_mqtt_protocol", message: "协议不能为空" }
+        ];
+
+        for (const field of fields) {
+            if (isBlank($(field.selector).val())) {
+                layer.msg(field.message);
+                return;
+            }
         }
 
-        if ($("#add_token").val() === "" || $("#add_token").val() === null || $("#add_token").val() === undefined) {
-            layer.msg("Token不能为空");
-            return;
-        }
-
-        if ($("#add_mqtt_protocol").val() === "" || $("#add_mqtt_protocol").val() === null || $("#add_mqtt_protocol").val() === undefined) {
-            layer.msg("协议不能为空");
-            return;
-        }
 
         let data = {
             name: $("#add_name").val(),
@@ -442,20 +422,19 @@
     }
 
     function submitEdit() {
-        if ($("#edit_token").val() === "" || $("#edit_token").val() === null || $("#edit_token").val() === undefined) {
-            layer.msg("Token不能为空");
-            return;
+        const fields = [
+            { selector: "#edit_token", message: "Token不能为空" },
+            { selector: "#edit_name", message: "名称不能为空" },
+            { selector: "#edit_mqtt_protocol", message: "协议不能为空" }
+        ];
+
+        for (const field of fields) {
+            if (isBlank($(field.selector).val())) {
+                layer.msg(field.message);
+                return;
+            }
         }
 
-        if ($("#edit_name").val() === "" || $("#edit_name").val() === null || $("#edit_name").val() === undefined) {
-            layer.msg("名称不能为空");
-            return;
-        }
-
-        if ($("#edit_mqtt_protocol").val() === "" || $("#edit_mqtt_protocol").val() === null || $("#edit_mqtt_protocol").val() === undefined) {
-            layer.msg("协议不能为空");
-            return;
-        }
 
         let data = {
             id: $("#edit_id").val(),

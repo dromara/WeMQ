@@ -48,6 +48,7 @@
 
 - Thymeleaf 3.x
 - Bootstrap 5.x
+- Layui 2.x
 
 ##### 5. 工具类
 
@@ -96,19 +97,19 @@ cn.mmanager
 
 本项目依赖于另一个开源项目 Nmqs 来实现对MQTT的转发和连接，如需部署Nmqs，[请访问](https://gitee.com/nicholasld/nmqs)。
 
-在`mm-web/src/main/webapp/statics/system/common.js`中修改第一行的url变量，如果需要https，则修改第三行的http为https
+在`application.yml`中修改wemq下的属性即可，根据WeMQ项目地址自动适配http或https、ws或wss
+
+```yaml
+wemq:
+  nmqs:
+    host: localhost
+    port: 8081
+```
 
 ### 2.3 启动项目
 启动`mm-web`中的`WeMQApplication`，访问`http://<你的项目地址>:8080`即可
 
 初始账号密码为`admin`/`admin`
-
-## 3. 开发规划
-
-- [x] 迁移至Spring Boot
-- [ ] 优化调试页面的样式
-- [ ] 使Nmqs服务实现集群，实现高可用
-- [ ] 实现后台用户的权限管理
 
 ## Issues & Pull Requests
 欢迎提交Issues和Pull Requests，开源大门永远向所有人敞开。

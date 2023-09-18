@@ -12,11 +12,12 @@
     <link rel="stylesheet" th:href="@{/statics/system/common.css}">
 
     <!-- 引入 layui.css -->
-    <link href="//unpkg.com/layui@2.8.15/dist/css/layui.css" rel="stylesheet">
+    <link th:href="@{/statics/layui/layui.css}" rel="stylesheet">
     <!-- 引入 layui.js -->
-    <script src="//unpkg.com/layui@2.8.15/dist/layui.js"></script>
+    <script th:src="@{/statics/layui/layui.js}"></script>
     <script th:src="@{/statics/system/common.js}"></script>
     <script th:src="@{/statics/system/pages/menu.js}"></script>
+    <script th:src="@{/statics/system/utils.js}"></script>
 </head>
 <body>
 <div class="page">
@@ -42,7 +43,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path d="M5 12l14 0"></path></svg>
                                     新建调试页面
                                 </button>
-                        </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -543,16 +544,7 @@
             }
         })
         $('#edit_reseturl').on('click', function () {
-            let url = "";
-            let chars = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O',
-                'P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e',
-                'f','g','h','i','j','k','l','m','n','o','p','q','r','s','t',
-                'u','v','w','x','y','z'];
-            for(let i = 0; i < 12 ; i ++) {
-                let id = Math.ceil(Math.random()*61);
-                url += chars[id];
-            }
-            $("#edit_url").val(url);
+            $("#edit_url").val(randomString(12));
         })
     }
 
@@ -567,29 +559,19 @@
         let customerName = $("#edit_customer").find("option:selected").text();
         let filename = $("#edit_filename").val();
 
-        if (name === "" || name === null || name === undefined) {
-            layer.msg("页面名称不能为空");
-            return;
-        }
+        const fields = [
+            { value: name, message: "页面名称不能为空" },
+            { value: url, message: "页面地址不能为空" },
+            { value: token, message: "token不能为空" },
+            { value: sendTopic, message: "发送主题不能为空" },
+            { value: receiveTopic, message: "接收主题不能为空" }
+        ];
 
-        if (url === "" || url === null || url === undefined) {
-            layer.msg("页面地址不能为空");
-            return;
-        }
-
-        if (token === "" || token === null || token === undefined) {
-            layer.msg("token不能为空");
-            return;
-        }
-
-        if (sendTopic === "" || sendTopic === null || sendTopic === undefined) {
-            layer.msg("发送主题不能为空");
-            return;
-        }
-
-        if (receiveTopic === "" || receiveTopic === null || receiveTopic === undefined) {
-            layer.msg("接收主题不能为空");
-            return;
+        for (const field of fields) {
+            if (isBlank(field.value)) {
+                layer.msg(field.message);
+                return;
+            }
         }
 
 
@@ -626,7 +608,7 @@
     }
 
     layui.use('tree', function(){
-        var tree = layui.tree;
+        const tree = layui.tree;
 
         $.ajax({
             url: "/customer/list?pageNum=0&pageSize=0",
@@ -779,23 +761,10 @@
             }
         })
 
-        //生成随机url，带大小写字母和数字
-        let url = "";
-        let chars = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
-        for(let i = 0; i < 12 ; i ++) {
-            let id = Math.ceil(Math.random()*61);
-            url += chars[id];
-        }
-        $("#add_url").val(url);
+        $("#add_url").val(randomString(12));
 
         $('#add_reseturl').on('click', function () {
-            let url = "";
-            let chars = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
-            for(let i = 0; i < 12 ; i ++) {
-                let id = Math.ceil(Math.random()*61);
-                url += chars[id];
-            }
-            $("#add_url").val(url);
+            $("#add_url").val(randomString(12));
         })
 
 
@@ -803,35 +772,22 @@
     }
 
     function submitAdd() {
-        if ($("#add_name").val() === "" || $("#add_name").val() === null || $("#add_name").val() === undefined) {
-            layer.msg("页面名称不能为空");
-            return;
+        const fields = [
+            { selector: "#add_name", message: "页面名称不能为空" },
+            { selector: "#add_url", message: "页面url不能为空" },
+            { selector: "#add_token", message: "token不能为空" },
+            { selector: "#add_customer", message: "客户不能为空" },
+            { selector: "#add_mqtt_sendTopic", message: "发送主题不能为空" },
+            { selector: "#add_mqtt_receiveTopic", message: "接收主题不能为空" }
+        ];
+
+        for (const field of fields) {
+            if (isBlank($(field.selector).val())) {
+                layer.msg(field.message);
+                return;
+            }
         }
 
-        if ($("#add_url").val() === "" || $("#add_url").val() === null || $("#add_url").val() === undefined) {
-            layer.msg("页面url不能为空");
-            return;
-        }
-
-        if ($("#add_token").val() === "" || $("#add_token").val() === null || $("#add_token").val() === undefined) {
-            layer.msg("token不能为空");
-            return;
-        }
-
-        if ($("#add_customer").val() === "" || $("#add_customer").val() === null || $("#add_customer").val() === undefined) {
-            layer.msg("客户不能为空");
-            return;
-        }
-
-        if ($("#add_mqtt_sendTopic").val() === "" || $("#add_mqtt_sendTopic").val() === null || $("#add_mqtt_sendTopic").val() === undefined) {
-            layer.msg("发送主题不能为空");
-            return;
-        }
-
-        if ($("#add_mqtt_receiveTopic").val() === "" || $("#add_mqtt_receiveTopic").val() === null || $("#add_mqtt_receiveTopic").val() === undefined) {
-            layer.msg("接收主题不能为空");
-            return;
-        }
 
         let data = {
             "pageName": $("#add_name").val(),

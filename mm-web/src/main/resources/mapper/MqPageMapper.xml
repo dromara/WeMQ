@@ -22,6 +22,7 @@
             <result column="mqtt_port" property="mqttPort"/>
             <result column="mqtt_username" property="mqttUsername"/>
             <result column="mqtt_password" property="mqttPassword"/>
+            <result column="protocol" property="protocol"/>
         </association>
         <collection property="mqParams" javaType="arraylist" ofType="MQParam" select="selectParamsByPageId" column="id"/>
     </resultMap>
@@ -129,6 +130,7 @@
         nmqs.mqtt_port,
         nmqs.mqtt_username,
         nmqs.mqtt_password,
+        nmqs.protocol,
         customer.id as customer_id,
         customer.name as customer_name
         from mq_page page

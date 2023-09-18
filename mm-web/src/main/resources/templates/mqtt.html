@@ -225,7 +225,16 @@
 
     //将消息显示在网页上
     function setMessageInnerHTML(innerHTML) {
-        $('#message').val(innerHTML + '\n' + $('#message').val());
+        //$('#message').val(innerHTML + '\n' + $('#message').val());
+        //只显示最上的1000行
+        let message = $('#message').val();
+        let messageArray = message.split('\n');
+        if (messageArray.length > 500) {
+            messageArray.pop();
+        }
+        messageArray.unshift(innerHTML);
+        $('#message').val(messageArray.join('\n'));
+
     }
 
     //关闭连接
