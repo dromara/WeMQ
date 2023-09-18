@@ -1,5 +1,9 @@
 server:
   port: 8080
+wemq:
+  nmqs:
+    host: localhost
+    port: 8081
 spring:
   mvc:
     pathmatch:

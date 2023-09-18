@@ -13,6 +13,8 @@ import cn.mmanager.model.pojo.NmqsToken;
 import cn.mmanager.service.MQTT.AdminService;
 import cn.mmanager.service.MQTT.LoginLogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,6 +40,7 @@ public class ViewController extends BaseController {
     private NmqsMapper nmqsMapper;
     private AdminService adminService;
     private LoginLogService loginLogService;
+    private Environment environment;
 
     @Autowired
     public void setMqPageMapper(MqPageMapper mqPageMapper) {
@@ -57,6 +60,11 @@ public class ViewController extends BaseController {
     @Autowired
     public void setLoginLogService(LoginLogService loginLogService) {
         this.loginLogService = loginLogService;
+    }
+
+    @Autowired
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
     }
 
     @GetMapping("/")
@@ -223,5 +231,29 @@ public class ViewController extends BaseController {
 
         return mav;
 
+    }
+
+    @GetMapping("/statics/system/common.js")
+    public ResponseEntity<String> commonJs() {
+        String host = environment.getProperty("wemq.nmqs.host");
+        String port = environment.getProperty("wemq.nmqs.port");
+
+        String url = host + ":" + port;
+
+        String js = "const url = \"" + url + "\";\n" +
+                "function getNmqsAPI() {\n" +
+                "    if (window.location.protocol === 'https:') {\n" +
+                "        return `https://${url}`;\n" +
+                "    }\n" +
+                "    return `http://${url}`;\n" +
+                "}\n" +
+                "\n" +
+                "function getNmqsWebsocket() {\n" +
+                "    if (window.location.protocol === 'https:') {\n" +
+                "        return `wss://${url}`;\n" +
+                "    }\n" +
+                "    return `ws://${url}`;\n" +
+                "}";
+        return ResponseEntity.ok(js);
     }
 }
