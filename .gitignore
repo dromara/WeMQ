@@ -25,3 +25,4 @@ rebel.xml
 */.id
 logs/
 ./pages/
+/mm-web/src/test/java/Password.java
