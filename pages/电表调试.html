@@ -14,6 +14,8 @@
         <div class="text-muted">如果连接异常断开，可以<a href="javascript:location.reload()">刷新页面</a>重新进行连接。（请不要刷新太快）</div>
     </div>
     <input type="hidden" name="token" id="token" th:value="${token}">
+    <input type="hidden" name="sendTopic" id="sendTopic" th:value="${sendTopic}">
+    <input type="hidden" name="receiveTopic" id="receiveTopic" th:value="${receiveTopic}">
     <div class="form-group">
         <label for="text">自定义调试信息</label>
         <input id="text" type="text" class="form-control" />
@@ -73,10 +75,14 @@
     let websocket = null;
 
     let token = $('#token').val();
+    let sendTopic = $('#sendTopic').val();
+    let receiveTopic = $('#receiveTopic').val();
 
     //判断当前浏览器是否支持WebSocket
     if ('WebSocket' in window) {
-        websocket = new WebSocket( getNmqsWebsocket() + "/websocket/" + token);
+        websocket = new WebSocket( getNmqsWebsocket() + `/websocket/${token}/${sendTopic}/${receiveTopic}`);
+
+        console.log(getNmqsWebsocket() + `/websocket/${token}/${sendTopic}/${receiveTopic}`)
     } else {
         alert('Not support websocket')
     }
@@ -88,41 +94,19 @@
 
     //连接成功建立的回调方法
     websocket.onopen = function (event) {
-        //获取当前时间，格式为：12:00:00
-        let date = new Date();
-        let hours = date.getHours().toString().length < 2 ? "0" + date.getHours() : date.getHours();
-        let min = date.getMinutes().toString().length < 2 ? "0" + date.getMinutes() : date.getMinutes();
-        let sec = date.getSeconds().toString().length < 2 ? "0" + date.getSeconds() : date.getSeconds();
-
-        let time = hours + ":" + min + ":" + sec;
-        let prefix = "[System]["+ time +"] ";
+        let prefix = "[System]["+ getTime() +"] ";
         setMessageInnerHTML(prefix + "开始建立连接");
     }
 
     //接收到消息的回调方法
     websocket.onmessage = function (event) {
-        //获取当前时间，格式为：12:00:00
-        let date = new Date();
-        let hours = date.getHours().toString().length < 2 ? "0" + date.getHours() : date.getHours();
-        let min = date.getMinutes().toString().length < 2 ? "0" + date.getMinutes() : date.getMinutes();
-        let sec = date.getSeconds().toString().length < 2 ? "0" + date.getSeconds() : date.getSeconds();
-
-        let time = hours + ":" + min + ":" + sec;
-
-        let prefix = "[Receive]["+ time +"] ";
+        let prefix = "[Receive]["+ getTime() +"] ";
         setMessageInnerHTML(prefix + event.data);
     }
 
     //连接关闭的回调方法
     websocket.onclose = function () {
-        //获取当前时间，格式为：12:00:00
-        let date = new Date();
-        let hours = date.getHours().toString().length < 2 ? "0" + date.getHours() : date.getHours();
-        let min = date.getMinutes().toString().length < 2 ? "0" + date.getMinutes() : date.getMinutes();
-        let sec = date.getSeconds().toString().length < 2 ? "0" + date.getSeconds() : date.getSeconds();
-
-        let time = hours + ":" + min + ":" + sec;
-        let prefix = "[System]["+ time +"] ";
+        let prefix = "[System]["+ getTime() +"] ";
         setMessageInnerHTML(prefix + "连接关闭");
     }
 
@@ -153,5 +137,14 @@
         var message = $(this1).prev('input').val();
         console.log(message)
         websocket.send(message);
+    }
+
+    function getTime() {
+        let date = new Date();
+        let hours = String(date.getHours()).padStart(2, "0");
+        let min = String(date.getMinutes()).padStart(2, "0");
+        let sec = String(date.getSeconds()).padStart(2, "0");
+
+        return `${hours}:${min}:${sec}`;
     }
 </script>
