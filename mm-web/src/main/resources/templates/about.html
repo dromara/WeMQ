@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh" xml:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>关于项目 - 物联网调试管理系统</title>
+  <script th:src="@{/statics/jquery-1.12.4.min.js}"></script>
+  <script th:src="@{/statics/tabler/tabler.min.js}"></script>
+  <link rel="stylesheet" th:href="@{/statics/tabler/tabler.min.css}">
+  <link rel="stylesheet" th:href="@{/statics/system/common.css}">
+  <script th:src="@{/statics/system/common.js}"></script>
+</head>
+<body>
+<div class="page">
+  <div th:replace="common/header :: header"></div>
+
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <div class="page-pretitle">
+              物联网调试管理后台
+            </div>
+            <h2 class="page-title">
+              关于项目
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-body">
+      <div class="container" style="max-width: 700px;">
+        <center>
+          <img style="margin: 0 auto" src="https://img.nicholasld.cn/i/2023/09/22/650d4ea56f7fa.png" width="700">
+          <h2 style="margin-top: 160px">WeMQ 目前已加入 <a href="https://gitee.com/dromara">Dromara 社区</a> 孵化项目</h2>
+        </center>
+        <h2>项目介绍</h2>
+
+        <h3>项目简介</h3>
+
+        <p><strong>基于SpringBoot开发的物联网设备调试管理平台。</strong></p>
+
+        <p>WeMQ是一款面向物联网设备运营商的开源物联网设备调试系统，提供完整的物联网设备调试方案，集成设备管理、MQTT服务器管理、客户管理等功能，自研Nmqs通信层组件，实现了连接信息的加密，保证了数据的安全性。</p>
+
+        <p><img src="https://img.shields.io/github/license/NicholasLD/WeMQ"><a href="https://gitee.com/nicholasld/WeMQ/stargazers"><img src="https://gitee.com/nicholasld/WeMQ/badge/star.svg?theme=dark" alt="star"></a><a href="https://gitee.com/nicholasld/WeMQ/members"><img src="https://gitee.com/nicholasld/WeMQ/badge/fork.svg?theme=dark" alt="fork"></a></p>
+
+        <h3>技术选型</h3>
+
+        <h5>1. 系统环境</h5>
+
+        <ul>
+          <li>Java 8</li>
+          <li>Servlet 3.0</li>
+          <li>Apache Maven 3</li>
+        </ul>
+
+        <h5>2. 主框架</h5>
+
+        <ul>
+          <li>Spring Boot 2.7.x</li>
+          <li>Spring Framework 5.3.x</li>
+          <li>Spring MVC 5.3.x</li>
+        </ul>
+
+        <h5>3. 持久层</h5>
+
+        <ul>
+          <li>Mybatis 3.5.x</li>
+          <li>Alibaba Druid 1.2.x</li>
+          <li>Hibernate Validation 6.0.x</li>
+          <li>Java MySQL Connector 8.0.x</li>
+        </ul>
+
+        <h5>4. 视图层</h5>
+
+        <ul>
+          <li>Thymeleaf 3.x</li>
+          <li>Bootstrap 5.x</li>
+          <li>Layui 2.x</li>
+        </ul>
+
+        <h5>5. 工具类</h5>
+
+        <ul>
+          <li>Apache Commons</li>
+          <li>Hutool 5.x</li>
+        </ul>
+
+        <h3>主要功能</h3>
+
+        <ul>
+          <li>系统管理员管理</li>
+          <li>客户管理</li>
+          <li>调试页面管理</li>
+          <li>对接Nmqs（NicholasLD's Message Queue Service）</li>
+          <li>客户调试页面</li>
+          <li>登录日志</li>
+        </ul>
+
+        <h3>项目结构</h3>
+
+        <pre><code>cn.mmanager
+├── mm-common            // 工具类
+│       └── annotation                    // 自定义注解
+│       └── constant                      // 通用常量
+│       └── core                          // 核心控制
+│       └── enums                         // 通用枚举
+│       └── exception                     // 通用异常
+├── mm-framework         // 框架核心
+│       └── aspectj                       // 注解实现
+│       └── interceptor                   // 拦截器
+│       └── manager                       // 异步处理
+│       └── web                           // 前端控制
+├── mm-web       	 // Web服务
+├── mm-dao      	 // 数据访问层
+├── mm-service       // 业务层
+├── mm-model         // 模型
+</code></pre>
+
+        <h2>Issues &amp; Pull Requests</h2>
+
+        <p>欢迎提交Issues和Pull Requests，开源大门永远向所有人敞开。</p>
+
+        <h2>联系作者</h2>
+
+        <ul>
+          <li>Email: 878639947@qq.com</li>
+          <li>QQ: 878639947</li>
+          <li>WeChat: NicholasLD505</li>
+        </ul>
+
+        <h2>License(开源许可证)</h2>
+
+        <p>Apache License Version 2.0 see <a href="http://www.apache.org/licenses/LICENSE-2.0.html">http://www.apache.org/licenses/LICENSE-2.0.html</a></p>
+
+        <h2>版权使用说明</h2>
+
+        <p>WeMQ遵循Apache2.0开源协议，可用于个人学习、毕设、公司项目、商业产品等，但必须保留版权信息。</p>
+
+        <h2>知识星球</h2>
+
+        <p><img src="https://img.nicholasld.cn/i/2023/09/22/650d482f3072c.png"></p>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

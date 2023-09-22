@@ -9,51 +9,14 @@
 </head>
 <body>
 <div th:fragment="header">
-    <script th:inline="javascript">
-        $.ajax({
-            url: getNmqsAPI() + "/ping",
-            type: "GET",
-            dataType: "json",
-            success: function (data) {
-                $("#status1_green").show()
-                $("#status1_red").hide()
-            },
-            error: function (data) {
-                $("#status1_green").hide()
-                $("#status1_red").show()
-            }
-        })
-
-
-    </script>
     <header class="navbar navbar-expand-sm navbar-light d-print-none">
         <div class="container-xl">
             <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
                 <a href="#">
-                    <!--                    <img alt="Tabler" class="navbar-brand-image" height="32" th:src="https://preview.tabler.io/static/logo.svg" width="110"/>-->
-                    <img class="navbar-brand-image" height="32" th:src="@{/statics/images/mqttlogo.png}" width="110"/>
+                    <img class="navbar-brand-image" th:src="@{/statics/images/mqttlogo.png}" style="height:83px"/>
                 </a>
             </h1>
-            <div class="dropdown">
-                <div class="navbar-nav flex-row order-md-last">
-                    <div class="nav-item">
-                        <a class="nav-link d-flex lh-1 text-reset p-0 dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <span class="avatar avatar-sm" style="background-image: url('/statics/images/head.gif')"></span>
-                            <div class="d-none d-xl-block ps-2">
-                                <div th:text="${session.get('userSession').username}">N/A</div>
-                                <div class="mt-1 small text-muted">系统管理员</div>
-                            </div>
-                        </a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">
-                                管理员设置
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" th:href="@{/logout}">退出登录</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
         </div>
     </header>
     <header class="navbar-expand-md">
@@ -166,19 +129,46 @@
                                 </a>
                             </div>
                         </li>
+                        <li id="about" class="nav-item">
+                            <a class="nav-link" th:href="@{/about}">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alert-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                       <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                       <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
+                                       <path d="M12 8v4"></path>
+                                       <path d="M12 16h.01"></path>
+                                    </svg>
+                                </span>
+                                <span class="nav-link-title">
+                                    关于项目
+                                </span>
+                            </a>
+                        </li>
                     </ul>
-                    <div class="my-2 my-md-0 flex-grow-1 flex-md-grow-0 order-first order-md-last">
-                        <span id="status1_green" class="status status-green">
-                            <span class="status-dot status-dot-animated"></span>
-                                  NMQS API 服务正常
-                        </span>
-                        <span id="status1_red" class="status status-red">
-                            <span class="status-dot status-dot-animated"></span>
-                                  NMQS API 服务异常
-                        </span>
+                    <div class="dropdown">
+                        <div class="navbar-nav flex-row order-md-last">
+                            <div class="nav-item">
+                                <a class="nav-link d-flex lh-1 text-reset p-0 dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                    <span class="avatar avatar-sm" style="background-image: url('/statics/images/head.gif')"></span>
+                                    <div class="d-none d-xl-block ps-2">
+                                        <div th:text="${session.get('userSession').username}">N/A</div>
+                                        <div class="mt-1 small text-muted">系统管理员</div>
+                                    </div>
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">
+                                        管理员设置
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" th:href="@{/logout}">退出登录</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
             </div>
+
         </div>
     </header>
 </div>

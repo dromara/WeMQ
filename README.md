@@ -1,7 +1,7 @@
 # WeMQ - 物联网调试管理平台
 <img src="https://img.nicholasld.cn/i/2023/09/22/650d382ad4e66.png" width="700" height="700">
 
->本项目于2023年6月19日直接迁移至Spring Boot，原版本代码不再保留。
+>####  WeMQ 目前已加入 [Dromara 社区 ](https://gitee.com/dromara) 孵化项目
 
 ## 1. 项目介绍
 
@@ -17,11 +17,11 @@
 
 #### 项目截图：
 控制台
-![D7CCC3CA-0B97-4A0F-8A03-8DC8A91F58A2.png](https://img.nicholasld.cn/i/2023/05/31/647643c75a2ff.png)
+![D7CCC3CA-0B97-4A0F-8A03-8DC8A91F58A2.png](https://img.nicholasld.cn/i/2023/09/22/650d5384475a7.jpg)
 用户调试界面
-![QQ20230531-024439@2x.png](https://img.nicholasld.cn/i/2023/05/31/64764423835be.png)
+![QQ20230531-024439@2x.png](https://img.nicholasld.cn/i/2023/09/22/650d538510281.jpg)
 调试页面参数
-![QQ20230531-024618@2x.png](https://img.nicholasld.cn/i/2023/05/31/64764485019c2.png)
+![QQ20230531-024618@2x.png](https://img.nicholasld.cn/i/2023/09/22/650d5384a35f5.jpg)
 
 ### 1.2 技术选型
 
@@ -84,9 +84,6 @@ cn.mmanager
 ├── mm-model       // 模型
 ```
 
-### 1.5 数据库结构
-![https://img.nicholasld.cn/i/2023/05/19/646712f025150.png](https://img.nicholasld.cn/i/2023/05/19/646712f025150.png)
-
 ## 2. 部署文档
 
 ### 2.1 如何部署
@@ -124,3 +121,6 @@ Apache License Version 2.0 see http://www.apache.org/licenses/LICENSE-2.0.html
 
 ## 版权使用说明
 WeMQ遵循Apache2.0开源协议，可用于个人学习、毕设、公司项目、商业产品等，但必须保留版权信息。
+
+## 知识星球
+![img_1.png](img_1.png)

@@ -194,6 +194,11 @@ public class ViewController extends BaseController {
         return "viewer_pages";
     }
 
+    @GetMapping("/about")
+    public String about() {
+        return "about";
+    }
+
     @GetMapping("/mq/{url}")
     public ModelAndView mqttPage(@PathVariable("url") String url){
         ModelAndView mav = new ModelAndView();
