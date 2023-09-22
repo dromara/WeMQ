@@ -7,6 +7,7 @@ import cn.mmanager.model.dto.LoginLogDto;
 import cn.mmanager.model.pojo.Admin;
 import cn.mmanager.model.pojo.LoginLog;
 import cn.mmanager.service.MQTT.LoginLogService;
+import cn.mmanager.framework.utils.IpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +35,6 @@ public class LoginLogServiceImpl implements LoginLogService {
         String userAgent = request.getHeader("User-Agent");
         //解析User-Agent
         UserAgent ua = UserAgentUtil.parse(userAgent);
-        //获取IP地址
-        String ip = request.getRemoteAddr();
         //获取登录时间
         Date loginTime = new Date();
 
@@ -45,14 +44,9 @@ public class LoginLogServiceImpl implements LoginLogService {
             os = ua.getOs().toString();
         }
 
-        //如果IP地址为0:0:0:0:0:0:0:1，则为本地访问
-        if (ip.equals("0:0:0:0:0:0:0:1")) {
-            ip = "127.0.0.1";
-        }
-
         LoginLog loginLog = new LoginLog();
         loginLog.setAdminId(admin.getId());
-        loginLog.setAdminIP(ip);
+        loginLog.setAdminIP(IpUtils.getIpAddr());
         loginLog.setAdminOS(os);
         loginLog.setLoginTime(new Timestamp(loginTime.getTime()));
         loginLog.setLoginStatus(status);

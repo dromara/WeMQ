@@ -1,10 +1,9 @@
 package cn.mmanager.framework.interceptor;
 
 import cn.mmanager.common.annotation.RepeatSubmit;
-import cn.mmanager.common.core.domain.AjaxResult;
 import cn.mmanager.common.enums.HttpStatus;
 import cn.mmanager.common.exception.MMException;
-import cn.mmanager.framework.utils.JSON;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -29,6 +28,8 @@ public class RepeatSubmitInterceptor implements HandlerInterceptor {
     public final String REPEAT_PARAMS = "repeatParams";
     public final String REPEAT_TIME = "repeatTime";
     public final String SESSION_REPEAT_KEY = "repeatData";
+    private static final com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+    private static final ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -48,7 +49,7 @@ public class RepeatSubmitInterceptor implements HandlerInterceptor {
 
     public boolean isRepeatSubmit(HttpServletRequest request, RepeatSubmit annotation) throws Exception {
         // 本次参数及系统时间
-        String nowParams = JSON.marshal(request.getParameterMap());
+        String nowParams = objectWriter.writeValueAsString(request.getParameterMap());
         Map<String, Object> nowDataMap = new HashMap<String, Object>();
         nowDataMap.put(REPEAT_PARAMS, nowParams);
         nowDataMap.put(REPEAT_TIME, System.currentTimeMillis());
