@@ -1,5 +1,5 @@
 # WeMQ - 物联网调试管理平台
-[![mqttlogo.png](https://img.nicholasld.cn/i/2023/04/08/6430b2aff1b11.png)](https://img.nicholasld.cn/i/2023/04/08/6430b2aff1b11.png)
+<img src="https://img.nicholasld.cn/i/2023/09/22/650d382ad4e66.png" width="700" height="700">
 
 >本项目于2023年6月19日直接迁移至Spring Boot，原版本代码不再保留。
 
