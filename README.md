@@ -3,7 +3,7 @@
 
 >####  WeMQ 目前已加入 [Dromara 社区 ](https://gitee.com/dromara) 孵化项目
 
-## 1. 项目介绍
+## 📂 1. 项目介绍
 
 ### 1.1 项目简介
 
@@ -84,7 +84,7 @@ cn.mmanager
 ├── mm-model       // 模型
 ```
 
-## 2. 部署文档
+## ⚙️ 2. 部署文档
 
 ### 2.1 如何部署
 
@@ -108,19 +108,27 @@ wemq:
 
 初始账号密码为`admin`/`admin`
 
-## Issues & Pull Requests
+## 💡 Issues & Pull Requests
 欢迎提交Issues和Pull Requests，开源大门永远向所有人敞开。
 
-## 联系作者
+## ✉️ 联系作者
 - Email: 878639947@qq.com
 - QQ: 878639947
 - WeChat: NicholasLD505
 
-## License(开源许可证)
+## 🔰 License(开源许可证)
 Apache License Version 2.0 see http://www.apache.org/licenses/LICENSE-2.0.html
 
-## 版权使用说明
+## ©️ 版权使用说明
 WeMQ遵循Apache2.0开源协议，可用于个人学习、毕设、公司项目、商业产品等，但必须保留版权信息。
 
-## 知识星球
+## 🪐 知识星球
 ![img_1.png](img_1.png)
+
+
+## 🎉 特别鸣谢
+感谢 **JetBrains** 为本项目提供的免费开源许可证支持。
+
+<a href="https://jb.gg/OpenSourceSupport">
+  <img src="https://user-images.githubusercontent.com/8643542/160519107-199319dc-e1cf-4079-94b7-01b6b8d23aa6.png" align="left" height="150" width="150" alt="JetBrains">
+</a>
