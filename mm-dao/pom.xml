@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>cn.mmanger</groupId>
-        <artifactId>MQTT-Manager</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <artifactId>WeMQ</artifactId>
+        <version>${wemq-version}</version>
     </parent>
 
     <artifactId>mm-dao</artifactId>
@@ -21,7 +21,7 @@
         <dependency>
             <groupId>cn.mmanger</groupId>
             <artifactId>mm-model</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${wemq-version}</version>
         </dependency>
     </dependencies>
 
