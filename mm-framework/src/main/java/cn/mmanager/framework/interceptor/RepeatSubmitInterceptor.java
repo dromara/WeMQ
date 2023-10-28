@@ -50,7 +50,7 @@ public class RepeatSubmitInterceptor implements HandlerInterceptor {
     public boolean isRepeatSubmit(HttpServletRequest request, RepeatSubmit annotation) throws Exception {
         // 本次参数及系统时间
         String nowParams = objectWriter.writeValueAsString(request.getParameterMap());
-        Map<String, Object> nowDataMap = new HashMap<String, Object>();
+        Map<String, Object> nowDataMap = new HashMap<>();
         nowDataMap.put(REPEAT_PARAMS, nowParams);
         nowDataMap.put(REPEAT_TIME, System.currentTimeMillis());
 

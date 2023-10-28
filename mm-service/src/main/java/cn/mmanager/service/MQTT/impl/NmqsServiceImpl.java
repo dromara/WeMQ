@@ -45,4 +45,9 @@ public class NmqsServiceImpl implements NmqsService {
     public int deleteById(Long id) {
         return nmqsMapper.deleteById(id);
     }
+
+    @Override
+    public NmqsToken getInfoByToken(String token) {
+        return nmqsMapper.getInfoByToken(token);
+    }
 }

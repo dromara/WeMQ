@@ -48,4 +48,6 @@ public interface NmqsMapper {
      * @return 删除结果
      */
     int deleteById(Long id);
+
+    NmqsToken getInfoByToken(String token);
 }

@@ -73,4 +73,10 @@ public class NmqsController {
     public AjaxResult delete(@PathVariable("id") int id) {
         return nmqsService.deleteById((long) id) > 0 ? AjaxResult.success() : AjaxResult.error();
     }
+
+    @GetMapping("/getInfoByToken/{token}")
+    @ResponseBody
+    public AjaxResult getInfoByToken(@PathVariable("token") String token) {
+        return AjaxResult.success(nmqsService.getInfoByToken(token));
+    }
 }

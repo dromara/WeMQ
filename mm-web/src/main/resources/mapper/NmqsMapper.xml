@@ -31,6 +31,10 @@
         select * from mq_nmqs_token where id = #{id}
     </select>
 
+    <select id="getInfoByToken" resultType="cn.mmanager.model.pojo.NmqsToken" resultMap="select">
+        select * from mq_nmqs_token where token = #{token}
+    </select>
+
     <insert id="insert" parameterType="NmqsToken">
         insert into mq_nmqs_token (id, name, token, protocol, mqtt_server, mqtt_port, mqtt_username, mqtt_password)
         values (#{id}, #{name}, #{token}, #{protocol}, #{mqttServer}, #{mqttPort}, #{mqttUsername}, #{mqttPassword})
