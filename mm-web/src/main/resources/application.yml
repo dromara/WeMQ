@@ -28,4 +28,5 @@ logging:
   file:
     name: logs/logs.log
   level:
-    cn.mmanager: debug
+      root: info
+      cn.mmanager: debug
