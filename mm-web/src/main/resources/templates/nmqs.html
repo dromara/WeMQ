@@ -485,7 +485,7 @@
                         $('#token_list').bootstrapTable('refresh');
                         layer.msg('删除成功！', {icon: 1});
                     } else {
-                        alert(data.msg);
+                        layer.msg(data.msg, {icon: 2});
                     }
                 }
             })

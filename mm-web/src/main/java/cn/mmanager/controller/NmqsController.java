@@ -71,7 +71,7 @@ public class NmqsController {
     @PostMapping("/delete/{id}")
     @ResponseBody
     public AjaxResult delete(@PathVariable("id") int id) {
-        return nmqsService.deleteById((long) id) > 0 ? AjaxResult.success() : AjaxResult.error();
+        return nmqsService.deleteById((long) id) > 0 ? AjaxResult.success() : AjaxResult.error("删除失败，该token正在被页面使用");
     }
 
     @GetMapping("/getInfoByToken/{token}")

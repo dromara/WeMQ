@@ -1,7 +1,9 @@
 package cn.mmanager.service.MQTT.impl;
 
 import cn.mmanager.dao.MQTT.NmqsMapper;
+import cn.mmanager.model.pojo.MQPage;
 import cn.mmanager.model.pojo.NmqsToken;
+import cn.mmanager.service.MQTT.MqPageService;
 import cn.mmanager.service.MQTT.NmqsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,9 +18,15 @@ import java.util.Map;
 @Service("nmqsService")
 public class NmqsServiceImpl implements NmqsService {
     private NmqsMapper nmqsMapper;
+    private MqPageService mqPageService;
     @Autowired
     public void setNmqsMapper(NmqsMapper nmqsMapper) {
         this.nmqsMapper = nmqsMapper;
+    }
+
+    @Autowired
+    public void setMqPageService(MqPageService mqPageService) {
+        this.mqPageService = mqPageService;
     }
 
     @Override
@@ -43,6 +51,15 @@ public class NmqsServiceImpl implements NmqsService {
 
     @Override
     public int deleteById(Long id) {
+        //查询id下的token是否有页面正在使用
+        NmqsToken nmqsToken = nmqsMapper.selectById(id);
+
+        List<MQPage> select = mqPageService.select(null);
+        for (MQPage mqPage : select) {
+            if (mqPage.getToken().equals(nmqsToken.getToken())) {
+                return -1;
+            }
+        }
         return nmqsMapper.deleteById(id);
     }
 
