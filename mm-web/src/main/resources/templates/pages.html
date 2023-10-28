@@ -387,8 +387,6 @@
                         data = res.data
                     }
                 })
-
-                //构造一个div，上面显示token，下方是span显示ip
                 return '<div style="display: flex;flex-direction: column">' +
                     '<span style="font-weight: bolder">' + value + '</span>' +
                     '<span style="font-size: 12px;color: #999999">'+ data.mqttServer + ':' + data.mqttPort + '</span>' +
@@ -407,7 +405,6 @@
             align: 'center',
             valign: 'middle',
             formatter: function (value, row, index) {
-                //发布在上，接收在下
                 return '<div style="display: flex;flex-direction: column">' +
                     '<span style="font-size: 12px;color: #999999">发布：' + row.sendTopic + '</span>' +
                     '<span style="font-size: 12px;color: #999999">接收：'+ value + '</span>' +
