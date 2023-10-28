@@ -99,7 +99,7 @@ cn.mmanager
 ```yaml
 wemq:
   nmqs:
-    host: localhost
+    host: localhost #地址必须外网可以访问，生产环境不能使用127.0.0.1/localhost之类的地址
     port: 8081
 ```
 
