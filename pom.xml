@@ -25,7 +25,7 @@
     </parent>
 
     <properties>
-        <wemq-version>1.4.1</wemq-version>
+        <wemq-version>1.4.2</wemq-version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
