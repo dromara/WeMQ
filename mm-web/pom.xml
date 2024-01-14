@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.mmanger</groupId>
         <artifactId>WeMQ</artifactId>
-        <version>${wemq-version}</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>mm-web</artifactId>
@@ -22,17 +22,17 @@
         <dependency>
             <groupId>cn.mmanger</groupId>
             <artifactId>mm-common</artifactId>
-            <version>${wemq-version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>cn.mmanger</groupId>
             <artifactId>mm-framework</artifactId>
-            <version>${wemq-version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>cn.mmanger</groupId>
             <artifactId>mm-service</artifactId>
-            <version>${wemq-version}</version>
+            <version>${revision}</version>
         </dependency>
 
         <!--文件上传-->

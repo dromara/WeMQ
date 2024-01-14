@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.mmanger</groupId>
         <artifactId>WeMQ</artifactId>
-        <version>${wemq-version}</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>mm-dao</artifactId>
@@ -21,7 +21,7 @@
         <dependency>
             <groupId>cn.mmanger</groupId>
             <artifactId>mm-model</artifactId>
-            <version>${wemq-version}</version>
+            <version>${revision}</version>
         </dependency>
     </dependencies>
 
