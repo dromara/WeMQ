@@ -31,6 +31,7 @@ public class TemplateResolverConfiguration {
         FileTemplateResolver templateResolver = new FileTemplateResolver();
         templateResolver.setPrefix("pages/");
         templateResolver.setSuffix(".html");
+        templateResolver.setCacheable(false);
         templateResolver.setTemplateMode(TemplateMode.HTML);
         templateResolver.setCharacterEncoding("UTF-8");
         templateResolver.setOrder(1);
