@@ -228,6 +228,10 @@ public class ViewController extends BaseController {
 
         mav.addObject("serverInfo", (nmqsToken.getProtocol()==0?"ws://":"mqtt://")+nmqsToken.getMqttServer()+":"+nmqsToken.getMqttPort());
 
+        mav.addObject("batchSend", mqPageDto.getBatchSend());
+        mav.addObject("batchCommand", mqPageDto.getBatchCommand());
+        mav.addObject("batchDelay", mqPageDto.getBatchDelay());
+
         if (StrUtil.isEmpty(mqPageDto.getPageFileName())){
             mav.setViewName("mqtt");
         } else {

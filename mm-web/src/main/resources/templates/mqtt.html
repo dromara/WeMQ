@@ -13,51 +13,44 @@
 <body>
     <div class="container">
         <div class="form-group">
-            <h2 th:text="${pageName}">物联网设备调试</h2>
-            <div class="alert alert-info" role="alert">
-                <div class="text-muted"><span th:text="|连接到 ${serverInfo}|"></span><br>如果连接异常断开，可以<a href="javascript:location.reload()">刷新页面</a>重新进行连接。（请不要刷新太快）</div>
+            <h3 th:text="${pageName}">物联网设备调试</h3>
+            <div class="alert alert-info" role="alert" style="margin-bottom: 0">
+                <div class="text-muted"><span th:text="|连接到 ${serverInfo}|"></span></div>
             </div>
             <input type="hidden" name="token" id="token" th:value="${token}">
         </div>
 
-        <div class="form-group">
-            <div class="card">
-                <div class="card-header">
-                    自定义
+        <div class="card-body" style="display: flex;flex-wrap: wrap; padding: 0">
+            <div class="form-group">
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">发送订阅</div>
+                    </div>
+                    <input id="sendTopic" type="text" class="form-control" th:value="${sendTopic}" />
                 </div>
-                <div class="card-body" style="display: flex;flex-wrap: wrap;padding: 6px 6px">
-                    <div class="form-group">
-                        <div class="input-group input-group-sm">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">发送订阅</div>
-                            </div>
-                            <input id="sendTopic" type="text" class="form-control" th:value="${sendTopic}" />
-                        </div>
-                    </div>
+            </div>
 
-                    <div class="form-group">
-                        <div class="input-group input-group-sm">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">接收订阅</div>
-                            </div>
-                            <input id="receiveTopic" type="text" class="form-control" th:value="${receiveTopic}" />
-                        </div>
+            <div class="form-group">
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">接收订阅</div>
                     </div>
-
-                    <div class="form-group" hidden="hidden">
-                        <div class="input-group input-group-sm">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">QoS</div>
-                            </div>
-                            <input id="qos" min="0" max="2" type="number" class="form-control" th:value="${qos}" />
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <button onclick="reConnect()" class="btn btn-primary btn-sm">修改订阅</button>
-                        <button onclick="closeWebSocket()" class="btn btn-danger btn-sm">关闭连接</button>
-                    </div>
+                    <input id="receiveTopic" type="text" class="form-control" th:value="${receiveTopic}" />
                 </div>
+            </div>
+
+            <div class="form-group" hidden="hidden">
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">QoS</div>
+                    </div>
+                    <input id="qos" min="0" max="2" type="number" class="form-control" th:value="${qos}" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button onclick="reConnect()" class="btn btn-primary btn-sm">修改订阅</button>
+                <button onclick="closeWebSocket()" class="btn btn-danger btn-sm">关闭连接</button>
             </div>
         </div>
 
@@ -72,7 +65,24 @@
                 </div>
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" th:hidden="${batchSend == 0}">
+            <div class="card">
+                <div class="card-header">
+
+                    <div style="display: flex;flex-wrap: wrap;align-items: center;">
+                        批量下发参数
+                        <span style="margin-left: 50px" class="text-muted">间隔：</span>
+                        <input th:value="${batchDelay}" type="number" id="batchInterval" value="1000" style="width: 80px" class="form-control form-control-sm">
+                        <span> ms</span>
+                        <button style="margin-left: 20px" onclick="batchSend()" class="btn btn-primary btn-sm">批量发送</button>
+                    </div>
+                </div>
+                <div class="card-body" style="padding: 6px 6px;">
+                    <textarea th:text="${batchCommand}" id="batchText" class="form-control" style="height: 120px;margin-bottom: 20px;font-size: 13px"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="form-group" th:if="${params.size() > 0}">
             <div class="card">
                 <div class="card-header">
                     预设调试参数
@@ -271,6 +281,23 @@
         let sec = String(date.getSeconds()).padStart(2, "0");
 
         return `${hours}:${min}:${sec}`;
+    }
+
+    function batchSend() {
+        let message = $('#batchText').val();
+        let delay = $('#batchInterval').val();
+        let messageArray = message.split('\n');
+        let i = 0;
+        let interval = setInterval(function () {
+            if (i < messageArray.length) {
+                websocket.send(messageArray[i]);
+                let prefix = "[Send]["+ getTime() +"] ";
+                setMessageInnerHTML(prefix + messageArray[i]);
+                i++;
+            } else {
+                clearInterval(interval);
+            }
+        }, delay);
     }
 </script>
 

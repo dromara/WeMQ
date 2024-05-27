@@ -154,7 +154,7 @@
     </div>
 
     <div class="modal modal-blur fade" id="modal-edit" tabindex="-1" aria-modal="true">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content" style="box-shadow: 0px 5px 6px rgb(205, 205, 205);">
                 <div class="modal-header">
                     <h5 class="modal-title">编辑调试页面</h5>
@@ -162,49 +162,77 @@
                 </div>
                 <input type="hidden" id="edit_id">
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">页面名称</label>
-                        <input id="edit_name" type="text" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">访问地址</label>
-                        <div class="input-group mb-2">
-                            <input readonly id="edit_url" type="text" class="form-control">
-                            <button id="edit_reseturl" class="btn" type="button">生成</button>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">页面名称</label>
+                                <input id="edit_name" type="text" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">访问地址</label>
+                                <div class="input-group mb-2">
+                                    <input readonly id="edit_url" type="text" class="form-control">
+                                    <button id="edit_reseturl" class="btn" type="button">生成</button>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-label">MQTT主机</div>
+                                <select id="edit_token" class="form-select"></select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">MQTT发送订阅</label>
+                                <input id="edit_mqtt_sendTopic" type="text" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">MQTT接收订阅</label>
+                                <input id="edit_mqtt_receiveTopic" type="text" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">MQTT QoS</label>
+                                <select id="edit_mqtt_qos" class="form-select">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                </select>
+                            </div>
+                            <div class="alert alert-info" role="alert">
+                                <div class="alert-title">自定义调试页面</div>
+                                <div class="text-muted">现在支持自定义调试页面，只需要将自定义调试页面文件(.html后缀)放到项目pages文件夹，并将文件名填写在下方即可（不带后缀名）。<span style="color: red;font-weight: bolder">留空则使用系统默认调试页面。</span></div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">外部文件名(.html)</label>
+                                <input id="edit_filename" placeholder="留空则使用默认调试页面 (不带后缀名)" type="text" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-label">客户</div>
+                                <select id="edit_customer" class="form-select"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="alert alert-info" role="alert">
+                                <div class="alert-title">批量下发命令</div>
+                                <div class="text-muted">
+                                    现在支持批量下发命令，只需要将命令填写在下方即可，每行一个命令，不需要加逗号等符号。
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-label">是否显示批量命令</div>
+                                <select id="edit_batch_send" class="form-select">
+                                    <option value="0">否</option>
+                                    <option value="1">是</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-label">批量命令</div>
+                                <textarea style="height: 300px" id="edit_batch_command" class="form-control" placeholder="每行一个命令，不需要加逗号等符号" rows="10"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-label">批量发送间隔（毫秒）</div>
+                                <input id="edit_batch_delay" type="number" class="form-control" placeholder="单位：毫秒">
+                            </div>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <div class="form-label">Token</div>
-                        <select id="edit_token" class="form-select"></select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">MQTT发送订阅</label>
-                        <input id="edit_mqtt_sendTopic" type="text" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">MQTT接收订阅</label>
-                        <input id="edit_mqtt_receiveTopic" type="text" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">MQTT QoS</label>
-                        <select id="edit_mqtt_qos" class="form-select">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                        </select>
-                    </div>
-                    <div class="alert alert-info" role="alert">
-                        <div class="alert-title">新功能！</div>
-                        <div class="text-muted">现在支持自定义调试页面，只需要将自定义调试页面文件(.html后缀)放到项目pages文件夹，并将文件名填写在下方即可（不带后缀名）。<span style="color: red;font-weight: bolder">留空则使用系统默认调试页面。</span></div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">外部文件名(.html)</label>
-                        <input id="edit_filename" placeholder="留空则使用默认调试页面 (不带后缀名)" type="text" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <div class="form-label">客户</div>
-                        <select id="edit_customer" class="form-select"></select>
-                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">
@@ -238,10 +266,8 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <div class="form-label">Token</div>
-                        <select id="add_token" class="form-select">
-
-                        </select>
+                        <div class="form-label">MQTT主机</div>
+                        <select id="add_token" class="form-select"></select>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">MQTT发送订阅</label>
@@ -388,8 +414,8 @@
                     }
                 })
                 return '<div style="display: flex;flex-direction: column">' +
-                    '<span style="font-weight: bolder">' + value + '</span>' +
-                    '<span style="font-size: 12px;color: #999999">'+ data.mqttServer + ':' + data.mqttPort + '</span>' +
+                    '<span style="font-weight: bolder">' + data.mqttServer + ':' + data.mqttPort + '</span>' +
+                    '<span style="font-size: 12px;color: #999999">'+ value + '</span>' +
                     '</div>';
             }
         }, {
@@ -545,6 +571,14 @@
                             $("#edit_customer").val(params.customer.id);
                         }
 
+                        // 设置是否显示批量命令
+                        $("#edit_batch_send").val(params.batchSend);
+                        //设置批量命令
+                        $("#edit_batch_command").val(params.batchCommand);
+                        //设置批量发送间隔
+                        $("#edit_batch_delay").val(params.batchDelay);
+
+
                         // 获取token列表
                         $.ajax({
                             url: "/nmqs/list?pageNum=0&pageSize=0",
@@ -556,6 +590,12 @@
                                 for (let i = 0; i < tokenList.length; i++) {
                                     tokenHtml += '<option value="' + tokenList[i].id + '">' + tokenList[i].name + ' --- ' + tokenList[i].token + ' --- ' + tokenList[i].mqttServer + ':' + tokenList[i].mqttPort + '</option>';
                                 }
+
+                                //如果token列表为空，则添加一个默认的token
+                                if (tokenList.length === 0) {
+                                    tokenHtml += '<option value="0">请前往“MQTT主机”添加一个MQTT Broker</option>';
+                                }
+
                                 console.log(tokenList)
                                 $("#edit_token").html(tokenHtml);
 
@@ -581,13 +621,18 @@
         let customerId = $("#edit_customer").val();
         let customerName = $("#edit_customer").find("option:selected").text();
         let filename = $("#edit_filename").val();
+        let batchSend = $("#edit_batch_send").val();
+        let batchCommand = $("#edit_batch_command").val();
+        let batchDelay = $("#edit_batch_delay").val();
 
         const fields = [
             { value: name, message: "页面名称不能为空" },
             { value: url, message: "页面地址不能为空" },
             { value: token, message: "token不能为空" },
             { value: sendTopic, message: "发送主题不能为空" },
-            { value: receiveTopic, message: "接收主题不能为空" }
+            { value: receiveTopic, message: "接收主题不能为空" },
+            { value: batchSend, message: "是否开启批量命令不能为空" },
+            { value: batchDelay, message: "批量间隔不能为空" }
         ];
 
         for (const field of fields) {
@@ -609,7 +654,10 @@
             "customer": {
                 "id": customerId,
                 "name": customerName
-            }
+            },
+            "batchSend": batchSend,
+            "batchCommand": batchCommand,
+            "batchDelay": batchDelay
         }
 
         $.ajax({
@@ -765,6 +813,12 @@
                 for (let i = 0; i < tokenList.length; i++) {
                     tokenHtml += '<option value="' + tokenList[i].id + '">'+ tokenList[i].name + ' --- ' + tokenList[i].token + ' --- ' + tokenList[i].mqttServer + ':' + tokenList[i].mqttPort + '</option>';
                 }
+
+                //如果token列表为空，则添加一个默认的token
+                if (tokenList.length === 0) {
+                    tokenHtml += '<option value="0">请前往“MQTT主机”添加一个MQTT Broker</option>';
+                }
+
                 $("#add_token").html(tokenHtml);
             }
         })
@@ -807,6 +861,12 @@
         for (const field of fields) {
             if (isBlank($(field.selector).val())) {
                 layer.msg(field.message);
+                return;
+            }
+
+            //验证MQTT主机
+            if ($("#add_token").val() === "0") {
+                layer.msg("请前往“MQTT主机”添加一个MQTT Broker");
                 return;
             }
         }
