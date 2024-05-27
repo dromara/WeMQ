@@ -70,17 +70,20 @@
                 <div class="card-header">
 
                     <div style="display: flex;flex-wrap: wrap;align-items: center;">
-                        批量下发参数
+                        <button id="showHide" onclick="showHide()" class="btn btn-link">
+                            ▷
+                        </button>
+                        <span style="margin-left: 20px">批量下发参数</span>
                         <span style="margin-left: 50px" class="text-muted">间隔：</span>
                         <input th:value="${batchDelay}" type="number" id="batchInterval" value="1000" style="width: 80px" class="form-control form-control-sm">
                         <span> ms</span>
                         <button style="margin-left: 20px" onclick="batchSend()" class="btn btn-primary btn-sm">批量发送</button>
-                        <button style="margin-left: 20px" onclick="showHide()" class="btn btn-primary btn-sm">折叠/展开</button>
+
                     </div>
                 </div>
                 <div id="batchCommand" class="card-body" style="padding: 6px 6px;">
-                    <span id="hideText"></span>
-                    <textarea th:text="${batchCommand}" id="batchText" class="form-control" style="height: 120px;margin-bottom: 20px;font-size: 13px"></textarea>
+                    <span style="display: block" id="hideText"></span>
+                    <textarea th:text="${batchCommand}" id="batchText" class="form-control" style="height: 120px;display: none;margin-bottom: 20px;font-size: 13px"></textarea>
                 </div>
             </div>
         </div>
@@ -120,6 +123,10 @@
     let sendTopic = $('#sendTopic').val();
     let receiveTopic = $('#receiveTopic').val();
     let qos = $('#qos').val();
+
+    let batchText = $('#batchText');
+    let hideText = $('#hideText');
+    hideText.text(batchText.val().split('\n')[0]);
 
     function base64encode(text) {
         //确保/不会被转义
@@ -238,13 +245,17 @@
     function showHide() {
         let batchText = $('#batchText');
         let hideText = $('#hideText');
+        let button = $('#showHide');
         if (batchText.css('display') === 'none') {
             batchText.css('display', 'block');
             hideText.css('display', 'none');
+            button.text('▽');
         } else {
             batchText.css('display', 'none');
 
             hideText.css('display', 'block');
+
+            button.text('▷');
 
             //只显示textarea的第一行
             hideText.text(batchText.val().split('\n')[0]);
