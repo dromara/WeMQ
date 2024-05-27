@@ -75,9 +75,11 @@
                         <input th:value="${batchDelay}" type="number" id="batchInterval" value="1000" style="width: 80px" class="form-control form-control-sm">
                         <span> ms</span>
                         <button style="margin-left: 20px" onclick="batchSend()" class="btn btn-primary btn-sm">批量发送</button>
+                        <button style="margin-left: 20px" onclick="showHide()" class="btn btn-primary btn-sm">折叠/展开</button>
                     </div>
                 </div>
-                <div class="card-body" style="padding: 6px 6px;">
+                <div id="batchCommand" class="card-body" style="padding: 6px 6px;">
+                    <span id="hideText"></span>
                     <textarea th:text="${batchCommand}" id="batchText" class="form-control" style="height: 120px;margin-bottom: 20px;font-size: 13px"></textarea>
                 </div>
             </div>
@@ -231,6 +233,22 @@
                 }
             }
         }, 1000)
+    }
+
+    function showHide() {
+        let batchText = $('#batchText');
+        let hideText = $('#hideText');
+        if (batchText.css('display') === 'none') {
+            batchText.css('display', 'block');
+            hideText.css('display', 'none');
+        } else {
+            batchText.css('display', 'none');
+
+            hideText.css('display', 'block');
+
+            //只显示textarea的第一行
+            hideText.text(batchText.val().split('\n')[0]);
+        }
     }
 
     //将消息显示在网页上
