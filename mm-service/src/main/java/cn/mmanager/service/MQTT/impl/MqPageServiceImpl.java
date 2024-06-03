@@ -49,6 +49,9 @@ public class MqPageServiceImpl implements MqPageService {
         if (mqPageMapper.insert(mqPage) <= 0){
             return 0;
         }
+        mqPage.setBatchSend(0);
+        mqPage.setBatchCommand("");
+        mqPage.setBatchDelay(0);
         return mqPageMapper.insertPage_Customer(mqPage.getId(), mqPage.getCustomer().getId());
     }
 
