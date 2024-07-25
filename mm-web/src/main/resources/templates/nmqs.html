@@ -2,7 +2,7 @@
 <html lang="zh" xml:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Nmqs Token - 物联网调试管理系统</title>
+    <title>MQTT主机 - 物联网调试管理系统</title>
     <script th:src="@{/statics/jquery-1.12.4.min.js}"></script>
     <script th:src="@{/statics/tabler/tabler.min.js}"></script>
     <link rel="stylesheet" th:href="@{/statics/tabler/tabler.min.css}">
@@ -28,7 +28,7 @@
                             物联网调试管理后台
                         </div>
                         <h2 class="page-title">
-                            Nmqs Token管理
+                            MQTT主机管理
                         </h2>
                     </div>
                     <div class="col-auto ms-auto d-print-none">
@@ -36,7 +36,7 @@
                             <div class="btn-list">
                                 <button onclick="addToken()" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#modal-add">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path d="M5 12l14 0"></path></svg>
-                                    新建Token
+                                    添加主机
                                 </button>
                         </div>
                         </div>
@@ -67,7 +67,7 @@
                                         <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Token名称</th>
+                                            <th>主机名称</th>
                                             <th>Token</th>
                                             <th>协议</th>
                                             <th>服务器</th>
@@ -91,7 +91,7 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content" style="box-shadow: 0px 5px 6px rgb(205, 205, 205);">
                 <div class="modal-header">
-                    <h5 class="modal-title">Token详情</h5>
+                    <h5 class="modal-title">主机详情</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -126,13 +126,13 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content" style="box-shadow: 0px 5px 6px rgb(205, 205, 205);">
                 <div class="modal-header">
-                    <h5 class="modal-title">编辑Nmqs Token</h5>
+                    <h5 class="modal-title">编辑MQTT主机</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <input type="hidden" id="edit_id">
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Token名称</label>
+                        <label class="form-label">主机名称</label>
                         <input id="edit_name" type="text" class="form-control" />
                     </div>
                     <div class="mb-3">
@@ -180,51 +180,63 @@
         </div>
     </div>
 
-    <div class="modal modal-blur fade" id="modal-add" tabindex="-1" aria-modal="true">
-        <div class="modal-dialog modal-lg" role="document">
+    <div class="modal modal-blur fade" id="modal-add" tabindex="-1" aria-modal="true" >
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content" style="box-shadow: 0px 5px 6px rgb(205, 205, 205);">
                 <div class="modal-header">
-                    <h5 class="modal-title">添加Nmqs Token</h5>
+                    <h5 class="modal-title">添加MQTT主机</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <input type="hidden" id="add_id">
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Token名称</label>
-                        <input id="add_name" type="text" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Token</label>
-                        <div class="input-group mb-2">
-                            <input id="add_token" type="text" class="form-control">
-                            <button id="add_resettoken" class="btn" type="button">生成</button>
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="mb-3">
+                                <label class="form-label">主机名称</label>
+                                <input id="add_name" type="text" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Token</label>
+                                <div class="input-group mb-2">
+                                    <input id="add_token" type="text" class="form-control">
+                                    <button id="add_resettoken" class="btn" type="button">生成</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl">
+                            <div class="mb-3">
+                                <label class="form-label">MQTT连接协议</label>
+                                <select id="add_mqtt_protocol" class="form-select">
+                                    <option value="0">ws:// (默认8083)</option>
+                                    <option value="1">mqtt:// (默认1883)</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">MQTT服务器地址</label>
+                                <input id="add_mqtt_server" type="text" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">MQTT服务器端口</label>
+                                <input id="add_mqtt_port" type="text" class="form-control" />
+                            </div>
+
+
+                        </div>
+                        <div class="col-xl">
+                            <div class="mb-3">
+                                <label class="form-label">MQTT服务器用户名</label>
+                                <input id="add_mqtt_username" type="text" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">MQTT服务器密码</label>
+                                <input id="add_mqtt_password" type="text" class="form-control" />
+                            </div>
                         </div>
                     </div>
+
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">MQTT连接协议</label>
-                        <select id="add_mqtt_protocol" class="form-select">
-                            <option value="0">ws:// (默认8083)</option>
-                            <option value="1">mqtt:// (默认1883)</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">MQTT服务器地址</label>
-                        <input id="add_mqtt_server" type="text" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">MQTT服务器端口</label>
-                        <input id="add_mqtt_port" type="text" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">MQTT服务器用户名</label>
-                        <input id="add_mqtt_username" type="text" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">MQTT服务器密码</label>
-                        <input id="add_mqtt_password" type="text" class="form-control" />
-                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">
@@ -276,7 +288,7 @@
             width: 50
         }, {
             field: 'name',
-            title: 'Token名称',
+            title: '主机名称',
             align: 'center',
             valign: 'middle',
             width: 100

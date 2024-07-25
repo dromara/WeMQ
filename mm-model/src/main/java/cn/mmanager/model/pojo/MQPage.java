@@ -46,4 +46,13 @@ public class MQPage {
 
     /** 页面参数 */
     List<MQParam> mqParams;
+
+    /** 是否开启批量下发 */
+    private Integer batchSend;
+
+    /** 批量指令 */
+    private String batchCommand;
+
+    /** 批量延迟 */
+    private Integer batchDelay;
 }

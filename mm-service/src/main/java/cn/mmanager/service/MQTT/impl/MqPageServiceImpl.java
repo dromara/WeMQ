@@ -46,6 +46,9 @@ public class MqPageServiceImpl implements MqPageService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int insert(MQPage mqPage) {
+        mqPage.setBatchSend(0);
+        mqPage.setBatchCommand("");
+        mqPage.setBatchDelay(0);
         if (mqPageMapper.insert(mqPage) <= 0){
             return 0;
         }
