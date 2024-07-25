@@ -1,7 +1,7 @@
 # WeMQ - 物联网调试管理平台
 <img src="https://img.nicholasld.cn/i/2023/09/22/650d382ad4e66.png" width="700">
 
->####  WeMQ 目前已加入 [Dromara 社区 ](https://gitee.com/dromara) 孵化项目
+>####  WeMQ 目前已加入 [Dromara 社区 ](https://gitcode.com/dromara) 孵化项目
 
 ## 📂 1. 项目介绍
 
