@@ -17,6 +17,7 @@ public interface LoginLogService {
      * @param request 请求
      * @param admin 用户
      * @param status 状态
+     * @return int
      */
     int log(HttpServletRequest request, Admin admin, int status);
 
