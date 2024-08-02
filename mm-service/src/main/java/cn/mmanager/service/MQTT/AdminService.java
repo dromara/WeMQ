@@ -52,5 +52,8 @@ public interface AdminService {
      */
     Admin getAdminByMap(Map<String,Object> params);
 
+    /**
+     * 校验密码
+     */
     boolean checkPassword(String password, String hashPassword);
 }
