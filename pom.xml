@@ -8,8 +8,6 @@
     <artifactId>WeMQ</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
-
-    <!--工程子模块-->
     <modules>
         <module>mm-common</module>
         <module>mm-framework</module>
