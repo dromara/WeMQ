@@ -2,6 +2,7 @@ function openParamMenu(id) {
     layui.use(['table', 'dropdown'], function(){
         const table = layui.table;
         const dropdown = layui.dropdown;
+        const layer = layui.layer;
 
         // 创建渲染实例
         let inst = table.render({
@@ -30,24 +31,25 @@ function openParamMenu(id) {
             page: false,
             cols: [[
                 {field:'id', width:80, title: 'ID', sort: true,unresize: true},
-                {field:'message',width:338, title: '指令', edit: 'text',unresize: true},
+                {field: 'message', width: 338, title: '指令', unresize: true, edit: 'textarea'},
                 {field:'button',minWidth:100, title:'按钮名称', edit: 'text',unresize: true},
                 {field:'sort',minWidth:80, title:'排序', edit: 'text',unresize: true},
                 {fixed: 'right', title:'操作', width: 65, toolbar: '#barDemo',unresize: true}
             ]],
             done: function(){
-                //单元格编辑事件
+                // 单元格编辑事件
                 table.on('edit(test)', function(obj){
                     let update;
                     var field = obj.field; // 得到字段
                     var value = obj.value; // 得到修改后的值
                     var data = obj.data; // 得到所在行所有键值
+
                     // 值的校验
                     if(value == null || value === ''){
                         layer.msg('值不能为空', {icon: 2});
                         // 还原单元格编辑之前的值
                         update = {};
-                        update[field] = 0;
+                        update[field] = obj.oldValue; // 使用旧值
                         obj.update(update);
                         return;
                     }
@@ -56,12 +58,11 @@ function openParamMenu(id) {
                             layer.msg('排序只能为数字', {icon: 2});
                             // 还原单元格编辑之前的值
                             update = {};
-                            update[field] = 0;
+                            update[field] = obj.oldValue; // 使用旧值
                             obj.update(update);
                             return;
                         }
                     }
-
 
                     $.ajax({
                         url: '/page/param/update',
@@ -74,22 +75,28 @@ function openParamMenu(id) {
                                 layer.msg(res.msg, {icon: 2});
                                 // 还原单元格编辑之前的值
                                 update = {};
-                                update[field] = 0;
+                                update[field] = obj.oldValue; // 使用旧值
                                 obj.update(update);
+                            } else {
+                                layer.msg('编辑成功', {icon: 1});
+                                // 重新加载表格
+                                inst.reloadData();
                             }
-                            layer.msg('编辑成功', {icon: 1});
-
-                            //重新加载表格
-                            inst.reloadData();
-
-                            console.log(data)
+                            console.log(data);
                         }
-                    })
-                })
+                    });
+                });
             },
             error: function(res, msg){
                 console.log(res, msg)
             }
+        });
+
+        layer.open({
+            type: 1, // 页面层
+            title: '调试参数编辑',
+            area: ['800px', '650px'], // 宽高
+            content: $('#modal-message'), // 引用上面的内容
         });
 
         // 触发单元格工具事件

@@ -1,5 +1,8 @@
 package cn.mmanager.model.pojo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
@@ -8,9 +11,14 @@ import lombok.Data;
  * @createTime 2023/4/8 13:25
  */
 @Data
+@TableName("mq_param")
 public class MQParam {
     /** 参数ID */
+    @TableId(type = IdType.AUTO)
     private Long id;
+
+    /** 页面ID */
+    private Long pageId;
 
     /** 调试消息 */
     private String message;

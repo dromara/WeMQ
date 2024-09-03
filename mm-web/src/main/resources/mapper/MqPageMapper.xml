@@ -41,13 +41,7 @@
         <result column="mqtt_receiveTopic" property="receiveTopic"/>
         <result column="mqtt_qos" property="qos"/>
         <result column="status" property="status"/>
-        <result column="batch_send" property="batchSend"/>
-        <result column="batch_command" property="batchCommand"/>
-        <result column="batch_delay" property="batchDelay"/>
-        <association property="customer" javaType="cn.mmanager.model.pojo.Customer">
-            <result column="customer_id" property="id"/>
-            <result column="customer_name" property="name"/>
-        </association>
+        <result column="customer_id" property="customerId"/>
     </resultMap>
 
     <select id="select" parameterType="string" resultType="MQPage" resultMap="select">
@@ -86,11 +80,6 @@
         </where>
         order by id desc
     </select>
-
-    <insert id="insert" parameterType="MQPage" useGeneratedKeys="true" keyProperty="id">
-        insert into mq_page (page_name, page_url, page_filename, nmqs_id, mqtt_sendtopic, mqtt_receivetopic, mqtt_qos, status, batch_send, batch_command, batch_delay)
-        values (#{pageName}, #{pageUrl}, #{pageFileName}, #{nmqsTokenID}, #{sendTopic}, #{receiveTopic}, #{qos}, #{status}, #{batchSend}, #{batchCommand}, #{batchDelay})
-    </insert>
 
     <update id="update" parameterType="MQPageDto">
         update mq_page
@@ -160,25 +149,6 @@
         left join mq_page_param on mq_param.id = mq_page_param.param_id
         where mq_page_param.page_id = #{id} order by mq_param.sort
     </select>
-
-    <insert id="insertPage_Customer" parameterType="long">
-        insert into mq_customer_page (customer_id, page_id)
-        values (#{customerId}, #{pageId})
-    </insert>
-
-    <update id="updatePage_Customer" parameterType="long">
-        update mq_customer_page
-        <set>
-            <if test="customerId != null">
-                customer_id = #{customerId},
-            </if>
-        </set>
-        where page_id = #{pageId}
-    </update>
-
-    <delete id="deletePage_Customer" parameterType="long">
-        delete from mq_customer_page where page_id = #{pageId}
-    </delete>
 
     <select id="selectByURL" resultMap="mqPage" parameterType="string">
         select * from mq_page where page_url = #{url}

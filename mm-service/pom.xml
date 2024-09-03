@@ -24,6 +24,11 @@
             <version>${revision}</version>
         </dependency>
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>cn.mmanger</groupId>
             <artifactId>mm-framework</artifactId>
             <version>${revision}</version>

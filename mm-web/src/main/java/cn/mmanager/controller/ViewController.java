@@ -12,6 +12,9 @@ import cn.mmanager.model.pojo.Admin;
 import cn.mmanager.model.pojo.NmqsToken;
 import cn.mmanager.service.MQTT.AdminService;
 import cn.mmanager.service.MQTT.LoginLogService;
+import cn.mmanager.service.MQTT.MqPageService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
@@ -35,37 +38,13 @@ import java.util.Map;
  * @createTime 2023/4/13 14:49
  */
 @Controller
+@RequiredArgsConstructor
 public class ViewController extends BaseController {
-    private MqPageMapper mqPageMapper;
-    private NmqsMapper nmqsMapper;
-    private AdminService adminService;
-    private LoginLogService loginLogService;
-    private Environment environment;
-
-    @Autowired
-    public void setMqPageMapper(MqPageMapper mqPageMapper) {
-        this.mqPageMapper = mqPageMapper;
-    }
-
-    @Autowired
-    public void setNmqsMapper(NmqsMapper nmqsMapper) {
-        this.nmqsMapper = nmqsMapper;
-    }
-
-    @Autowired
-    public void setAdminService(AdminService adminService) {
-        this.adminService = adminService;
-    }
-
-    @Autowired
-    public void setLoginLogService(LoginLogService loginLogService) {
-        this.loginLogService = loginLogService;
-    }
-
-    @Autowired
-    public void setEnvironment(Environment environment) {
-        this.environment = environment;
-    }
+    private final MqPageService mqPageService;
+    private final NmqsMapper nmqsMapper;
+    private final AdminService adminService;
+    private final LoginLogService loginLogService;
+    private final Environment environment;
 
     @GetMapping("/")
     public String index(Model model) {
@@ -100,7 +79,7 @@ public class ViewController extends BaseController {
         //获取JRE版本
         model.addAttribute("JRE", System.getProperty("java.version"));
 
-        int count = mqPageMapper.count(0);
+        Long count = mqPageService.count(new QueryWrapper<>());
         model.addAttribute("pageCount", count);
 
         int adminCount = adminService.getAdminCountByMap(null);
@@ -194,6 +173,11 @@ public class ViewController extends BaseController {
         return "viewer_pages";
     }
 
+    @GetMapping("/common")
+    public String common() {
+        return "common";
+    }
+
     @GetMapping("/about")
     public String about() {
         return "about";
@@ -206,13 +190,13 @@ public class ViewController extends BaseController {
             mav.setViewName("error/404");
             return mav;
         }
-        MqPageDto mqPageDto = mqPageMapper.selectByURL(url);
+        MqPageDto mqPageDto = mqPageService.selectByURL(url);
         if (mqPageDto == null){
             mav.setViewName("error/404");
             return mav;
         }
 
-        NmqsToken nmqsToken = nmqsMapper.selectById(mqPageDto.getNmqsTokenID());
+        NmqsToken nmqsToken = nmqsMapper.selectById(mqPageDto.getNmqsTokenId());
         if (nmqsToken == null){
             mav.setViewName("error/404");
             return mav;
@@ -227,10 +211,6 @@ public class ViewController extends BaseController {
         mav.addObject("qos", mqPageDto.getQos());
 
         mav.addObject("serverInfo", (nmqsToken.getProtocol()==0?"ws://":"mqtt://")+nmqsToken.getMqttServer()+":"+nmqsToken.getMqttPort());
-
-        mav.addObject("batchSend", mqPageDto.getBatchSend());
-        mav.addObject("batchCommand", mqPageDto.getBatchCommand());
-        mav.addObject("batchDelay", mqPageDto.getBatchDelay());
 
         if (StrUtil.isEmpty(mqPageDto.getPageFileName())){
             mav.setViewName("mqtt");

@@ -38,7 +38,7 @@
               <div class="col">
                 <!-- Page pre-title -->
                 <div class="page-pretitle">物联网调试管理后台</div>
-                <h2 class="page-title">调试页面管理</h2>
+                <h2 class="page-title">自定义页面管理</h2>
               </div>
               <div class="col-auto ms-auto d-print-none">
                 <div class="btn-list">
@@ -67,7 +67,7 @@
                         <path d="M12 5l0 14"></path>
                         <path d="M5 12l14 0"></path>
                       </svg>
-                      新建调试页面
+                      新建自定义页面
                     </button>
                   </div>
                 </div>
@@ -213,7 +213,7 @@
                   />
                 </div>
               </div>
-              <div class="layui-form-item">
+              <div class="layui-form-item" style="display: none">
                 <label class="layui-form-label" style="width: 120px"
                   >访问地址</label
                 >
@@ -225,6 +225,20 @@
                     name="edit_url"
                     readonly
                     type="text"
+                  />
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 120px"
+                >文件名称</label
+                >
+                <div class="layui-input-block" style="margin-left: 120px">
+                  <input
+                      class="layui-input"
+                      style="width: 200px"
+                      id="edit_filename"
+                      name="edit_filename"
+                      type="text"
                   />
                 </div>
               </div>
@@ -444,7 +458,7 @@
                   />
                 </div>
               </div>
-              <div class="layui-form-item">
+              <div class="layui-form-item" style="display: none">
                 <label class="layui-form-label" style="width: 120px"
                   >访问地址</label
                 >
@@ -456,6 +470,20 @@
                     name="add_url"
                     readonly
                     type="text"
+                  />
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 120px"
+                >文件名称</label
+                >
+                <div class="layui-input-block" style="margin-left: 120px">
+                  <input
+                      class="layui-input"
+                      style="width: 200px"
+                      id="add_filename"
+                      name="add_filename"
+                      type="text"
                   />
                 </div>
               </div>
@@ -679,7 +707,7 @@
   <script th:inline="none">
     //菜单class追加属性
     $(function () {
-      $("#menu_pages").addClass("active");
+      $("#menu_common_pages").addClass("active");
       $("#list_refresh").hide();
     });
 
@@ -699,9 +727,9 @@
           pageName: "pageNum",
           limitName: "pageSize",
         },
-          where: {
-              commonPage: 0,
-          },
+        where: {
+          commonPage: 1,
+        },
         parseData: function (res) {
           return {
             code: res.code === 200 ? 0 : 1,
@@ -979,16 +1007,13 @@
               let params = data.data;
               $("#edit_id").val(params.id);
               $("#edit_name").val(params.pageName);
+              $("#edit_filename").val(params.pageFileName);
               $("#edit_url").val(params.pageUrl);
               $("#edit_mqtt_sendTopic").val(params.sendTopic);
               $("#edit_mqtt_receiveTopic").val(params.receiveTopic);
-              $("#edit_filename").val(params.pageFileName);
               $("#edit_customer").val(
                 params.customer ? params.customer.id : "0"
               );
-              $("#edit_batch_send").val(params.batchSend);
-              $("#edit_batch_command").val(params.batchCommand);
-              $("#edit_batch_delay").val(params.batchDelay);
 
               // 获取token列表
               $.ajax({
@@ -1102,6 +1127,7 @@
         { value: token, message: "token不能为空" },
         { value: sendTopic, message: "发送主题不能为空" },
         { value: receiveTopic, message: "接收主题不能为空" },
+        { value: filename, message: "文件名称不能为空" },
       ];
 
       const fieldsServer = [
@@ -1314,6 +1340,7 @@
         { selector: "#add_customer", message: "客户不能为空" },
         { selector: "#add_mqtt_sendTopic", message: "发送主题不能为空" },
         { selector: "#add_mqtt_receiveTopic", message: "接收主题不能为空" },
+        { selector: "#add_filename", message: "文件名称不能为空" },
       ];
 
       for (const field of fields) {

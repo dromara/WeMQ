@@ -10,7 +10,7 @@
 <body>
 <div th:fragment="header">
     <header class="navbar navbar-expand-sm navbar-light d-print-none">
-        <div class="container-xl">
+        <div class="container-xxl">
             <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
                 <a href="#">
                     <img class="navbar-brand-image" th:src="@{/statics/images/mqttlogo.png}" style="height:83px"/>
@@ -22,11 +22,11 @@
     <header class="navbar-expand-md">
         <div class="collapse navbar-collapse" id="navbar-menu">
             <div class="navbar navbar-light">
-                <div class="container-xl">
+                <div class="container-xxl">
                     <ul class="navbar-nav">
                         <li id="menu_dashboard" class="nav-item">
                             <a class="nav-link" th:href="@{/}">
-                                <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
                                     <svg class="icon" fill="none" height="24" stroke="currentColor" stroke-linecap="round"
                                          stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"
                                          xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none" stroke="none"></path><path
@@ -54,6 +54,21 @@
                                 </span>
                             </a>
                         </li>
+                      <li id="menu_common_pages" class="nav-item">
+                        <a class="nav-link" th:href="@{/common}">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-browser" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                       <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                       <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z"></path>
+                                       <path d="M4 8l16 0"></path>
+                                       <path d="M8 4l0 4"></path>
+                                    </svg>
+                                </span>
+                          <span class="nav-link-title">
+                                    定制页面
+                                </span>
+                        </a>
+                      </li>
                         <li id="menu_nmqs" class="nav-item">
                             <a class="nav-link" th:href="@{/tokens}">
                                 <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
@@ -96,7 +111,7 @@
                                     </svg>
                                 </span>
                                 <span class="nav-link-title">
-                                    自定义调试
+                                    快捷调试
                                 </span>
                             </a>
                         </li>

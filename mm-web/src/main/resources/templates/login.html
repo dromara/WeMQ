@@ -13,7 +13,7 @@
 <div class="page page-center">
     <div class="container container-tight py-4">
         <div class="text-center mb-4">
-            <a href="../../webapp/WEB-INF/template" class="navbar-brand navbar-brand-autodark"><img src="./static/logo.svg" height="36" alt=""></a>
+            <a class="navbar-brand navbar-brand-autodark"><img th:src="@{/statics/images/logo.png}" height="100" alt=""></a>
         </div>
         <div class="card card-md">
             <div class="card-body">
@@ -33,9 +33,6 @@
                     <div class="mb-2">
                         <label class="form-label">
                             密码
-                            <!--              <span class="form-label-description">-->
-                            <!--                    <a href="./forgot-password.html">忘记密码</a>-->
-                            <!--                  </span>-->
                         </label>
                         <div class="input-group input-group-flat">
                             <input type="password" name="password" class="form-control" placeholder="请输入密码" autocomplete="off">
@@ -46,12 +43,6 @@
                     </div>
                 </form>
             </div>
-        </div>
-        <div class="text-center text-muted mt-3">
-            <a href="https://beian.miit.gov.cn/" style="color:	#808080">鲁ICP备2022034231号-1</a><span style="color:	#808080;"> | </span>
-            <img src="https://img.nicholasld.cn/i/2023/02/23/63f757b60a7dc.png" style="vertical-align:middle">
-            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=37010502001904" style="color:	#808080;">
-                鲁公网安备 37010502001904号</a>
         </div>
     </div>
 </div>

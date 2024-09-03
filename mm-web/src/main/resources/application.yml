@@ -13,11 +13,12 @@ spring:
     url: jdbc:mysql://localhost:3306/wemq?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
     username: root
     password: 88888888
-mybatis:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  mapper-locations: classpath:/mapper/*.xml
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**.xml
   type-aliases-package: cn.mmanager.model
+  configuration:
+    # MyBatis 配置
+    map-underscore-to-camel-case: true
 pagehelper:
   helperDialect: mysql
   reasonable: true

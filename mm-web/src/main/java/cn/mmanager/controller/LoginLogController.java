@@ -6,6 +6,7 @@ import cn.mmanager.common.core.domain.AjaxResult;
 import cn.mmanager.common.core.page.TableData;
 import cn.mmanager.model.dto.LoginLogDto;
 import cn.mmanager.service.MQTT.LoginLogService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +19,9 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/loginLog")
+@RequiredArgsConstructor
 public class LoginLogController extends BaseController {
-    private LoginLogService loginLogService;
-
-    @Autowired
-    public void setLoginLogService(LoginLogService loginLogService) {
-        this.loginLogService = loginLogService;
-    }
+    private final LoginLogService loginLogService;
 
     @GetMapping("/list")
     @ResponseBody

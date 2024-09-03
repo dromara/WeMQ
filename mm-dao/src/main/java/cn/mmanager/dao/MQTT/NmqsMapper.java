@@ -1,6 +1,7 @@
 package cn.mmanager.dao.MQTT;
 
 import cn.mmanager.model.pojo.NmqsToken;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -12,9 +13,8 @@ import java.util.Map;
  * @author NicholasLD
  * @createTime 2023/4/13 14:18
  */
-@Repository
 @Mapper
-public interface NmqsMapper {
+public interface NmqsMapper extends BaseMapper<NmqsToken> {
     /**
      * 查询所有的Nmqs
      * @return 查询结果
@@ -27,13 +27,6 @@ public interface NmqsMapper {
      * @return 查询结果
      */
     NmqsToken selectById(Long id);
-
-    /**
-     * 插入NmqsToken
-     * @param nmqsToken NmqsToken对象
-     * @return 插入结果
-     */
-    int insert(NmqsToken nmqsToken);
 
     /**
      * 更新NmqsToken

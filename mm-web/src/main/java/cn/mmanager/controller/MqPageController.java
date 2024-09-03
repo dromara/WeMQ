@@ -7,10 +7,12 @@ import cn.mmanager.common.core.page.TableData;
 import cn.mmanager.model.dto.MqPageDto;
 import cn.mmanager.model.pojo.MQPage;
 import cn.mmanager.model.pojo.MQParam;
+import cn.mmanager.model.vo.MQPageVo;
 import cn.mmanager.service.MQTT.MqPageService;
 import cn.mmanager.service.MQTT.MqParamService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -25,18 +27,10 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/page")
+@RequiredArgsConstructor
 public class MqPageController {
-    private MqPageService mqPageService;
-    private MqParamService mqParamService;
-    @Autowired
-    public void setMqPageService(MqPageService mqPageService) {
-        this.mqPageService = mqPageService;
-    }
-
-    @Autowired
-    public void setMqParamService(MqParamService mqParamService) {
-        this.mqParamService = mqParamService;
-    }
+    private final MqPageService mqPageService;
+    private final MqParamService mqParamService;
 
     @GetMapping("/list")
     @ResponseBody
@@ -52,8 +46,7 @@ public class MqPageController {
         params.put("customerID", customerId);
         params.put("commonPage", commonPage);
         Page<Object> page = PageHelper.startPage(pageNum, pageSize);
-        List<MQPage> list = mqPageService.select(params);
-        System.out.println(page);
+        List<MqPageDto> list = mqPageService.select(params);
 
         return AjaxResult.success(new TableData(list, pageNum, page.getPages(), page.getTotal()));
     }
@@ -68,14 +61,14 @@ public class MqPageController {
     @RepeatSubmit(interval = 1000, message = "请勿重复提交")
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult add(@RequestBody MQPage page) {
+    public AjaxResult add(@RequestBody MQPageVo page) {
         return mqPageService.insert(page) > 0 ? AjaxResult.success() : AjaxResult.error();
     }
 
     @RepeatSubmit(interval = 1000, message = "请勿重复提交")
     @PostMapping("/update")
     @ResponseBody
-    public AjaxResult update(@RequestBody MqPageDto page) {
+    public AjaxResult update(@RequestBody MQPageVo page) {
         return mqPageService.update(page) > 0 ? AjaxResult.success() : AjaxResult.error();
     }
 

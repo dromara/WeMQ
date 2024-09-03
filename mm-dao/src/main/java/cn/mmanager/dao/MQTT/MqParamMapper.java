@@ -1,6 +1,7 @@
 package cn.mmanager.dao.MQTT;
 
 import cn.mmanager.model.pojo.MQParam;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
@@ -13,9 +14,8 @@ import java.util.List;
  * @author 梁晓惠、袁祎阳、纪雨佳
  * @createTime 2023/4/8 15:16
  */
-@Repository
 @Mapper
-public interface MqParamMapper {
+public interface MqParamMapper extends BaseMapper<MQParam> {
     /**
      * 添加
      * @param mqParam 参数实体类
@@ -29,12 +29,6 @@ public interface MqParamMapper {
      * @return 返回值
      */
     int update(MQParam mqParam);
-    /**
-     * 删除
-     * @param id
-     * @return
-     */
-    int deleteById(Long id);
 
     /**
      * 查询
@@ -42,9 +36,5 @@ public interface MqParamMapper {
      * @return 返回值
      */
     MQParam select (Long id);
-
-    int deletePage_Param(Long paramId);
-
-    int insertPage_Param(@Param("pageId") Long pageId,@Param("paramId") Long paramId);
 
 }

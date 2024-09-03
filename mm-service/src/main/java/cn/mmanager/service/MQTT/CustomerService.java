@@ -1,6 +1,7 @@
 package cn.mmanager.service.MQTT;
 
 import cn.mmanager.model.pojo.Customer;
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.Map;
  * @author NicholasLD
  * @createTime 2023/4/17 14:22
  */
-public interface CustomerService {
+public interface CustomerService extends IService<Customer> {
     /**
      * Add a Customer
      *

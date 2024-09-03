@@ -1,12 +1,9 @@
-package cn.mmanager.model.pojo;
+package cn.mmanager.model.vo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * 页面实体类
@@ -14,8 +11,7 @@ import java.util.List;
  * @createTime 2023/4/8 13:20
  */
 @Data
-@TableName("mq_page")
-public class MQPage {
+public class MQPageVo {
     /** 页面ID */
     @TableId(type = IdType.AUTO)
     private Long id;
@@ -32,7 +28,7 @@ public class MQPage {
 
     /** Nmqs Token ID */
     @TableField(value = "nmqs_id")
-    private Long nmqsTokenId;
+    private String nmqsTokenId;
 
     /** 发布订阅 */
     @TableField(value = "mqtt_sendtopic")
@@ -51,4 +47,11 @@ public class MQPage {
 
     /** 页面状态 */
     private int status;
+
+    /** 服务器信息 */
+    private Integer protocol;
+    private String mqttServer;
+    private Integer mqttPort;
+    private String mqttUsername;
+    private String mqttPassword;
 }

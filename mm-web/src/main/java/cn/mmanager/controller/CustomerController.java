@@ -10,6 +10,7 @@ import cn.mmanager.model.pojo.NmqsToken;
 import cn.mmanager.service.MQTT.CustomerService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -24,13 +25,9 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/customer")
+@RequiredArgsConstructor
 public class CustomerController extends BaseController {
-    private CustomerService customerService;
-
-    @Autowired
-    public void setCustomerService(CustomerService customerService) {
-        this.customerService = customerService;
-    }
+    private final CustomerService customerService;
 
     @RequestMapping("/list")
     @ResponseBody

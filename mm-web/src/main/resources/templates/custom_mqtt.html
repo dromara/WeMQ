@@ -7,8 +7,12 @@
     <script th:src="@{/statics/tabler/tabler.min.js}"></script>
     <link rel="stylesheet" th:href="@{/statics/tabler/tabler.min.css}">
     <link rel="stylesheet" th:href="@{/statics/system/common.css}">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
     <script th:src="@{/statics/system/common.js}"></script>
+    <!-- 引入 layui.css -->
+    <link rel="stylesheet" th:href="@{/statics/layui/layui.css}" />
+    <!-- 引入 layui.js -->
+    <script th:src="@{/statics/layui/layui.js}"></script>
+    <script th:src="@{/statics/crypto-js.min.js}"></script>
 </head>
 <body>
 <div class="page">
@@ -19,131 +23,170 @@
             <div class="container-xl">
                 <div class="row g-2 align-items-center">
                     <div class="col">
-                        <!-- Page pre-title -->
                         <div class="page-pretitle">
                             物联网调试管理后台
                         </div>
                         <h2 class="page-title">
-                            自定义调试
+                            快捷调试
                         </h2>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="page-body">
-        <div class="container-xl">
-            <div class="row">
-                <div class="col-12">
-                    <div class="alert alert-success" role="alert" style="text-align: center;">
-                        <h4 style="margin-bottom: 0;">连接状态：<span id="status" style="color: red;">断开</span></h4>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-7">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">服务器</span>
-                        <input type="text" class="form-control" id="server" required>
-                    </div>
-                </div>
-                <div class="col-5">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">端口</span>
-                        <input type="text" class="form-control" id="port" required>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-6">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">用户名</span>
-                        <input type="text" class="form-control" id="username">
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">密码</span>
-                        <input type="password" class="form-control" id="password">
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">Client ID</span>
-                        <input type="text" class="form-control" id="clientid" required>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">订阅主题</span>
-                        <input type="text" class="form-control" id="topic" required>
-                    </div>
-                </div>
-            </div>
-            <div class="row" style="margin-bottom: 10px;">
-                <div class="col-6">
-                    <div class="input-group">
-                        <textarea class="form-control" id="system-log" style="height: 100%;color:darkgray;font-size: 14px;" readonly></textarea>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="card">
-                        <div class="card-body" id="connectCard">
-                            <p class="card-text">重新填写连接信息后，重新点击下方的"连接"按钮即可连接。</p>
-                            <button type="button" class="btn btn-primary" style="margin: 0 auto;" id="connect">连接</button>
+
+    <div class="layui-container">
+        <div class="layui-row">
+            <div class="layui-col-xs12">
+                <div class="layui-card custom-card">
+                    <div class="layui-card-header">连接信息</div>
+                    <div class="layui-card-body" style="padding: 15px;">
+                        <div class="layui-row layui-col-space10">
+                            <div class="layui-col-xs2">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">协议</label>
+                                    <div class="layui-input-block">
+                                        <select name="protocol" id="protocol" lay-verify="required" class="layui-select">
+                                            <option value="tcp">TCP</option>
+                                            <option value="ws">WebSocket</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-xs7">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">服务器</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" class="layui-input" id="server" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-xs3">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">端口</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" class="layui-input" id="port" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-row layui-col-space10">
+                            <div class="layui-col-xs6">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">用户名</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" class="layui-input" id="username">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-xs6">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">密码</label>
+                                    <div class="layui-input-block">
+                                        <input type="password" class="layui-input" id="password">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-row layui-col-space10">
+                            <div class="layui-col-xs6">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">订阅Topic</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" class="layui-input" id="topic" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-xs6">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">发送Topic</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" class="layui-input" id="sendTopic" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-row">
+                            <div class="layui-col-xs12" style="text-align: right;">
+                                <button type="button" class="layui-btn layui-btn-normal" id="connect" onclick="connect()">保存并连接</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">消息内容</span>
-                        <input id="sendMessage" type="text" class="form-control" required>
-                    </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">发送主题</span>
-                        <input id="sendTopic" type="text" class="form-control" required>
-                        <button class="btn btn-primary" type="button" id="sendButton">发送消息</button>
-                    </div>
 
                 </div>
             </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="input-group">
-                    <textarea class="form-control" id="message"
-                              style="min-height: 500px;max-height: 500px;color:darkgray;font-size: 14px;" readonly></textarea>
+        </div>
+        <div class="layui-row">
+            <div class="layui-card custom-card">
+                <div class="layui-card-body">
+                    <textarea class="layui-textarea custom-textarea" id="message" readonly></textarea>
+                    <div class="layui-input-group">
+                        <input id="text" type="text" class="layui-input" placeholder="请输入调试信息" style="flex: 1;">
+                        <button onclick="send()" class="layui-btn layui-btn-primary" style="flex: 0 0 90px;">发送</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    </div>
 </div>
 </body>
 <style>
+    .custom-card {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    .custom-textarea {
+        min-height: 300px;
+        resize: none;
+    }
 
+    .layui-container {
+        margin-top: 20px;
+    }
+    .layui-input-group {
+        flex: 0 0 auto;
+        margin-top: 10px;
+        display: flex;
+    }
+    .layui-form-label {
+        width: 100px;
+    }
+
+    .right {
+        display: flex;
+        justify-content: flex-end;
+    }
 </style>
 
 <script>
-    let client;
+    let websocket;
     $(function(){
         //随机生成Client ID
         var clientid = "MQTTWeb_" + Math.random().toString(16).substr(2, 8);
         $("#clientid").val(clientid);
 
-        //临时设置几个默认值
-        $("#server").val("localhost");
-        $("#port").val("8083");
-        $("#username").val("");
-        $("#password").val("");
-        $("#topic").val("mqtt/#");
-        $("#sendTopic").val("mqtt/#");
+        //从localStorage中获取
+        var mqtt = localStorage.getItem("mqtt");
+        if (mqtt != null) {
+            var con = JSON.parse(mqtt);
+            $("#protocol").val(con.protocol);
+            $("#server").val(con.server);
+            $("#port").val(con.port);
+            $("#username").val(con.username);
+            $("#password").val(con.password);
+            $("#topic").val(con.subTopic);
+            $("#sendTopic").val(con.sendTopic);
+        } else {
+            //临时设置几个默认值
+            $("#protocol").val("tcp");
+            $("#server").val("broker.emqx.io");
+            $("#port").val("1883");
+            $("#username").val("");
+            $("#password").val("");
+            $("#topic").val("mqtt/#");
+            $("#sendTopic").val("mqtt/test");
+        }
 
         //菜单class追加属性
         $(function () {
@@ -162,158 +205,131 @@
         textarea.style.minHeight = div.offsetHeight + "px";
     });
 
-    $("#connect").click(function () {
-        if (client == null) {
-            connect();
-        }
-
-        if (client.isConnected()) {
-            unconnect();
-            connect();
-        }
-    });
-
     //连接
     function connect() {
-        if (!validateConnection()) {
-            return;
+        //断开之前的
+        if (websocket != null) {
+            websocket.close();
         }
+
+        var protocol = $("#protocol").val();
         var server = $("#server").val();
         var port = $("#port").val();
         var username = $("#username").val();
         var password = $("#password").val();
-        var clientid = $("#clientid").val();
-        var topic = $("#topic").val();
-        var options = {
-            timeout: 3,
-            //Gets Called if the connection has sucessfully been established
-            onSuccess: function () {
-                console.log("连接成功");
-                $('#system-log').val(
-                    '[' + new Date().toLocaleString() + '] '
-                    + '[SERVER] '
-                    + '服务器连接成功！' + '\n'
-                    + $('#system-log').val()
-                );
-                $('#status').text('已连接');
-                client.subscribe(topic);
-                $('#system-log').val(
-                    '[' + new Date().toLocaleString() + '] '
-                    + '[SUBSCRIBE] '
-                    + '频道订阅成功：' + topic
-                    + '\n'
-                    + $('#system-log').val()
-                );
-            },
-            //Gets Called if the connection could not be established
-            onFailure: function (message) {
-                console.log("连接失败");
-                $('#system-log').val(
-                    '[' + new Date().toLocaleString() + '] '
-                    + '[SERVER] '
-                    + '服务器失败，错误' + message.errorMessage
-                    + '\n'
-                    + $('#system-log').val()
-                );
+        var subTopic = $("#topic").val();
+        var sendTopic = $("#sendTopic").val();
+
+        let con = {
+            protocol: protocol,
+            server: server,
+            port: port,
+            username: username,
+            password: password,
+            subTopic: subTopic,
+            sendTopic: sendTopic
+        }
+
+        //存储到localStorage
+        localStorage.setItem("mqtt", JSON.stringify(con));
+
+        const encryptedData = encrypt(con, "1234567890123456");
+
+        //链接websocket
+        if ('WebSocket' in window) {
+            websocket = new WebSocket( getNmqsWebsocket() + `/common/${encryptedData}`);
+        } else {
+            alert('您的浏览器不支持WebSocket协议，建议您更换 Chrome 浏览器')
+        }
+
+        //如果连接成功
+        if (websocket != null) {
+            //连接发生错误的回调方法
+            websocket.onerror = function () {
+                setMessageInnerHTML("error");
+            };
+
+            //连接成功建立的回调方法
+            websocket.onopen = function (event) {
+                let prefix = "[System]["+ getTime() +"] ";
+                setMessageInnerHTML(prefix + "开始建立连接");
             }
-        };
-        //设置连接信息
-        if (username != "") {
-            options.userName = username;
-        }
-        if (password != "") {
-            options.password = password;
-        }
-        //创建客户端实例
-        client = new Paho.MQTT.Client(server, Number(port), clientid);
-        //设置回调函数
-        client.onConnectionLost = onConnectionLost;
-        client.onMessageArrived = onMessageArrived;
-        //连接服务器并注册连接选项
-        client.connect(options);
-    }
 
-    function unconnect() {
-        if(client.isConnected()){
-            client.disconnect();
-            $('#status').text('未连接');
-            $('#system-log').val(
-                '[' + new Date().toLocaleString() + '] '
-                + '[SERVER] '
-                + '服务器断开连接。' + '\n'
-                + $('#system-log').val()
-            );
-            console.log("断开成功");
+            //接收到消息的回调方法
+            websocket.onmessage = function (event) {
+                let prefix = "[Receive]["+ getTime() +"] ";
+                setMessageInnerHTML(prefix + event.data);
+            }
+
+            //连接关闭的回调方法
+            websocket.onclose = function () {
+                let prefix = "[System]["+ getTime() +"] ";
+                setMessageInnerHTML(prefix + "连接关闭");
+            }
+
+            //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+            window.onbeforeunload = function () {
+                websocket.close();
+
+            }
         }
     }
 
-    //连接丢失回调函数
-    function onConnectionLost(responseObject) {
-        if (responseObject.errorCode !== 0) {
-            console.log("连接丢失：" + responseObject.errorMessage);
-            $('#status').text('未连接');
-            $('#system-log').val(
-                '[' + new Date().toLocaleString() + '] '
-                + '[SERVER] '
-                + '服务器连接丢失！' + '\n'
-                + $('#system-log').val()
-            );
-        }
+    function encrypt(obj, secretKey) {
+        // 将对象转换为字符串
+        const data = JSON.stringify(obj);
+
+        // 转换密钥和生成随机 IV
+        const key = CryptoJS.enc.Utf8.parse(secretKey);
+        const iv = CryptoJS.lib.WordArray.random(16);
+
+        // 加密数据
+        const encrypted = CryptoJS.AES.encrypt(data, key, {
+            iv: iv,
+            padding: CryptoJS.pad.Pkcs7,
+            mode: CryptoJS.mode.CBC
+        });
+
+        // 将 IV 和加密数据连接后进行 Base64 编码
+        let encryptedData = iv.concat(encrypted.ciphertext).toString(CryptoJS.enc.Base64);
+
+        // 去掉斜线
+        encryptedData = encryptedData.replace(/\//g, '_');
+
+        return encryptedData;
     }
 
-    //消息到达回调函数
-    function onMessageArrived(message) {
-        console.log("收到消息：" + message.payloadString);
-        $("#message").val(
-            '['+ new Date().toLocaleString()+'] '
-            + '[接收] '
-            + "[" + message.destinationName + "] "
-            + message.payloadString
-            + "\n"
-            + $("#message").val()
-        );
+    function setMessageInnerHTML(innerHTML) {
+        //$('#message').val(innerHTML + '\n' + $('#message').val());
+        //只显示最上的1000行
+        let message = $('#message').val();
+        let messageArray = message.split('\n');
+        if (messageArray.length > 500) {
+            messageArray.pop();
+        }
+        messageArray.unshift(innerHTML);
+        $('#message').val(messageArray.join('\n'));
+
     }
 
-    //验证连接信息完整性
-    function validateConnection() {
-        var server = $("#server").val();
-        var port = $("#port").val();
-        var clientid = $("#clientid").val();
-        var topic = $("#topic").val();
-        if (server == "" || port == "" || clientid == "" || topic == "") {
-            alert("请填写完整的连接信息！");
-            return false;
-        }
-        return true;
+    function getTime() {
+        let date = new Date();
+        let hours = String(date.getHours()).padStart(2, "0");
+        let min = String(date.getMinutes()).padStart(2, "0");
+        let sec = String(date.getSeconds()).padStart(2, "0");
+
+        return `${hours}:${min}:${sec}`;
     }
 
     //发送消息
-    $("#sendButton").click(function () {
-        if (client == null) {
-            alert("请先连接服务器！");
-            return;
+    function send() {
+        let message = document.getElementById('text').value;
+        websocket.send(message);
+        //如果发送成功
+        if (websocket.readyState === 1) {
+            let prefix = "[Send]["+ getTime() +"] ";
+            setMessageInnerHTML(prefix + message);
         }
-        if (!client.isConnected()) {
-            alert("请先连接服务器！");
-            return;
-        }
-        var topic = $("#sendTopic").val();
-        var message = $("#sendMessage").val();
-        console.log("发送消息：" + message);
-        console.log("订阅：" + topic);
-        if (topic === "" || message === "") {
-            alert("请填写完整的消息信息！");
-            return;
-        }
-        client.send(topic,message);
-        $("#message").val(
-            '['+ new Date().toLocaleString()+'] '
-            + '[发送] '
-            + "[" + topic + "] "
-            + message
-            + "\n"
-            + $("#message").val()
-        );
-    });
+    }
 </script>
 </html>

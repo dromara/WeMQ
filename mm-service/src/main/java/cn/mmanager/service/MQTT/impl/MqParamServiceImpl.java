@@ -3,10 +3,14 @@ package cn.mmanager.service.MQTT.impl;
 import cn.mmanager.dao.MQTT.MqParamMapper;
 import cn.mmanager.model.pojo.MQParam;
 import cn.mmanager.service.MQTT.MqParamService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -14,14 +18,10 @@ import java.util.Map;
  * @author NicholasLD
  * @createTime 2023/4/20 14:25
  */
-@Service("mqParamService")
-public class MqParamServiceImpl implements MqParamService {
-    private MqParamMapper mqParamMapper;
-
-    @Autowired
-    public void setMqParamMapper(MqParamMapper mqParamMapper) {
-        this.mqParamMapper = mqParamMapper;
-    }
+@Service
+@RequiredArgsConstructor
+public class MqParamServiceImpl extends ServiceImpl<MqParamMapper, MQParam> implements MqParamService {
+    private final MqParamMapper mqParamMapper;
 
     @Override
     public MQParam selectById(Long id) {
@@ -31,23 +31,29 @@ public class MqParamServiceImpl implements MqParamService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int insert(MQParam mqParam, Long pageId) {
-        if (mqParamMapper.add(mqParam) <= 0)
-            return 0;
-        if (mqParamMapper.insertPage_Param(pageId, mqParam.getId()) <= 0)
-            return 0;
-        return mqParamMapper.add(mqParam);
+        mqParam.setPageId(pageId);
+        return mqParamMapper.insert(mqParam);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int delete(Long id) {
-        if (mqParamMapper.deletePage_Param(id) <= 0)
-            return 0;
         return mqParamMapper.deleteById(id);
     }
 
     @Override
     public int update(MQParam param) {
         return mqParamMapper.update(param);
+    }
+
+    @Override
+    public List<MQParam> selectByPageId(Long id) {
+        QueryWrapper<MQParam> queryWrapper = new QueryWrapper<>();
+
+        //通过sort字段进行排序
+        queryWrapper.orderByAsc("sort");
+
+        queryWrapper.eq("page_id", id);
+        return mqParamMapper.selectList(queryWrapper);
     }
 }

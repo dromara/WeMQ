@@ -10,6 +10,9 @@ import cn.mmanager.model.pojo.Customer;
 import cn.mmanager.service.MQTT.AdminService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -24,19 +27,15 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/admin")
+@RequiredArgsConstructor
 public class AdminController extends BaseController {
-    private AdminService adminService;
-
-    @Autowired
-    public void setAdminService(AdminService adminService) {
-        this.adminService = adminService;
-    }
+    private final AdminService adminService;
 
     @RequestMapping("/list")
     @ResponseBody
     public AjaxResult list(@RequestParam("pageNum") int pageNum,
                            @RequestParam("pageSize") int pageSize) {
-        Page<Object> page = PageHelper.startPage(pageNum, pageSize);
+        Page<Object> page = PageMethod.startPage(pageNum, pageSize);
         List<Admin> list = adminService.getAdminListByMap(null);
 
         return AjaxResult.success(new TableData(list, pageNum, page.getPages(), page.getTotal()));

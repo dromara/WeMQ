@@ -1,5 +1,6 @@
 package cn.mmanager.service.MQTT.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
 import cn.mmanager.dao.System.LoginLogMapper;
@@ -8,11 +9,15 @@ import cn.mmanager.model.pojo.Admin;
 import cn.mmanager.model.pojo.LoginLog;
 import cn.mmanager.service.MQTT.LoginLogService;
 import cn.mmanager.framework.utils.IpUtils;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,14 +25,11 @@ import java.util.List;
  * @author NicholasLD
  * @createTime 2023/4/30 00:20
  */
-@Service("loginLogService")
-public class LoginLogServiceImpl implements LoginLogService {
-    private LoginLogMapper loginLogMapper;
-
-    @Autowired
-    public void setLoginLogMapper(LoginLogMapper loginLogMapper) {
-        this.loginLogMapper = loginLogMapper;
-    }
+@Service
+@RequiredArgsConstructor
+public class LoginLogServiceImpl extends ServiceImpl<LoginLogMapper, LoginLog> implements LoginLogService {
+    private final LoginLogMapper loginLogMapper;
+    private final AdminServiceImpl adminService;
 
     @Override
     public int log(HttpServletRequest request, Admin admin, int status) {
@@ -56,6 +58,24 @@ public class LoginLogServiceImpl implements LoginLogService {
 
     @Override
     public List<LoginLogDto> getLoginLogList(String time) {
-        return loginLogMapper.getLoginLogList(time);
+        QueryWrapper<LoginLog> queryWrapper = new QueryWrapper<>();
+        if (time != null) {
+            queryWrapper.like("login_time", time);
+        }
+        List<LoginLog> loginLogs = loginLogMapper.selectList(queryWrapper);
+
+        List<LoginLogDto> loginLogDtos = new ArrayList<>();
+        for (LoginLog loginLog : loginLogs) {
+            LoginLogDto loginLogDto = new LoginLogDto();
+            BeanUtil.copyProperties(loginLog, loginLogDto);
+
+            //通过adminId获取管理员信息
+            Admin admin = adminService.getById(loginLog.getAdminId());
+            loginLogDto.setUsername(admin.getUsername());
+
+            loginLogDtos.add(loginLogDto);
+        }
+
+        return loginLogDtos;
     }
 }

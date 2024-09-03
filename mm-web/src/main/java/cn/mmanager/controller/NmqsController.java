@@ -10,6 +10,7 @@ import cn.mmanager.model.pojo.NmqsToken;
 import cn.mmanager.service.MQTT.NmqsService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -24,18 +25,15 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/nmqs")
+@RequiredArgsConstructor
 public class NmqsController {
-    private NmqsService nmqsService;
-    @Autowired
-    public void setNmqsService(NmqsService nmqsService) {
-        this.nmqsService = nmqsService;
-    }
+    private final NmqsService nmqsService;
 
     @GetMapping("/list")
     @ResponseBody
     public AjaxResult list(@RequestParam("pageNum") int pageNum,
                            @RequestParam("pageSize") int pageSize,
-                           @RequestParam(required = false) Integer pageId,
+                           @RequestParam(required = false) Long pageId,
                            @RequestParam(required = false) String pageName) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", pageId);
@@ -48,8 +46,8 @@ public class NmqsController {
 
     @GetMapping("/info/{id}")
     @ResponseBody
-    public AjaxResult info(@PathVariable("id") int id) {
-        NmqsToken nmqsToken = nmqsService.selectById((long) id);
+    public AjaxResult info(@PathVariable("id") String id) {
+        NmqsToken nmqsToken = nmqsService.selectById(Long.valueOf(id));
         return AjaxResult.success(nmqsToken);
     }
 
@@ -70,13 +68,7 @@ public class NmqsController {
     @RepeatSubmit(interval = 1000, message = "请勿重复提交")
     @PostMapping("/delete/{id}")
     @ResponseBody
-    public AjaxResult delete(@PathVariable("id") int id) {
-        return nmqsService.deleteById((long) id) > 0 ? AjaxResult.success() : AjaxResult.error("删除失败，该token正在被页面使用");
-    }
-
-    @GetMapping("/getInfoByToken/{token}")
-    @ResponseBody
-    public AjaxResult getInfoByToken(@PathVariable("token") String token) {
-        return AjaxResult.success(nmqsService.getInfoByToken(token));
+    public AjaxResult delete(@PathVariable("id") Long id) {
+        return nmqsService.deleteById(id) > 0 ? AjaxResult.success() : AjaxResult.error("删除失败，该token正在被页面使用");
     }
 }

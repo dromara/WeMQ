@@ -3,354 +3,355 @@
 <head>
     <title>物联网设备调试</title>
     <link rel="stylesheet" th:href="@{/statics/bootstrap/4.6.0/bootstrap.min.css}" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script th:src="@{/statics/jquery-1.12.4.min.js}"></script>
     <script th:src="@{/statics/bootstrap/4.6.0/bootstrap.min.js}"></script>
     <script th:src="@{/statics/system/common.js}"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" th:href="@{/statics/layui/layui.css}" />
+    <script th:src="@{/statics/layui/layui.js}"></script>
+    <script th:src="@{/statics/dayjs.min.js}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
 </head>
 
 <body>
-    <div class="container">
-        <div class="form-group">
-            <h3 th:text="${pageName}">物联网设备调试</h3>
-            <div class="alert alert-info" role="alert" style="margin-bottom: 0">
-                <div class="text-muted"><span th:text="|连接到 ${serverInfo}|"></span></div>
-            </div>
-            <input type="hidden" name="token" id="token" th:value="${token}">
+<div class="layui-container">
+    <h3 th:text="${pageName}" class="title">物联网设备调试</h3>
+    <div class="notice" style="margin-bottom: 4px;">
+        <span th:text="|连接到 ${serverInfo}|"></span>
+        <div class="layui-form-item">
+            <button onclick="reConnect()" class="layui-btn layui-btn-primary layui-btn-sm">修改订阅</button>
+            <button onclick="exportTxT()" class="layui-btn layui-btn-primary layui-btn-sm">导出日志</button>
+            <button onclick="closeWebSocket()" class="layui-btn layui-btn-danger layui-btn-sm">关闭连接</button>
         </div>
-
-        <div class="card-body" style="display: flex;flex-wrap: wrap; padding: 0">
-            <div class="form-group">
-                <div class="input-group input-group-sm">
-                    <div class="input-group-prepend">
-                        <div class="input-group-text">发送订阅</div>
-                    </div>
-                    <input id="sendTopic" type="text" class="form-control" th:value="${sendTopic}" />
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="input-group input-group-sm">
-                    <div class="input-group-prepend">
-                        <div class="input-group-text">接收订阅</div>
-                    </div>
-                    <input id="receiveTopic" type="text" class="form-control" th:value="${receiveTopic}" />
-                </div>
-            </div>
-
-            <div class="form-group" hidden="hidden">
-                <div class="input-group input-group-sm">
-                    <div class="input-group-prepend">
-                        <div class="input-group-text">QoS</div>
-                    </div>
-                    <input id="qos" min="0" max="2" type="number" class="form-control" th:value="${qos}" />
-                </div>
-            </div>
-
-            <div class="form-group">
-                <button onclick="reConnect()" class="btn btn-primary btn-sm">修改订阅</button>
-                <button onclick="closeWebSocket()" class="btn btn-danger btn-sm">关闭连接</button>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="input-group input-group-sm">
-                <div class="input-group-prepend">
-                    <div class="input-group-text">自定义调试信息</div>
-                </div>
-                <input id="text" type="text" class="form-control" placeholder="请输入调试信息">
-                <div class="input-group-append">
-                    <button onclick="send()" class="btn btn-primary btn-sm" type="button">发送</button>
-                </div>
-            </div>
-        </div>
-        <div class="form-group" th:hidden="${batchSend == 0}">
-            <div class="card">
-                <div class="card-header">
-
-                    <div style="display: flex;flex-wrap: wrap;align-items: center;">
-                        <button id="showHide" onclick="showHide()" class="btn btn-link">
-                            ▷
-                        </button>
-                        <span style="margin-left: 20px">批量下发参数</span>
-                        <span style="margin-left: 50px" class="text-muted">间隔：</span>
-                        <input th:value="${batchDelay}" type="number" id="batchInterval" value="1000" style="width: 80px" class="form-control form-control-sm">
-                        <span> ms</span>
-                        <button style="margin-left: 20px" onclick="batchSend()" class="btn btn-primary btn-sm">批量发送</button>
-
-                    </div>
-                </div>
-                <div id="batchCommand" class="card-body" style="padding: 6px 6px;">
-                    <span style="display: block" id="hideText"></span>
-                    <textarea th:text="${batchCommand}" id="batchText" class="form-control" style="height: 120px;display: none;margin-bottom: 20px;font-size: 13px"></textarea>
-                </div>
-            </div>
-        </div>
-        <div class="form-group" th:if="${params.size() > 0}">
-            <div class="card">
-                <div class="card-header">
-                    预设调试参数
-                </div>
-                <div class="card-body" style="padding: 6px 6px;">
-                    <table class="table">
-                        <tbody>
-                        <tr th:each="p : ${params}">
-                            <td>
-                                <div class="input-group input-group-sm">
-                                    <input type="text" class="form-control" th:value="${p.message}">
-                                </div>
-                            </td>
-                            <td style="width: 180px">
-                                <button style="width: 150px;" onclick="sendOther(this)" class="btn btn-primary btn-sm" size="mini" type="button" th:text="${p.button}"></button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
-        </div>
-
-        <textarea wrap="off" id="message" class="form-control" style="height: 400px;margin-bottom: 20px;font-size: 13px" disabled></textarea>
     </div>
+    <input type="hidden" name="token" id="token" th:value="${token}">
+    <div class="layui-row layui-col-space10">
+        <div class="layui-col-xs12 layui-col-md6">
+            <div class="layui-form-item">
+                <div class="layui-input-group">
+                    <div class="layui-input-split layui-input-prefix">
+                        发送Topic
+                    </div>
+                    <input id="sendTopic" type="text" class="layui-input" th:value="${sendTopic}" />
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs12 layui-col-md6">
+            <div class="layui-form-item">
+                <div class="layui-input-group">
+                    <div class="layui-input-split layui-input-prefix">
+                        接收Topic
+                    </div>
+                    <input id="receiveTopic" type="text" class="layui-input" th:value="${receiveTopic}" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item" hidden="hidden">
+        <label class="layui-form-label">QoS</label>
+        <div class="layui-input-block">
+            <input id="qos" min="0" max="2" type="number" class="layui-input" th:value="${qos}" />
+        </div>
+    </div>
+
+    <div id="table" th:style="${params.size() > 0} ? '' : 'display: none;'">
+        <table class="layui-table">
+            <tbody>
+            <tr th:each="p : ${params}">
+                <td>
+                    <span name="batch-text" style="color: grey;display: none">
+                        批量发送
+                    </span>
+                    <div class="layui-input-inline" style="width: 100%;display: flex;flex-direction: row;">
+                        <span name="batch-text" style="color: grey; display: none;width: 70px;align-self: center">批量发送</span>
+                        <textarea name="message1" class="layui-textarea" style="resize: none; overflow: scroll; display: none;" th:text="${p.message}"></textarea>
+                        <input name="messageInput" type="text" class="layui-input" style="height: 38px;" th:value="${p.message}" />
+                    </div>
+                </td>
+                <td style="width: 180px">
+                    <button style="width: 100%;" onclick="sendOther(this)" class="layui-btn layui-bg-blue layui-btn-primary" type="button" th:text="${p.button}"></button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="layui-input-group">
+        <input id="text" type="text" class="layui-input" placeholder="请输入调试信息" style="flex: 1;">
+        <button onclick="send()" class="layui-btn layui-btn-primary layui-bg-blue" style="flex: 0 0 90px;">发送</button>
+    </div>
+    <textarea wrap="off" id="message" class="layui-textarea" disabled ></textarea>
+
+</div>
+
+
 </body>
 
 <script type="text/javascript">
-    let websocket = null;
+    document.addEventListener('DOMContentLoaded', initialize);
 
-    let token = $('#token').val();
-    let sendTopic = $('#sendTopic').val();
-    let receiveTopic = $('#receiveTopic').val();
-    let qos = $('#qos').val();
+    let websocket;
 
-    let batchText = $('#batchText');
-    let hideText = $('#hideText');
-    hideText.text(batchText.val().split('\n')[0]);
+    function initialize() {
+        const token = $('#token').val();
+        const sendTopic = $('#sendTopic').val();
+        const receiveTopic = $('#receiveTopic').val();
+        const qos = $('#qos').val();
 
-    function base64encode(text) {
-        //确保/不会被转义
-        return btoa(text).replace(/\//g, "_");
+        const sendTopicBase64 = base64encode(sendTopic);
+        const receiveTopicBase64 = base64encode(receiveTopic);
+
+        if ('WebSocket' in window) {
+            const url = `${getNmqsWebsocket()}/websocket/${token}/${sendTopicBase64}/${receiveTopicBase64}/${qos}`;
+            console.log(url);
+            initializeWebSocket(url);
+        } else {
+            alert('您的浏览器不支持WebSocket协议，建议您更换 Chrome 浏览器');
+        }
+
+        setupMessageToggles();
     }
 
-    //base64
-    let sendTopic_base64 = base64encode(sendTopic);
-    let receiveTopic_base64 = base64encode(receiveTopic);
+    function initializeWebSocket(url) {
+        displayMessage("正在连接到远程服务器...");
+        websocket = new WebSocket(url);
 
-    //判断当前浏览器是否支持WebSocket
-    if ('WebSocket' in window) {
-        websocket = new WebSocket( getNmqsWebsocket() + `/websocket/${token}/${sendTopic_base64}/${receiveTopic_base64}/${qos}`);
+        websocket.onerror = () => displayMessage("连接失败，请检查服务器是否正常！");
+        websocket.onopen = () => displayMessage("开始建立连接");
+        websocket.onmessage = event => displayMessage(event.data, "Receive");
+        websocket.onclose = () => displayMessage("连接关闭");
 
-        console.log(getNmqsWebsocket() + `/websocket/${token}/${sendTopic_base64}/${receiveTopic_base64}/${qos}`)
-    } else {
-        alert('您的浏览器不支持WebSocket协议，建议您更换 Chrome 浏览器')
+        window.onbeforeunload = () => websocket.close();
     }
 
-    //如果连接成功
-    if (websocket != null) {
-        //连接发生错误的回调方法
-        websocket.onerror = function () {
-            setMessageInnerHTML("error");
-        };
+    function displayMessage(message, type = "System") {
+        const prefix = `[${type}][${dayjs().format('HH:mm:ss')}] `;
+        setMessageInnerHTML(prefix + message);
+    }
 
-        //连接成功建立的回调方法
-        websocket.onopen = function (event) {
-            let prefix = "[System]["+ getTime() +"] ";
-            setMessageInnerHTML(prefix + "开始建立连接");
+    function validateInput(selector, errorMessage) {
+        const value = $(selector).val();
+        if (!value) {
+            alert(errorMessage);
+            return false;
         }
-
-        //接收到消息的回调方法
-        websocket.onmessage = function (event) {
-            let prefix = "[Receive]["+ getTime() +"] ";
-            setMessageInnerHTML(prefix + event.data);
-        }
-
-        //连接关闭的回调方法
-        websocket.onclose = function () {
-            let prefix = "[System]["+ getTime() +"] ";
-            setMessageInnerHTML(prefix + "连接关闭");
-        }
-
-        //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
-        window.onbeforeunload = function () {
-            websocket.close();
-
-        }
+        return value;
     }
 
     function reConnect() {
-        if ($('#sendTopic').val() === "" || $('#sendTopic').val() === null || $('#sendTopic').val() === undefined){
-            alert("发送订阅不能为空！")
-            return
-        }
+        const token = validateInput('#token', "Token不能为空！");
+        const sendTopic = validateInput('#sendTopic', "发送订阅不能为空！");
+        const receiveTopic = validateInput('#receiveTopic', "接收订阅不能为空！");
+        const qos = validateInput('#qos', "QoS不正确");
 
-        if ($('#receiveTopic').val() === "" || $('#receiveTopic').val() === null || $('#receiveTopic').val() === undefined){
-            alert("接收订阅不能为空！")
-            return
-        }
-
-        if ($('#qos').val() === "" || $('#qos').val() === null || $('#qos').val() === undefined || $('#qos').val()>2 || $('#qos').val() <0){
-            alert("QoS不正确")
+        if (qos < 0 || qos > 2) {
+            alert("QoS不正确");
             return;
         }
 
+        if (!sendTopic || !receiveTopic || qos === false) return;
+
         closeWebSocket();
 
-        setTimeout(function () {
-            let sendTopic = $('#sendTopic').val();
-            let receiveTopic = $('#receiveTopic').val();
-            let qos = $('#qos').val();
+        setTimeout(() => {
+            const sendTopicBase64 = base64encode(sendTopic);
+            const receiveTopicBase64 = base64encode(receiveTopic);
+            const url = `${getNmqsWebsocket()}/websocket/${token}/${sendTopicBase64}/${receiveTopicBase64}/${qos}`;
 
-            //base64
-            let sendTopic_base64 = base64encode(sendTopic);
-            let receiveTopic_base64 = base64encode(receiveTopic);
-
-            websocket = new WebSocket( getNmqsWebsocket() + `/websocket/${token}/${sendTopic_base64}/${receiveTopic_base64}/${qos}`);
-
-            console.log(getNmqsWebsocket() + `/websocket/${token}/${sendTopic_base64}/${receiveTopic_base64}/${qos}`)
-
-            //如果连接成功
-            if (websocket != null) {
-                //连接发生错误的回调方法
-                websocket.onerror = function () {
-                    setMessageInnerHTML("error");
-                };
-
-                //连接成功建立的回调方法
-                websocket.onopen = function (event) {
-                    let prefix = "[System][" + getTime() + "] ";
-                    setMessageInnerHTML(prefix + "开始建立连接");
-                }
-
-                //接收到消息的回调方法
-                websocket.onmessage = function (event) {
-                    let prefix = "[Receive][" + getTime() + "] ";
-                    setMessageInnerHTML(prefix + event.data);
-                }
-
-                //连接关闭的回调方法
-                websocket.onclose = function () {
-                    let prefix = "[System][" + getTime() + "] ";
-                    setMessageInnerHTML(prefix + "连接关闭");
-                }
-
-                //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
-                window.onbeforeunload = function () {
-                    websocket.close();
-                }
-            }
-        }, 1000)
+            console.log(url);
+            initializeWebSocket(url);
+        }, 1000);
     }
 
-    function showHide() {
-        let batchText = $('#batchText');
-        let hideText = $('#hideText');
-        let button = $('#showHide');
-        if (batchText.css('display') === 'none') {
-            batchText.css('display', 'block');
-            hideText.css('display', 'none');
-            button.text('▽');
-        } else {
-            batchText.css('display', 'none');
-
-            hideText.css('display', 'block');
-
-            button.text('▷');
-
-            //只显示textarea的第一行
-            hideText.text(batchText.val().split('\n')[0]);
-        }
-    }
-
-    //将消息显示在网页上
     function setMessageInnerHTML(innerHTML) {
-        //$('#message').val(innerHTML + '\n' + $('#message').val());
-        //只显示最上的1000行
-        let message = $('#message').val();
-        let messageArray = message.split('\n');
+        const message = $('#message').val();
+        const messageArray = message.split('\n');
         if (messageArray.length > 500) {
             messageArray.pop();
         }
         messageArray.unshift(innerHTML);
         $('#message').val(messageArray.join('\n'));
-
     }
 
-    //关闭连接
     function closeWebSocket() {
-        websocket.close();
+        displayMessage("正在关闭连接...");
+        if (websocket) websocket.close();
     }
 
-    //发送消息
     function send() {
-        let message = document.getElementById('text').value;
-        websocket.send(message);
-        //如果发送成功
-        if (websocket.readyState === 1) {
-            let prefix = "[Send]["+ getTime() +"] ";
-            setMessageInnerHTML(prefix + message);
+        const message = $('#text').val();
+        if (websocket && message) {
+            websocket.send(message);
+            displayMessage(message, "Send");
         }
     }
 
     function sendOther(this1) {
         //获取按钮上面的input的值
-        let message = $(this1).parent().parent().find('input').val();
-        websocket.send(message);
-        //如果发送成功
-        if (websocket.readyState === 1) {
-            let prefix = "[Send]["+ getTime() +"] ";
-            setMessageInnerHTML(prefix + message);
+        let message = $(this1).parent().parent().find('input');
+        let textarea = $(this1).parent().parent().find('textarea');
+
+        // 如果 message 的 display 是 none，说明是 textarea，则批量发送
+        if (message.css('display') === 'none') {
+            let messageArray = textarea.val().split('\n');
+
+            let i = 0;
+            let interval = setInterval(function () {
+                if (i < messageArray.length) {
+                    try {
+                        websocket.send(messageArray[i]);
+                        //发送消息后，将消息显示在网页上
+                        displayMessage(messageArray[i], "Send");
+                        i++;
+                    } catch (error) {
+                        console.error("发送消息时发生错误:", error);
+                        clearInterval(interval); // 发生错误时清除定时器
+                    }
+                } else {
+                    clearInterval(interval); // 确保在发送完所有消息后清除定时器
+                }
+            }, 100);
+        } else {
+            try {
+                websocket.send(message.val());
+                displayMessage(message.val(), "Send");
+            } catch (error) {
+                console.error("发送消息时发生错误:", error);
+            }
         }
     }
 
-    function getTime() {
-        let date = new Date();
-        let hours = String(date.getHours()).padStart(2, "0");
-        let min = String(date.getMinutes()).padStart(2, "0");
-        let sec = String(date.getSeconds()).padStart(2, "0");
-
-        return `${hours}:${min}:${sec}`;
+    function base64encode(text) {
+        return btoa(text).replace(/\//g, "_");
     }
 
-    function batchSend() {
-        let message = $('#batchText').val();
-        let delay = $('#batchInterval').val();
-        let messageArray = message.split('\n');
-        let i = 0;
-        let interval = setInterval(function () {
-            if (i < messageArray.length) {
-                websocket.send(messageArray[i]);
-                let prefix = "[Send]["+ getTime() +"] ";
-                setMessageInnerHTML(prefix + messageArray[i]);
-                i++;
+    function setupMessageToggles() {
+        const messages = document.getElementsByName('message1');
+        const messageInputs = document.getElementsByName('messageInput');
+        const batchTexts = document.getElementsByName('batch-text');
+
+        messages.forEach((message, i) => {
+            const lines = message.value.split('\n');
+
+            if (lines.length > 1) {
+                message.style.display = 'none';
+                messageInputs[i].value = lines[0];
+                batchTexts[i].style.display = 'none';
+
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.textContent = '展开';
+                button.style.marginLeft = '10px';
+                button.classList.add('layui-btn', 'layui-bg-blue', 'layui-btn-primary');
+                button.onclick = () => toggleView(button);
+
+                messageInputs[i].parentElement.appendChild(button);
             } else {
-                clearInterval(interval);
+                message.style.display = 'none';
+                batchTexts[i].style.display = 'none';
             }
-        }, delay);
+        });
     }
+
+    function toggleView(button) {
+        const container = button.parentElement;
+        const textarea = container.querySelector('textarea');
+        const input = container.querySelector('input');
+        const batchText = container.querySelector('[name="batch-text"]');
+
+        const isHidden = textarea.style.display === 'none';
+        textarea.style.display = isHidden ? 'block' : 'none';
+        input.style.display = isHidden ? 'none' : 'block';
+        batchText.style.display = isHidden ? 'block' : 'none';
+        button.textContent = isHidden ? '收起' : '展开';
+    }
+
+    function exportTxT() {
+        const message = $('#message').val();
+        const blob = new Blob([message], { type: "text/plain;charset=utf-8" });
+        saveAs(blob, `mqtt-${dayjs().format('YYYY-MM-DD-HH-mm-ss')}.txt`);
+    }
+
+    function saveAs(blob, filename) {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    }
+
 </script>
 
 <style>
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
 
-    .form-group {
-        flex: 1 0 33.33%;
-        padding: 5px;
+    .layui-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+    }
+
+    #table {
+        flex: 1;
+        overflow-y: auto;
         margin-bottom: 10px;
+        border: 1px solid #f5f6f7;
     }
 
-    @media (max-width: 768px) {
-        .form-group {
-            flex-basis: 100%;
-        }
+    #table td {
+        padding: 2px;
     }
 
-    table.table {
-        border: none; /* 去掉表格边框 */
+    textarea {
+        width: 100%;
+        resize: none;
+        height: auto;
+        overflow: hidden;
+        background-color: #f5f6f7;
+        overflow-x: scroll;
     }
 
-    table.table td {
-        border: none; /* 去掉单元格边框 */
-        padding: 5px 5px;
+    .layui-input-group {
+        display: flex;
+        align-items: center;
     }
+
+    #message {
+        flex: 1;
+        margin-bottom: 10px;
+        height: auto;
+        overflow-y: auto;
+    }
+
+    .notice {
+        padding: 10px 15px;
+        background: #f5f6f7;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 15px;
+    }
+
+    .notice span {
+        color: #666;
+        font-size: 16px;
+    }
+
+    .notice .layui-form-item {
+        margin-bottom: 0;
+    }
+
+    .layui-input-split {
+        height: 38px;
+        line-height: 38px;
+        background: #f5f6f7;
+    }
+
 </style>
 </html>

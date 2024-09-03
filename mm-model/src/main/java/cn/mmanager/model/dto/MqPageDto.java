@@ -3,7 +3,6 @@ package cn.mmanager.model.dto;
 import cn.mmanager.model.pojo.Customer;
 import cn.mmanager.model.pojo.MQParam;
 import cn.mmanager.model.pojo.NmqsToken;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -17,7 +16,7 @@ import java.util.List;
 @Data
 public class MqPageDto implements Serializable {
     private static final long serialVersionUID = 1L;
-    /** 页面ID */
+
     private Long id;
 
     /** 页面名称 */
@@ -30,7 +29,7 @@ public class MqPageDto implements Serializable {
     private String pageFileName;
 
     /** Nmqs Token ID */
-    private Long nmqsTokenID;
+    private Long nmqsTokenId;
 
     /** 服务器设置 */
     private NmqsToken settings;
@@ -51,14 +50,5 @@ public class MqPageDto implements Serializable {
     private int status;
 
     /** 页面参数 */
-    List<MQParam> mqParams;
-
-    /** 是否开启批量下发 */
-    private Integer batchSend;
-
-    /** 批量指令 */
-    private String batchCommand;
-
-    /** 批量延迟 */
-    private Integer batchDelay;
+    private List<MQParam> mqParams;
 }

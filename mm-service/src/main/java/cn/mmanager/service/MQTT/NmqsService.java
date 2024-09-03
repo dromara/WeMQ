@@ -1,6 +1,7 @@
 package cn.mmanager.service.MQTT;
 
 import cn.mmanager.model.pojo.NmqsToken;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,7 @@ import java.util.Map;
  * @author NicholasLD
  * @createTime 2023/4/13 14:35
  */
-public interface NmqsService {
+public interface NmqsService extends IService<NmqsToken> {
     /**
      * 查询所有的Nmqs
      * @return 查询结果
@@ -44,6 +45,4 @@ public interface NmqsService {
      * @return 删除结果
      */
     int deleteById(Long id);
-
-    NmqsToken getInfoByToken(String token);
 }

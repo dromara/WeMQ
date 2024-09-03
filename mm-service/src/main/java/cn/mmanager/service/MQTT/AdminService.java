@@ -1,6 +1,7 @@
 package cn.mmanager.service.MQTT;
 
 import cn.mmanager.model.pojo.Admin;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.Map;
  * @author NicholasLD
  * @createTime 2023/4/27 19:21
  */
-public interface AdminService {
+public interface AdminService extends IService<Admin> {
     /**
      * 分页查询
      * @param params 参数条件

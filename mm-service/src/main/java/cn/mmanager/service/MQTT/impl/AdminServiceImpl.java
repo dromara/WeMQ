@@ -4,6 +4,9 @@ import cn.hutool.crypto.digest.BCrypt;
 import cn.mmanager.dao.System.AdminMapper;
 import cn.mmanager.model.pojo.Admin;
 import cn.mmanager.service.MQTT.AdminService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,23 +18,37 @@ import java.util.Map;
  * @author NicholasLD
  * @createTime 2023/4/27 19:21
  */
-@Service("adminService")
-public class AdminServiceImpl implements AdminService {
-    private AdminMapper adminMapper;
-
-    @Autowired
-    public void setAdminMapper(AdminMapper adminMapper) {
-        this.adminMapper = adminMapper;
-    }
+@Service
+@RequiredArgsConstructor
+public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements AdminService {
+    private final AdminMapper adminMapper;
 
     @Override
     public List<Admin> getAdminListByMap(Map<String, Object> params) {
-        return adminMapper.getAdminListByMap(params);
+        QueryWrapper<Admin> queryWrapper = new QueryWrapper<>();
+
+        if (params == null) {
+            params = new HashMap<>();
+        }
+
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            queryWrapper.eq(entry.getKey(), entry.getValue());
+        }
+        return adminMapper.selectList(queryWrapper);
     }
 
     @Override
     public Integer getAdminCountByMap(Map<String, Object> params) {
-        return adminMapper.getAdminCountByMap(params);
+        QueryWrapper<Admin> queryWrapper = new QueryWrapper<>();
+
+        if (params == null) {
+            params = new HashMap<>();
+        }
+
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            queryWrapper.eq(entry.getKey(), entry.getValue());
+        }
+        return Math.toIntExact(adminMapper.selectCount(queryWrapper));
     }
 
     @Override
@@ -39,7 +56,7 @@ public class AdminServiceImpl implements AdminService {
         String password = admin.getPassword();
         String hashPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         admin.setPassword(hashPassword);
-        return adminMapper.insertAdmin(admin);
+        return adminMapper.insert(admin);
     }
 
     @Override
@@ -47,17 +64,21 @@ public class AdminServiceImpl implements AdminService {
         String password = admin.getPassword();
         String hashPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         admin.setPassword(hashPassword);
-        return adminMapper.updateAdminById(admin);
+        return adminMapper.updateById(admin);
     }
 
     @Override
     public int deleteAdminById(Long id) {
-        return adminMapper.deleteAdminById(id);
+        return adminMapper.deleteById(id);
     }
 
     @Override
     public Admin getAdminByMap(Map<String, Object> params) {
-        return adminMapper.getAdminByMap(params);
+        if (params == null) {
+            params = new HashMap<>();
+        }
+
+        return adminMapper.selectOne(new QueryWrapper<Admin>().allEq(params));
     }
 
     @Override
