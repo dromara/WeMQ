@@ -19,6 +19,7 @@
     </properties>
 
     <dependencies>
+        <!-- 公共包 -->
         <dependency>
             <groupId>cn.mmanger</groupId>
             <artifactId>mm-common</artifactId>
