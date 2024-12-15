@@ -1,19 +1,15 @@
 package cn.mmanager.service.MQTT.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.mmanager.dao.MQTT.CustomerMapper;
 import cn.mmanager.dao.MQTT.MqPageMapper;
 import cn.mmanager.dao.MQTT.NmqsMapper;
-import cn.mmanager.framework.utils.StringUtils;
 import cn.mmanager.model.dto.MqPageDto;
 import cn.mmanager.model.pojo.MQPage;
 import cn.mmanager.model.pojo.NmqsToken;
 import cn.mmanager.model.vo.MQPageVo;
 import cn.mmanager.service.MQTT.MqPageService;
 import cn.mmanager.service.MQTT.MqParamService;
-import cn.mmanager.service.MQTT.NmqsService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -105,15 +101,15 @@ public class MqPageServiceImpl extends ServiceImpl<MqPageMapper, MQPage> impleme
         MQPage mq = new MQPage();
         BeanUtils.copyProperties(mqPage, mq);
 
-        mq.setNmqsTokenId(Long.valueOf(mqPage.getNmqsTokenId()));
+        mq.setNmqsTokenId(mqPage.getNmqsTokenId());
 
         // 如果为自定义
-        if (Long.parseLong(mqPage.getNmqsTokenId()) != 0) {
+        if (mqPage.getNmqsTokenId() != 0) {
             return mqPageMapper.insert(mq);
         }
 
         NmqsToken nmqsToken = new NmqsToken();
-        nmqsToken.setName(RandomUtil.randomString(12));
+        nmqsToken.setName(mqPage.getPageName() + "_" + RandomUtil.randomString(6));
         nmqsToken.setToken(RandomUtil.randomString(12));
         nmqsToken.setProtocol(mqPage.getProtocol());
         nmqsToken.setMqttServer(mqPage.getMqttServer());
@@ -135,13 +131,14 @@ public class MqPageServiceImpl extends ServiceImpl<MqPageMapper, MQPage> impleme
     public int update(MQPageVo mqPage) {
         MQPage mq = new MQPage();
         BeanUtils.copyProperties(mqPage, mq);
+
         // 如果为自定义
-        if (Long.parseLong(mqPage.getNmqsTokenId()) != 0) {
+        if (mqPage.getNmqsTokenId() != 0) {
             return mqPageMapper.updateById(mq);
         }
 
         NmqsToken nmqsToken = new NmqsToken();
-        nmqsToken.setName(RandomUtil.randomString(12));
+        nmqsToken.setName(mqPage.getPageName() + "_" + RandomUtil.randomString(6));
         nmqsToken.setToken(RandomUtil.randomString(12));
         nmqsToken.setProtocol(mqPage.getProtocol());
         nmqsToken.setMqttServer(mqPage.getMqttServer());
@@ -181,5 +178,24 @@ public class MqPageServiceImpl extends ServiceImpl<MqPageMapper, MQPage> impleme
         mqPageDto.setSettings(nmqsMapper.selectById(mqPage.getNmqsTokenId()));
 
         return mqPageDto;
+    }
+
+    @Override
+    public int updateTopic(MQPageVo mqPage) {
+        //只更新topic
+        MQPage mq = new MQPage();
+        mq.setId(mqPage.getId());
+
+        //如果没有，则不动
+        if (mqPage.getSendTopic() != null){
+            mq.setSendTopic(mqPage.getSendTopic());
+        }
+
+        if (mqPage.getReceiveTopic() != null){
+            mq.setReceiveTopic(mqPage.getReceiveTopic());
+        }
+
+        //更新
+        return mqPageMapper.updateById(mq);
     }
 }

@@ -28,7 +28,7 @@ public class MQPageVo {
 
     /** Nmqs Token ID */
     @TableField(value = "nmqs_id")
-    private String nmqsTokenId;
+    private Long nmqsTokenId;
 
     /** 发布订阅 */
     @TableField(value = "mqtt_sendtopic")
