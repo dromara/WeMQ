@@ -183,8 +183,13 @@ public class ViewController extends BaseController {
         return "about";
     }
 
+    @GetMapping("/tools")
+    public String tools() {
+        return "tools";
+    }
+
     @GetMapping("/mq/{url}")
-    public ModelAndView mqttPage(@PathVariable("url") String url){
+    public ModelAndView mqttPage(@PathVariable("url") String url, HttpServletRequest request) {
         ModelAndView mav = new ModelAndView();
         if (StrUtil.isEmpty(url)){
             mav.setViewName("error/404");
@@ -202,6 +207,7 @@ public class ViewController extends BaseController {
             return mav;
         }
 
+        mav.addObject("pageId", mqPageDto.getId());
         mav.addObject("pageName", mqPageDto.getPageName());
         mav.addObject("params", mqPageDto.getMqParams());
         mav.addObject("token", nmqsToken.getToken());
@@ -217,6 +223,13 @@ public class ViewController extends BaseController {
         } else {
             mav.setViewName(mqPageDto.getPageFileName());
         }
+
+        //如果用户已登录，将已登录传递到前端
+        Object attribute = request.getSession().getAttribute(UserConstants.USER_SESSION);
+        if (attribute != null){
+            mav.addObject("login", "true");
+        }
+
 
         return mav;
 

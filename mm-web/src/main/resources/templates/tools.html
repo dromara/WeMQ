@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh" xml:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>物联网常用工具 - WeMQ</title>
+  <script th:src="@{/statics/crypto-js.min.js}"></script>
+  <script th:src="@{/statics/jquery-1.12.4.min.js}"></script>
+  <script th:src="@{/statics/jquery.qrcode.min.js}"></script>
+</head>
+<body>
+<div class="main">
+  <h1>物联网常用工具</h1>
+  <ul>
+    <li><a href="#1">进制转换</a></li>
+    <li><a href="#2">CRC16计算</a></li>
+    <li><a href="#3">UUID生成器</a></li>
+    <li><a href="#4">MD5加密</a></li>
+    <li><a href="#5">Base64编码/解码</a></li>
+    <li><a href="#7">AES加密/解密</a></li>
+    <li><a href="#8">DES加密/解密</a></li>
+    <li><a href="#9">二维码生成器</a></li>
+  </ul>
+  <hr>
+
+  <div id="1" class="section">
+    <h2>进制转换</h2>
+
+    <table>
+      <tr>
+        <th>十六进制</th>
+        <th>十进制</th>
+        <th>二进制</th>
+        <th>八进制</th>
+      </tr>
+      <tr>
+        <td><input type="text" id="hexInput" placeholder="输入十六进制" oninput="convertBase('hex')"></td>
+        <td><input type="text" id="decInput" placeholder="输入十进制" oninput="convertBase('dec')"></td>
+        <td><input type="text" id="binInput" placeholder="输入二进制" oninput="convertBase('bin')"></td>
+        <td><input type="text" id="octInput" placeholder="输入八进制" oninput="convertBase('oct')"></td>
+      </tr>
+    </table>
+  </div>
+  <hr>
+  <div id="2" class="section">
+    <h2>16进制(CRC16)(MODBUS RTU通讯)校验码计算</h2>
+    <input type="text" id="crcInput" placeholder="输入字符串">
+    <button onclick="calculateCRC16()">计算CRC16</button>
+    <table>
+      <tr>
+        <th>字节数 (10进制)</th>
+        <th>字节数 (16进制)</th>
+        <th>CRC-16 (MSB-LSB)</th>
+        <th>CRC-16 (Modbus)</th>
+      </tr>
+      <tr>
+        <td id="byteCountDecimal"></td>
+        <td id="byteCountHex"></td>
+        <td id="crcMSBLSB"></td>
+        <td id="crcModbus"></td>
+      </tr>
+    </table>
+  </div>
+  <hr>
+  <div id="3" class="section">
+    <h2>UUID生成器</h2>
+    <button onclick="generateUUID()">生成UUID</button>
+    <p id="uuidResult"></p>
+  </div>
+
+  <div id="4" class="section">
+    <h2>MD5加密</h2>
+    <input type="text" id="md5Input" placeholder="输入字符串">
+    <button onclick="encryptMD5()">加密</button>
+    <p id="md5Result"></p>
+  </div>
+
+  <div id="5" class="section">
+    <h2>Base64编码/解码</h2>
+    <input type="text" id="base64Input" placeholder="输入字符串">
+    <button onclick="encodeBase64()">编码</button>
+    <button onclick="decodeBase64()">解码</button>
+    <p id="base64Result"></p>
+  </div>
+
+  <div id="7" class="section">
+    <h2>AES加密/解密</h2>
+    <input type="text" id="aesInput" placeholder="输入字符串">
+    <input type="text" id="aesKey" placeholder="输入密钥">
+    <button onclick="encryptAES()">加密</button>
+    <button onclick="decryptAES()">解密</button>
+    <p id="aesResult"></p>
+  </div>
+
+  <div id="8" class="section">
+    <h2>DES加密/解密</h2>
+    <input type="text" id="desInput" placeholder="输入字符串">
+    <input type="text" id="desKey" placeholder="输入密钥">
+    <button onclick="encryptDES()">加密</button>
+    <button onclick="decryptDES()">解密</button>
+    <p id="desResult"></p>
+  </div>
+
+  <div id="9" class="section">
+    <h2>二维码生成器</h2>
+    <input type="text" id="qrInput" placeholder="输入内容">
+    <button onclick="generateQRCode()">生成二维码</button>
+    <div id="qrCanvas"></div>
+  </div>
+</div>
+
+<script>
+    function convertBase(fromBase) {
+        let decimalValue;
+
+        // 获取当前输入框的值
+        if (fromBase === 'hex') {
+            const input = document.getElementById('hexInput').value;
+            decimalValue = parseInt(input, 16);
+        } else if (fromBase === 'dec') {
+            const input = document.getElementById('decInput').value;
+            decimalValue = parseInt(input, 10);
+        } else if (fromBase === 'bin') {
+            const input = document.getElementById('binInput').value;
+            decimalValue = parseInt(input, 2);
+        } else if (fromBase === 'oct') {
+            const input = document.getElementById('octInput').value;
+            decimalValue = parseInt(input, 8);
+        }
+
+        // 更新其他输入框的值
+        if (!isNaN(decimalValue)) {
+            if (fromBase !== 'hex') {
+                document.getElementById('hexInput').value = decimalValue.toString(16).toUpperCase();
+            }
+            if (fromBase !== 'dec') {
+                document.getElementById('decInput').value = decimalValue.toString(10);
+            }
+            if (fromBase !== 'bin') {
+                document.getElementById('binInput').value = decimalValue.toString(2);
+            }
+            if (fromBase !== 'oct') {
+                document.getElementById('octInput').value = decimalValue.toString(8);
+            }
+        } else {
+            // 如果输入无效，清空其他框
+            clearOtherInputs(fromBase);
+        }
+    }
+
+    function clearOtherInputs(excludeBase) {
+        if (excludeBase !== 'hex') {
+            document.getElementById('hexInput').value = '';
+        }
+        if (excludeBase !== 'dec') {
+            document.getElementById('decInput').value = '';
+        }
+        if (excludeBase !== 'bin') {
+            document.getElementById('binInput').value = '';
+        }
+        if (excludeBase !== 'oct') {
+            document.getElementById('octInput').value = '';
+        }
+    }
+
+    function calculateCRC16() {
+        const input = document.getElementById('crcInput').value.replace(/\s+/g, ''); // 去掉所有空格
+
+        // 计算字节数（每两个字符代表一个字节）
+        const byteCount = Math.floor(input.length / 2);
+        const byteCountDecimal = byteCount;
+        const byteCountHex = byteCount.toString(16).padStart(2, '0').toUpperCase();
+
+        // CRC16计算
+        const crc = crc16(input);
+        const crcMSBLSB = ((crc >> 8) & 0xFF).toString(16).padStart(2, '0').toUpperCase() + (crc & 0xFF).toString(16).padStart(2, '0').toUpperCase();
+        const crcModbus = (crc & 0xFF).toString(16).padStart(2, '0').toUpperCase() + ((crc >> 8) & 0xFF).toString(16).padStart(2, '0').toUpperCase();
+
+        // 更新表格中的值
+        document.getElementById('byteCountDecimal').innerText = byteCountDecimal;
+        document.getElementById('byteCountHex').innerText = byteCountHex;
+        document.getElementById('crcMSBLSB').innerText = crcMSBLSB;
+        document.getElementById('crcModbus').innerText = crcModbus;
+    }
+
+    function crc16(str) {
+        // CRC16计算逻辑
+        let crc = 0xFFFF;
+        for (let i = 0; i < str.length; i += 2) {
+            const byte = parseInt(str.substr(i, 2), 16); // 解析每两个字符为一个字节
+            crc ^= byte;
+            for (let j = 0; j < 8; j++) {
+                if (crc & 0x0001) {
+                    crc = (crc >> 1) ^ 0xA001;
+                } else {
+                    crc >>= 1;
+                }
+            }
+        }
+        return crc;
+    }
+
+    // UUID生成
+    function generateUUID() {
+        const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+        document.getElementById('uuidResult').innerText = `UUID: ${uuid}`;
+    }
+
+    // MD5加密
+    function encryptMD5() {
+        const input = document.getElementById('md5Input').value;
+        const hash = CryptoJS.MD5(input).toString();
+        document.getElementById('md5Result').innerText = `MD5: ${hash}`;
+    }
+
+    // Base64编码
+    function encodeBase64() {
+        const input = document.getElementById('base64Input').value;
+        const encoded = btoa(input);
+        document.getElementById('base64Result').innerText = `编码: ${encoded}`;
+    }
+
+    // Base64解码
+    function decodeBase64() {
+        const input = document.getElementById('base64Input').value;
+        const decoded = atob(input);
+        document.getElementById('base64Result').innerText = `解码: ${decoded}`;
+    }
+
+    // RSA加密/解密
+    function encryptRSA() {
+        // 这里需要实现RSA加密逻辑
+        const input = document.getElementById('rsaInput').value;
+        // 假设我们有一个公钥
+        const publicKey = "-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----";
+        // 使用相应的库进行RSA加密
+        const encrypted = "加密后的字符串"; // 需要实现加密逻辑
+        document.getElementById('rsaResult').innerText = `加密: ${encrypted}`;
+    }
+
+    // AES加密/解密
+    function encryptAES() {
+        const input = document.getElementById('aesInput').value;
+        const key = document.getElementById('aesKey').value;
+        const encrypted = CryptoJS.AES.encrypt(input, key).toString();
+        document.getElementById('aesResult').innerText = `加密: ${encrypted}`;
+    }
+
+    function decryptAES() {
+        const input = document.getElementById('aesInput').value;
+        const key = document.getElementById('aesKey').value;
+        const decrypted = CryptoJS.AES.decrypt(input, key).toString(CryptoJS.enc.Utf8);
+        document.getElementById('aesResult').innerText = `解密: ${decrypted}`;
+    }
+
+    // DES加密/解密
+    function encryptDES() {
+        const input = document.getElementById('desInput').value;
+        const key = document.getElementById('desKey').value;
+        const encrypted = CryptoJS.DES.encrypt(input, key).toString();
+        document.getElementById('desResult').innerText = `加密: ${encrypted}`;
+    }
+
+    function decryptDES() {
+        const input = document.getElementById('desInput').value;
+        const key = document.getElementById('desKey').value;
+        const decrypted = CryptoJS.DES.decrypt(input, key).toString(CryptoJS.enc.Utf8);
+        document.getElementById('desResult').innerText = `解密: ${decrypted}`;
+    }
+
+    // 二维码生成
+    function generateQRCode() {
+        const input = document.getElementById('qrInput').value;
+        const qrCanvas = document.getElementById('qrCanvas');
+
+        // 清空之前的二维码
+        qrCanvas.innerHTML = '';
+
+        // 生成二维码
+        $(qrCanvas).qrcode({
+            text: input,
+            width: 128,
+            height: 128,
+            render: 'canvas'
+        });
+    }
+</script>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 20px;
+    }
+    .main {
+        max-width: 800px;
+        margin: auto;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+    h1 {
+        text-align: center;
+        color: #333;
+        margin: 0;
+    }
+    ul {
+        list-style-type: none;
+        padding: 0;
+        text-align: center;
+    }
+    li {
+        display: inline;
+        margin: 0 15px;
+    }
+    a {
+        text-decoration: none;
+        color: #007bff;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+    hr {
+        border: 1px solid #ddd;
+        margin: 20px 0;
+    }
+    .section {
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        margin-bottom: 20px;
+    }
+    h2 {
+        text-align: left;
+        color: #333;
+        margin: 0 0 10px;
+    }
+    input[type="text"], select {
+        width: calc(100% - 22px);
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 5px;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+    th, td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: center;
+    }
+    th {
+        background-color: #e9ecef;
+    }
+    #qrCanvas {
+        margin-top: 10px;
+        text-align: center;
+    }
+    button {
+        width: 200px;
+        padding: 10px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 5px;
+    }
+</style>
+</body>
+</html>
