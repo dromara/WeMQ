@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="zh" xml:th="http://www.thymeleaf.org">
 <head>
-    <title>物联网设备调试</title>
+    <title th:text="${pageName}">物联网设备调试</title>
     <link rel="stylesheet" th:href="@{/statics/bootstrap/4.6.0/bootstrap.min.css}" />
     <script th:src="@{/statics/jquery-1.12.4.min.js}"></script>
     <script th:src="@{/statics/bootstrap/4.6.0/bootstrap.min.js}"></script>
@@ -10,86 +10,85 @@
     <script th:src="@{/statics/layui/layui.js}"></script>
     <script th:src="@{/statics/dayjs.min.js}"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
 </head>
 
 <body>
-<div class="layui-container">
+<div class="container">
     <h3 th:text="${pageName}" class="title">物联网设备调试</h3>
-    <div class="notice" style="margin-bottom: 4px;">
-        <span th:text="|连接到 ${serverInfo}|"></span>
-        <div class="layui-form-item">
-            <button onclick="reConnect()" class="layui-btn layui-btn-primary layui-btn-sm">修改订阅</button>
-            <button onclick="exportTxT()" class="layui-btn layui-btn-primary layui-btn-sm">导出日志</button>
-            <button onclick="closeWebSocket()" class="layui-btn layui-btn-danger layui-btn-sm">关闭连接</button>
+    <div class="alert alert-info" style="margin-bottom: 4px;padding: 3px 10px;">
+        <span th:text="${serverInfo}"></span>
+        <div class="d-flex flex-row flex-md-row justify-content-start justify-content-md-end w-100">
+            <button onclick="reConnect()" class="btn btn-primary btn-sm mx-1 my-1">修改订阅</button>
+            <button onclick="exportTxT()" class="btn btn-primary btn-sm mx-1 my-1">导出日志</button>
+            <button onclick="clearLog()" class="btn btn-primary btn-sm mx-1 my-1">清空日志</button>
+            <button onclick="closeWebSocket()" class="btn btn-danger btn-sm mx-1 my-1">关闭连接</button>
         </div>
     </div>
+
+
+
     <input type="hidden" name="token" id="token" th:value="${token}">
-    <div class="layui-row layui-col-space10">
-        <div class="layui-col-xs12 layui-col-md6">
-            <div class="layui-form-item">
-                <div class="layui-input-group">
-                    <div class="layui-input-split layui-input-prefix">
-                        发送Topic
-                    </div>
-                    <input id="sendTopic" type="text" class="layui-input" th:value="${sendTopic}" />
+    <input type="hidden" name="token" id="id" th:value="${pageId}">
+    <div class="row mb-2 mt-2">
+        <div class="col-md-6 d-flex align-items-center mb-1">
+            <label for="sendTopic" class="mr-2 mb-0">发送Topic</label>
+            <div class="input-group">
+                <input id="sendTopic" type="text" class="form-control" th:value="${sendTopic}" />
+                <div class="input-group-append">
+                    <button th:if="${login}" style="display: none;" onclick="saveTopic('sendTopic')" class="btn btn-success save-btn-topic" type="button">保存</button>
                 </div>
             </div>
         </div>
-        <div class="layui-col-xs12 layui-col-md6">
-            <div class="layui-form-item">
-                <div class="layui-input-group">
-                    <div class="layui-input-split layui-input-prefix">
-                        接收Topic
-                    </div>
-                    <input id="receiveTopic" type="text" class="layui-input" th:value="${receiveTopic}" />
+        <div class="col-md-6 d-flex align-items-center mb-1">
+            <label for="receiveTopic" class="mr-2 mb-0">接收Topic</label>
+            <div class="input-group">
+                <input id="receiveTopic" type="text" class="form-control" th:value="${receiveTopic}" />
+                <div class="input-group-append">
+                    <button th:if="${login}" style="display: none;" onclick="saveTopic('receiveTopic')" class="btn btn-success save-btn-topic" type="button">保存</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="layui-form-item" hidden="hidden">
-        <label class="layui-form-label">QoS</label>
-        <div class="layui-input-block">
-            <input id="qos" min="0" max="2" type="number" class="layui-input" th:value="${qos}" />
-        </div>
+
+
+
+    <div class="form-group" hidden="hidden">
+        <label for="qos">QoS</label>
+        <input id="qos" min="0" max="2" type="number" class="form-control" th:value="${qos}" />
     </div>
 
     <div id="table" th:style="${params.size() > 0} ? '' : 'display: none;'">
-        <table class="layui-table">
+        <table class="table">
             <tbody>
-            <tr th:each="p : ${params}">
+            <tr th:each="p : ${params}" th:id="${p.id}">
                 <td>
-                    <span name="batch-text" style="color: grey;display: none">
-                        批量发送
-                    </span>
-                    <div class="layui-input-inline" style="width: 100%;display: flex;flex-direction: row;">
-                        <span name="batch-text" style="color: grey; display: none;width: 70px;align-self: center">批量发送</span>
-                        <textarea name="message1" class="layui-textarea" style="resize: none; overflow: scroll; display: none;" th:text="${p.message}"></textarea>
-                        <input name="messageInput" type="text" class="layui-input" style="height: 38px;" th:value="${p.message}" />
+                    <div class="input-group">
+                        <textarea wrap="off" name="message1" class="form-control" style="resize: none; overflow: scroll; display: none;" th:text="${p.message}"></textarea>
+                        <input name="messageInput" type="text" class="form-control" th:value="${p.message}" />
+                        <div class="input-group-append">
+                            <button th:if="${login}" style="display: none;min-height: 36px;" onclick="saveMessage(this)" class="btn btn-success save-btn" type="button">保存</button>
+                        </div>
                     </div>
                 </td>
-                <td style="width: 180px">
-                    <button style="width: 100%;" onclick="sendOther(this)" class="layui-btn layui-bg-blue layui-btn-primary" type="button" th:text="${p.button}"></button>
+                <td style="width: 140px">
+                    <button style="min-height: 36px;width: 140px" onclick="sendOther(this)" class="btn btn-primary" type="button" th:text="${p.button}"></button>
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
-    <div class="layui-input-group">
-        <input id="text" type="text" class="layui-input" placeholder="请输入调试信息" style="flex: 1;">
-        <button onclick="send()" class="layui-btn layui-btn-primary layui-bg-blue" style="flex: 0 0 90px;">发送</button>
+    <div class="input-group mb-3">
+        <input id="text" type="text" class="form-control" placeholder="请输入调试信息">
+        <div class="input-group-append">
+            <button onclick="send()" class="btn btn-primary">发送</button>
+        </div>
     </div>
-    <textarea wrap="off" id="message" class="layui-textarea" disabled ></textarea>
-
+    <textarea wrap="off" id="message" class="form-control" disabled style="height: 500px;"></textarea>
 </div>
-
-
 </body>
 
 <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', initialize);
-
     let websocket;
 
     function initialize() {
@@ -186,35 +185,166 @@
         }
     }
 
+    function setupInputListeners() {
+        const inputs = document.getElementsByName('messageInput');
+        const sendTopicInput = document.getElementById('sendTopic');
+        const receiveTopicInput = document.getElementById('receiveTopic');
+
+        inputs.forEach(input => {
+            const textarea = input.previousElementSibling;
+            const saveButton = input.nextElementSibling.querySelector('.save-btn');
+
+            input.dataset.initialValue = input.value;
+
+            input.addEventListener('input', function() {
+                if (textarea.value.split('\n').length === 1 && this.value !== this.dataset.initialValue) {
+                    saveButton.style.display = 'inline-block';
+                } else {
+                    saveButton.style.display = 'none';
+                }
+            });
+        });
+
+        // 监听发送Topic
+        if (sendTopicInput) {
+            const sendSaveButton = sendTopicInput.nextElementSibling.querySelector('.save-btn-topic');
+            sendTopicInput.dataset.initialValue = sendTopicInput.value;
+
+            sendTopicInput.addEventListener('input', function() {
+                sendSaveButton.style.display = (this.value !== this.dataset.initialValue) ? 'inline-block' : 'none';
+            });
+        }
+
+        // 监听接收Topic
+        if (receiveTopicInput) {
+            const receiveSaveButton = receiveTopicInput.nextElementSibling.querySelector('.save-btn-topic');
+            receiveTopicInput.dataset.initialValue = receiveTopicInput.value;
+
+            receiveTopicInput.addEventListener('input', function() {
+                receiveSaveButton.style.display = (this.value !== this.dataset.initialValue) ? 'inline-block' : 'none';
+            });
+        }
+    }
+
+    function saveTopic(topicType) {
+        const input = document.getElementById(topicType);
+        const newValue = input.value;
+
+        const id = $('#id').val();
+
+        if (!newValue) {
+            layer.msg("Topic不能为空");
+            return;
+        }
+
+        let json
+        if (topicType == 'sendTopic') {
+            json = JSON.stringify({
+                id: id,
+                sendTopic: newValue
+            });
+        } else if (topicType == 'receiveTopic') {
+            json = JSON.stringify({
+                id: id,
+                receiveTopic: newValue
+            });
+        }
+
+        $.ajax({
+            url: `/page/updateTopic`,
+            type: 'POST',
+            contentType: 'application/json',
+            data: json,
+            success: function (data) {
+                if (data.code === 200) {
+                    layer.msg("保存成功");
+                    input.dataset.initialValue = newValue;
+                    input.nextElementSibling.querySelector('.save-btn-topic').style.display = 'none';
+                } else {
+                    layer.msg("保存失败");
+                }
+            },
+            error: function (error) {
+                console.error("保存Topic时发生错误:", error);
+                layer.msg("保存失败");
+            }
+        });
+    }
+
+    function saveMessage(button) {
+        const container = button.parentElement.parentElement;
+        const input = container.querySelector('input');
+        const textarea = container.querySelector('textarea');
+        const message = input.value.trim() || textarea.value.trim();
+        const rowId = container.closest('tr').id;
+
+        console.log("保存的消息:", message, "行ID:", rowId);
+
+        // 保存消息
+        $.ajax({
+            url: '/page/param/update',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                id: rowId,
+                message: message
+            }),
+            success: function (data) {
+                if (data.code === 200) {
+                    layer.msg("保存成功");
+                    input.dataset.initialValue = message;
+                    button.style.display = 'none';
+                } else {
+                    layer.msg("保存失败");
+                }
+            },
+            error: function (error) {
+                console.error("保存消息时发生错误:", error);
+                layer.msg("保存失败");
+            }
+        });
+
+        button.style.display = 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        initialize();
+        setupInputListeners();
+    });
+
+
     function sendOther(this1) {
-        //获取按钮上面的input的值
-        let message = $(this1).parent().parent().find('input');
-        let textarea = $(this1).parent().parent().find('textarea');
+        let parentRow = $(this1).closest('tr');
+        let textarea = parentRow.find('textarea');
+        let input = parentRow.find('input');
 
-        // 如果 message 的 display 是 none，说明是 textarea，则批量发送
-        if (message.css('display') === 'none') {
-            let messageArray = textarea.val().split('\n');
+        let textareaContent = textarea.val().trim();
+        let inputContent = input.val().trim();
 
+        // 判断是否为批量命令
+        if (textareaContent.includes('\n')) {
+            // 批量发送
+            let messageArray = textareaContent.split('\n');
             let i = 0;
             let interval = setInterval(function () {
                 if (i < messageArray.length) {
                     try {
                         websocket.send(messageArray[i]);
-                        //发送消息后，将消息显示在网页上
                         displayMessage(messageArray[i], "Send");
                         i++;
                     } catch (error) {
                         console.error("发送消息时发生错误:", error);
-                        clearInterval(interval); // 发生错误时清除定时器
+                        clearInterval(interval);
                     }
                 } else {
-                    clearInterval(interval); // 确保在发送完所有消息后清除定时器
+                    clearInterval(interval);
                 }
-            }, 100);
-        } else {
+            }, 500);
+        } else if (inputContent) {
+            // 发送单个命令
             try {
-                websocket.send(message.val());
-                displayMessage(message.val(), "Send");
+                websocket.send(inputContent);
+                displayMessage(inputContent, "Send");
             } catch (error) {
                 console.error("发送消息时发生错误:", error);
             }
@@ -228,27 +358,26 @@
     function setupMessageToggles() {
         const messages = document.getElementsByName('message1');
         const messageInputs = document.getElementsByName('messageInput');
-        const batchTexts = document.getElementsByName('batch-text');
 
         messages.forEach((message, i) => {
             const lines = message.value.split('\n');
+            const saveButton = messageInputs[i].nextElementSibling.querySelector('.save-btn');
 
             if (lines.length > 1) {
                 message.style.display = 'none';
                 messageInputs[i].value = lines[0];
-                batchTexts[i].style.display = 'none';
 
                 const button = document.createElement('button');
                 button.type = 'button';
                 button.textContent = '展开';
                 button.style.marginLeft = '10px';
-                button.classList.add('layui-btn', 'layui-bg-blue', 'layui-btn-primary');
+                button.classList.add('btn', 'btn-primary');
                 button.onclick = () => toggleView(button);
 
                 messageInputs[i].parentElement.appendChild(button);
+                saveButton.style.display = 'none'; // 隐藏保存按钮
             } else {
                 message.style.display = 'none';
-                batchTexts[i].style.display = 'none';
             }
         });
     }
@@ -257,19 +386,36 @@
         const container = button.parentElement;
         const textarea = container.querySelector('textarea');
         const input = container.querySelector('input');
-        const batchText = container.querySelector('[name="batch-text"]');
 
         const isHidden = textarea.style.display === 'none';
-        textarea.style.display = isHidden ? 'block' : 'none';
-        input.style.display = isHidden ? 'none' : 'block';
-        batchText.style.display = isHidden ? 'block' : 'none';
+
+        if (isHidden) {
+            // 展开 textarea
+            textarea.style.display = 'block';
+            input.style.display = 'none';
+            // 将 textarea 的内容更新为 input 的内容
+            const firstLine = input.value;
+            textarea.value = firstLine + '\n' + textarea.value.split('\n').slice(1).join('\n');
+        } else {
+            // 折叠 textarea，将 input 设置为 textarea 的第一行内容
+            textarea.style.display = 'none';
+            input.style.display = 'block';
+            const firstLine = textarea.value.split('\n')[0];
+            input.value = firstLine;
+        }
+
         button.textContent = isHidden ? '收起' : '展开';
     }
+
 
     function exportTxT() {
         const message = $('#message').val();
         const blob = new Blob([message], { type: "text/plain;charset=utf-8" });
         saveAs(blob, `mqtt-${dayjs().format('YYYY-MM-DD-HH-mm-ss')}.txt`);
+    }
+
+    function clearLog() {
+        $('#message').val('');
     }
 
     function saveAs(blob, filename) {
@@ -280,32 +426,39 @@
         a.click();
         window.URL.revokeObjectURL(url);
     }
-
 </script>
 
 <style>
     html, body {
-        height: 100%;
         margin: 0;
+        height: 100%;
     }
 
-    .layui-container {
+    .container {
+        max-width: 700px; /* 默认最大宽度 */
+        margin: 0 auto;
+        padding: 10px;
         display: flex;
         flex-direction: column;
-        height: 100%;
         box-sizing: border-box;
-        padding: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            max-width: none; /* 移动设备上不限制宽度 */
+        }
     }
 
     #table {
-        flex: 1;
-        overflow-y: auto;
-        margin-bottom: 10px;
-        border: 1px solid #f5f6f7;
+
     }
 
     #table td {
-        padding: 2px;
+        padding: 2px 1px;
+    }
+
+    .table td, .table th {
+        border: none;
     }
 
     textarea {
@@ -313,45 +466,76 @@
         resize: none;
         height: auto;
         overflow: hidden;
-        background-color: #f5f6f7;
+        background-color: #f8f9fa;
         overflow-x: scroll;
     }
 
-    .layui-input-group {
+    .input-group {
         display: flex;
         align-items: center;
+        width: auto;
     }
 
     #message {
-        flex: 1;
         margin-bottom: 10px;
-        height: auto;
-        overflow-y: auto;
+        height: 500px;
+        overflow: scroll;
+        font-size: 14px;
     }
 
-    .notice {
+    .alert {
         padding: 10px 15px;
-        background: #f5f6f7;
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-radius: 15px;
+        flex-direction: column; /* 默认垂直排列 */
+        align-items: flex-start; /* 左对齐内容 */
+        border-radius: .25rem;
     }
 
-    .notice span {
+    @media (min-width: 768px) {
+        .alert {
+            flex-direction: row; /* 中等及以上屏幕水平排列 */
+            align-items: center; /* 垂直居中 */
+        }
+    }
+
+    .alert span {
         color: #666;
         font-size: 16px;
     }
 
-    .notice .layui-form-item {
-        margin-bottom: 0;
+    .form-control {
+        font-size: 14px;
     }
 
-    .layui-input-split {
-        height: 38px;
-        line-height: 38px;
-        background: #f5f6f7;
+    .save-btn {
+        margin-left: 5px;
+    }
+
+
+    .input-group {
+        display: flex;
+        align-items: center;
+    }
+
+    .input-group-append {
+        margin-left: 5px;
+    }
+
+    .save-btn-topic {
+        display: none;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
     }
 
 </style>
+
+
 </html>
