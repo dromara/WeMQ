@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh" xml:th="http://www.thymeleaf.org">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <title>MQTT主机 - 物联网调试管理系统</title>
@@ -13,6 +13,8 @@
     <script th:src="@{/statics/layer/layer.js}"></script>
     <script th:src="@{/statics/system/common.js}"></script>
     <script th:src="@{/statics/system/utils.js}"></script>
+    <link rel="stylesheet" th:href="@{/statics/layui/layui.css}" />
+    <script th:src="@{/statics/layui/layui.js}"></script>
 </head>
 <body>
 <div class="page">
@@ -23,7 +25,6 @@
             <div class="container-xl">
                 <div class="row g-2 align-items-center">
                     <div class="col">
-                        <!-- Page pre-title -->
                         <div class="page-pretitle">
                             物联网调试管理后台
                         </div>
@@ -33,12 +34,9 @@
                     </div>
                     <div class="col-auto ms-auto d-print-none">
                         <div class="btn-list">
-                            <div class="btn-list">
-                                <button onclick="addToken()" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#modal-add">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path d="M5 12l14 0"></path></svg>
-                                    添加主机
-                                </button>
-                        </div>
+                            <button onclick="addToken()" class="layui-btn layui-btn-primary">
+                                添加主机
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -47,38 +45,11 @@
 
         <div class="page-body">
             <div class="container-xl">
-                <div class="row" hidden="hidden">
-                    <div class="col-12">
-                        <div class="alert alert-danger alert-dismissible" role="alert">
-                            <h3 class="mb-1">NMQS API 服务异常！<span class="status status-red">受影响的业务：调试、调试页面添加、NMQS Token管理</span></h3>
-                            <p>
-                                NicholasLD's Message Queue Service 服务异常，所有调试服务将不可用！<br>
-                                <span style="font-weight: bolder;">请联系系统管理员！</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
                 <div class="row row-deck row-cards">
                     <div class="col-12">
                         <div id="card" class="card">
                             <div class="card-body">
-                                <div class="table-responsive" style="height: 560px">
-                                    <table class="table table-vcenter" id="token_list">
-                                        <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>主机名称</th>
-                                            <th>Token</th>
-                                            <th>协议</th>
-                                            <th>服务器</th>
-                                            <th>操作</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
-
+                                <table id="token_list" class="layui-table" lay-filter="tokenTable"></table>
                             </div>
                         </div>
                     </div>
@@ -87,429 +58,387 @@
         </div>
     </div>
 
-    <div class="modal modal-blur fade" id="modal-showinfo" tabindex="-1" aria-modal="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content" style="box-shadow: 0px 5px 6px rgb(205, 205, 205);">
-                <div class="modal-header">
-                    <h5 class="modal-title">主机详情</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- 添加MQTT主机内容 -->
+    <div id="modal-add" style="display: none;">
+        <div class="layui-form" style="padding: 20px;">
+            <div class="layui-form-item">
+                <label class="layui-form-label">主机名称</label>
+                <div class="layui-input-block">
+                    <input id="add_name" type="text" class="layui-input" />
                 </div>
-                <div class="modal-body">
-                    <div class="datagrid">
-                        <div class="datagrid-item">
-                            <div class="datagrid-title">连接协议</div>
-                            <div class="datagrid-content"><span class="badge bg-green" id="view_protocol"></span></div>
-                        </div>
-                        <div class="datagrid-item">
-                            <div class="datagrid-title">服务器地址</div>
-                            <div class="datagrid-content" id="view_server"></div>
-                        </div>
-                        <div class="datagrid-item">
-                            <div class="datagrid-title">端口</div>
-                            <div class="datagrid-content" id="view_port"></div>
-                        </div>
-                        <div class="datagrid-item">
-                            <div class="datagrid-title">用户名</div>
-                            <div class="datagrid-content" id="view_username"></div>
-                        </div>
-                        <div class="datagrid-item">
-                            <div class="datagrid-title">密码</div>
-                            <div class="datagrid-content" id="view_password"></div>
-                        </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">Token</label>
+                <div class="layui-input-block">
+                    <div class="layui-input-inline">
+                        <input id="add_token" type="text" class="layui-input">
                     </div>
+                    <button id="add_resettoken" class="layui-btn" type="button">生成</button>
+                </div>
+
+
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">MQTT连接协议</label>
+                <div class="layui-input-block">
+                    <select id="add_mqtt_protocol" class="layui-select">
+                        <option value="0">ws:// (默认8083)</option>
+                        <option value="1">mqtt:// (默认1883)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">MQTT服务器地址</label>
+                <div class="layui-input-block">
+                    <input id="add_mqtt_server" type="text" class="layui-input" />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">MQTT服务器端口</label>
+                <div class="layui-input-block">
+                    <input id="add_mqtt_port" type="text" class="layui-input" />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">MQTT服务器用户名</label>
+                <div class="layui-input-block">
+                    <input id="add_mqtt_username" type="text" class="layui-input" />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">MQTT服务器密码</label>
+                <div class="layui-input-block">
+                    <input id="add_mqtt_password" type="text" class="layui-input" />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button onclick="submitAdd()" class="layui-btn" id="add_save">保存</button>
+                    <button class="layui-btn layui-btn-primary" onclick="layer.closeAll()">取消</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal modal-blur fade" id="modal-edit" tabindex="-1" aria-modal="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content" style="box-shadow: 0px 5px 6px rgb(205, 205, 205);">
-                <div class="modal-header">
-                    <h5 class="modal-title">编辑MQTT主机</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- 编辑MQTT主机内容 -->
+    <div id="modal-edit" style="display: none;">
+        <div class="layui-form" style="padding: 20px;">
+            <input type="hidden" id="edit_id">
+            <div class="layui-form-item">
+                <label class="layui-form-label">主机名称</label>
+                <div class="layui-input-block">
+                    <input id="edit_name" type="text" class="layui-input" />
                 </div>
-                <input type="hidden" id="edit_id">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">主机名称</label>
-                        <input id="edit_name" type="text" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Token</label>
-                        <div class="input-group mb-2">
-                            <input readonly id="edit_token" type="text" class="form-control">
-                            <button id="edit_resettoken" class="btn" type="button">生成</button>
-                        </div>
-                    </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">Token</label>
+                <div class="layui-input-inline">
+                    <input readonly id="edit_token" type="text" class="layui-input">
                 </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">MQTT连接协议</label>
-                        <select id="edit_mqtt_protocol" class="form-select">
-                            <option value="0">ws:// (默认8083)</option>
-                            <option value="1">mqtt:// (默认1883)</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">MQTT服务器地址</label>
-                        <input id="edit_mqtt_server" type="text" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">MQTT服务器端口</label>
-                        <input id="edit_mqtt_port" type="text" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">MQTT服务器用户名</label>
-                        <input id="edit_mqtt_username" type="text" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">MQTT服务器密码</label>
-                        <input id="edit_mqtt_password" type="text" class="form-control" />
-                    </div>
+                <button id="edit_resettoken" class="layui-btn" type="button">生成</button>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">MQTT连接协议</label>
+                <div class="layui-input-block">
+                    <select id="edit_mqtt_protocol" class="layui-select">
+                        <option value="0">ws:// (默认8083)</option>
+                        <option value="1">mqtt:// (默认1883)</option>
+                    </select>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-                        取消
-                    </button>
-                    <button onclick="submitEdit()" type="button" class="btn btn-primary ms-auto" id="edit_save">
-                        保存
-                    </button>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">MQTT服务器地址</label>
+                <div class="layui-input-block">
+                    <input id="edit_mqtt_server" type="text" class="layui-input" />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">MQTT服务器端口</label>
+                <div class="layui-input-block">
+                    <input id="edit_mqtt_port" type="text" class="layui-input" />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">MQTT服务器用户名</label>
+                <div class="layui-input-block">
+                    <input id="edit_mqtt_username" type="text" class="layui-input" />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">MQTT服务器密码</label>
+                <div class="layui-input-block">
+                    <input id="edit_mqtt_password" type="text" class="layui-input" />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button onclick="submitEdit()" class="layui-btn" id="edit_save">保存</button>
+                    <button class="layui-btn layui-btn-primary" onclick="layer.closeAll()">取消</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="modal modal-blur fade" id="modal-add" tabindex="-1" aria-modal="true" >
-        <div class="modal-dialog modal-xl" role="document">
-            <div class="modal-content" style="box-shadow: 0px 5px 6px rgb(205, 205, 205);">
-                <div class="modal-header">
-                    <h5 class="modal-title">添加MQTT主机</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <input type="hidden" id="add_id">
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-3">
-                            <div class="mb-3">
-                                <label class="form-label">主机名称</label>
-                                <input id="add_name" type="text" class="form-control" />
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Token</label>
-                                <div class="input-group mb-2">
-                                    <input id="add_token" type="text" class="form-control">
-                                    <button id="add_resettoken" class="btn" type="button">生成</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl">
-                            <div class="mb-3">
-                                <label class="form-label">MQTT连接协议</label>
-                                <select id="add_mqtt_protocol" class="form-select">
-                                    <option value="0">ws:// (默认8083)</option>
-                                    <option value="1">mqtt:// (默认1883)</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">MQTT服务器地址</label>
-                                <input id="add_mqtt_server" type="text" class="form-control" />
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">MQTT服务器端口</label>
-                                <input id="add_mqtt_port" type="text" class="form-control" />
-                            </div>
-
-
-                        </div>
-                        <div class="col-xl">
-                            <div class="mb-3">
-                                <label class="form-label">MQTT服务器用户名</label>
-                                <input id="add_mqtt_username" type="text" class="form-control" />
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">MQTT服务器密码</label>
-                                <input id="add_mqtt_password" type="text" class="form-control" />
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="modal-body">
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-                        取消
-                    </button>
-                    <button onclick="submitAdd()" type="button" class="btn btn-primary ms-auto" id="add_save">
-                        保存
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </div>
 </body>
-<script>
+<script th:inline="none">
     //菜单class追加属性
     $(function () {
         $("#menu_nmqs").addClass("active");
+    });
+
+    layui.use(['table', 'layer', 'form'], function(){
+        var table = layui.table;
+        var layer = layui.layer;
+        var form = layui.form;
+
+        table.render({
+            elem: '#token_list',
+            url: '/nmqs/list',
+            method: 'GET',
+            page: true,
+            request: {
+                pageName: "pageNum",
+                limitName: "pageSize",
+            },
+            parseData: function (res) {
+                return {
+                    code: res.code === 200 ? 0 : 1,
+                    msg: res.msg,
+                    count: res.data.total,
+                    data: res.data.rows,
+                };
+            },
+            cols: [[
+                {field: 'id', title: 'ID', align: 'center', width: 50},
+                {field: 'name', title: '主机名称', align: 'center', width: 200},
+                {field: 'token', title: 'Token', align: 'center', width: 200},
+                {field: 'protocol', title: '协议', align: 'center', width: 100, templet: function(d) {
+                        return d.protocol === 0 ? '<span class="layui-badge layui-bg-green">ws://</span>' : '<span class="layui-badge layui-bg-green">mqtt://</span>';
+                    }},
+                {field: 'mqttServer', title: '服务器', align: 'center', templet: function(d) {
+                        return d.mqttServer + ":" + d.mqttPort;
+                    }},
+                {field: 'operate', title: '操作', align: 'center', width: 200, toolbar: '#operationBar'}
+            ]]
+        });
+
+        table.on('tool(tokenTable)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'show'){
+                showInfo(data.id);
+            } else if(obj.event === 'edit'){
+                editInfo(data.id);
+            } else if(obj.event === 'delete'){
+                deleteToken(data.id);
+            }
+        });
 
         $('#add_resettoken').on('click', function () {
             $("#add_token").val(randomString(12));
         });
-    });
-
-    //渲染数据
-    $('#token_list').bootstrapTable({
-        url: '/nmqs/list',                      //请求后台的URL（*）
-        method: 'GET',
-        pagination: true,
-        sidePagination: "server",
-        queryParams: function (params) {
-            return {
-                pageNum: params.offset / params.limit + 1,
-                pageSize: params.limit,
-            }
-        },
-        responseHandler: function (res) {
-            return {
-                "total": res.data.total,
-                "rows": res.data.rows
-            }
-        },
-        columns: [{
-            field: 'id',
-            title: 'ID',
-            align: 'center',
-            valign: 'middle',
-            width: 50
-        }, {
-            field: 'name',
-            title: '主机名称',
-            align: 'center',
-            valign: 'middle',
-            width: 100
-        }, {
-            field: 'token',
-            title: 'Token',
-            align: 'center',
-            valign: 'middle',
-            width: 100
-        },{
-            field: 'protocol',
-            title: '协议',
-            align: 'center',
-            valign: 'middle',
-            width: 100,
-            formatter: function (value, row, index) {
-                return value === 0 ? '<span class="badge bg-green">ws://</span>':'<span class="badge bg-green">mqtt://</span>';
-            }
-        }, {
-            field: 'mqttServer',
-            title: '服务器',
-            align: 'center',
-            valign: 'middle',
-            width: 100,
-            formatter: function (value, row, index) {
-                return value + ":" + row.mqttPort;
-            }
-        }, {
-            field: 'operate',
-            title: '操作',
-            align: 'center',
-            valign: 'middle',
-            width: 100,
-            formatter: function (value, row, index) {
-                return '<button onclick="showInfo('+ row.id +')" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-showinfo">查看</button> ' +
-                    '<button onclick="editInfo('+ row.id +')" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modal-edit">编辑</button> ' +
-                    '<button onclick="deleteToken('+ row.id +')" class="btn btn-danger btn-sm">删除</button>';
-            }
-        }]
-    })
-
-    function addToken() {
-        $("#add_name").val("");
-        $("#add_token").val("");
-        $("#add_protocol").val(0);
-        $("#add_mqtt_server").val("");
-        $("#add_mqtt_port").val("");
-        $("#add_mqtt_username").val("");
-        $("#add_mqtt_password").val("");
-
-        $("#add_resettoken").click();
-    }
-
-    function showInfo(row) {
-        console.log(row)
-        let url = "/nmqs/info/" + row;
-
-        $.ajax({
-            url: url,
-            type: "GET",
-            dataType: "json",
-            success: function (data) {
-                params = data.data;
-
-                console.log(params);
-
-                $("#view_protocol").text(params.protocol===0?"ws://":"mqtt://");
-                $("#view_server").text(params.mqttServer);
-                $("#view_port").text(params.mqttPort);
-                $("#view_username").text(params.mqttUsername);
-                $("#view_password").text(params.mqttPassword);
-            }
-        })
-    }
-
-    function editInfo(row) {
-        let url = "/nmqs/info/" + row;
-
-        $.ajax({
-            url: url,
-            type: "GET",
-            dataType: "json",
-            success: function (data) {
-                params = data.data;
-                console.log(params);
-                $("#edit_id").val(params.id);
-                $("#edit_name").val(params.name);
-                $("#edit_token").val(params.token);
-                $("#edit_mqtt_protocol").val(params.protocol);
-                $("#edit_mqtt_server").val(params.mqttServer);
-                $("#edit_mqtt_port").val(params.mqttPort);
-                $("#edit_mqtt_username").val(params.mqttUsername);
-                $("#edit_mqtt_password").val(params.mqttPassword);
-            }
-        })
 
         $('#edit_resettoken').on('click', function () {
             $("#edit_token").val(randomString(12));
-        })
-    }
+        });
 
-    //添加
-    function submitAdd() {
-        const fields = [
-            { selector: "#add_name", message: "Token名称不能为空" },
-            { selector: "#add_token", message: "Token不能为空" },
-            { selector: "#add_mqtt_protocol", message: "协议不能为空" }
-        ];
+        window.addToken = function() {
+            layer.open({
+                type: 1,
+                title: '添加MQTT主机',
+                area: ['600px', '500px'],
+                content: $('#modal-add'),
+                success: function(layero, index){
+                    form.render();
+                }
+            });
+        };
 
-        for (const field of fields) {
-            if (isBlank($(field.selector).val())) {
-                layer.msg(field.message);
-                return;
-            }
-        }
+        window.showInfo = function(id) {
+            $.ajax({
+                url: "/nmqs/info/" + id,
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    var params = data.data;
+                    layer.open({
+                        type: 1,
+                        title: '主机详情',
+                        area: ['600px', '400px'],
+                        content: '<div class="layui-form" style="padding: 20px;">' +
+                            '<div class="layui-form-item"><label class="layui-form-label">连接协议</label><div class="layui-input-block"><span class="layui-badge layui-bg-green">' + (params.protocol===0?"ws://":"mqtt://") + '</span></div></div>' +
+                            '<div class="layui-form-item"><label class="layui-form-label">服务器地址</label><div class="layui-input-block">' + params.mqttServer + '</div></div>' +
+                            '<div class="layui-form-item"><label class="layui-form-label">端口</label><div class="layui-input-block">' + params.mqttPort + '</div></div>' +
+                            '<div class="layui-form-item"><label class="layui-form-label">用户名</label><div class="layui-input-block">' + params.mqttUsername + '</div></div>' +
+                            '<div class="layui-form-item"><label class="layui-form-label">密码</label><div class="layui-input-block">' + params.mqttPassword + '</div></div>' +
+                            '</div>'
+                    });
+                }
+            });
+        };
 
+        window.editInfo = function(id) {
+            $.ajax({
+                url: "/nmqs/info/" + id,
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    var params = data.data;
+                    layer.open({
+                        type: 1,
+                        title: '编辑MQTT主机',
+                        area: ['600px', '500px'],
+                        content: $('#modal-edit'),
+                        success: function(layero, index){
+                            var editForm = layero.find('.layui-form');
+                            editForm.find('#edit_id').val(params.id);
+                            editForm.find('#edit_name').val(params.name);
+                            editForm.find('#edit_token').val(params.token);
+                            editForm.find('#edit_mqtt_protocol').val(params.protocol);
+                            editForm.find('#edit_mqtt_server').val(params.mqttServer);
+                            editForm.find('#edit_mqtt_port').val(params.mqttPort);
+                            editForm.find('#edit_mqtt_username').val(params.mqttUsername);
+                            editForm.find('#edit_mqtt_password').val(params.mqttPassword);
+                            form.render();
+                        }
+                    });
+                }
+            });
+        };
 
-        let data = {
-            name: $("#add_name").val(),
-            token: $("#add_token").val(),
-            protocol: $("#add_mqtt_protocol").val(),
-            mqttServer: $("#add_mqtt_server").val(),
-            mqttPort: $("#add_mqtt_port").val(),
-            mqttUsername: $("#add_mqtt_username").val(),
-            mqttPassword: $("#add_mqtt_password").val()
-        }
+        window.submitAdd = function() {
+            const fields = [
+                { selector: "#add_name", message: "主机名称不能为空" },
+                { selector: "#add_token", message: "Token不能为空" },
+                { selector: "#add_mqtt_protocol", message: "协议不能为空" }
+            ];
 
-        $.post({
-            url: "/nmqs/add",
-            dataType: "json",
-            data: JSON.stringify(data),
-            contentType:'application/json;charset=UTF-8',
-            success: function (data) {
-                if (data.code === 200) {
-                    layer.msg("添加成功");
-                    $('#modal-add').modal('hide');
-                    $('#token_list').bootstrapTable('refresh');
-                } else {
-                    alert(data.msg);
+            for (const field of fields) {
+                if (isBlank($(field.selector).val())) {
+                    layer.msg(field.message);
+                    return;
                 }
             }
-        })
-    }
 
-    function submitEdit() {
-        const fields = [
-            { selector: "#edit_token", message: "Token不能为空" },
-            { selector: "#edit_name", message: "名称不能为空" },
-            { selector: "#edit_mqtt_protocol", message: "协议不能为空" }
-        ];
+            let data = {
+                name: $("#add_name").val(),
+                token: $("#add_token").val(),
+                protocol: $("#add_mqtt_protocol").val(),
+                mqttServer: $("#add_mqtt_server").val(),
+                mqttPort: $("#add_mqtt_port").val(),
+                mqttUsername: $("#add_mqtt_username").val(),
+                mqttPassword: $("#add_mqtt_password").val()
+            };
 
-        for (const field of fields) {
-            if (isBlank($(field.selector).val())) {
-                layer.msg(field.message);
-                return;
-            }
-        }
-
-
-        let data = {
-            id: $("#edit_id").val(),
-            name: $("#edit_name").val(),
-            token: $("#edit_token").val(),
-            protocol: $("#edit_mqtt_protocol").val(),
-            mqttServer: $("#edit_mqtt_server").val(),
-            mqttPort: $("#edit_mqtt_port").val(),
-            mqttUsername: $("#edit_mqtt_username").val(),
-            mqttPassword: $("#edit_mqtt_password").val()
-        }
-
-        layer.confirm('你确认要修改 ID:'+data.id+' 吗？', {
-            btn: ['确认','取消'] //按钮
-        }, function(){
             $.post({
-                url: "/nmqs/update",
+                url: "/nmqs/add",
                 dataType: "json",
                 data: JSON.stringify(data),
                 contentType:'application/json;charset=UTF-8',
                 success: function (data) {
                     if (data.code === 200) {
-                        layer.msg("修改成功");
-                        $('#modal-edit').modal('hide');
-                        $('#token_list').bootstrapTable('refresh');
+                        layer.msg("添加成功");
+                        layer.closeAll();
+                        layui.table.reload('token_list');
                     } else {
-                        alert(data.msg);
+                        layer.msg(data.msg);
                     }
                 }
-            })
-        }, function(){
-            layer.msg('已取消');
-        });
+            });
+        };
+
+        window.submitEdit = function() {
+            const fields = [
+                { selector: "#edit_token", message: "Token不能为空" },
+                { selector: "#edit_name", message: "名称不能为空" },
+                { selector: "#edit_mqtt_protocol", message: "协议不能为空" }
+            ];
+
+            for (const field of fields) {
+                if (isBlank($(field.selector).val())) {
+                    layer.msg(field.message);
+                    return;
+                }
+            }
+
+            let data = {
+                id: $("#edit_id").val(),
+                name: $("#edit_name").val(),
+                token: $("#edit_token").val(),
+                protocol: $("#edit_mqtt_protocol").val(),
+                mqttServer: $("#edit_mqtt_server").val(),
+                mqttPort: $("#edit_mqtt_port").val(),
+                mqttUsername: $("#edit_mqtt_username").val(),
+                mqttPassword: $("#edit_mqtt_password").val()
+            };
+
+            layer.confirm('你确认要修改 ID:'+data.id+' 吗？', {
+                btn: ['确认','取消']
+            }, function(){
+                $.post({
+                    url: "/nmqs/update",
+                    dataType: "json",
+                    data: JSON.stringify(data),
+                    contentType:'application/json;charset=UTF-8',
+                    success: function (data) {
+                        if (data.code === 200) {
+                            layer.msg("修改成功");
+                            layer.closeAll();
+                            layui.table.reload('token_list');
+                        } else {
+                            layer.msg(data.msg);
+                        }
+                    }
+                });
+            }, function(){
+                layer.msg('已取消');
+            });
+        };
+
+        window.deleteToken = function(id){
+            let url = "/nmqs/delete/" + id;
+
+            layer.confirm('你确认要删除 ID:'+id+' 吗？', {
+                btn: ['确认','取消']
+            }, function(){
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.code === 200) {
+                            layui.table.reload('token_list');
+                            layer.msg('删除成功！', {icon: 1});
+                        } else {
+                            layer.msg(data.msg, {icon: 2});
+                        }
+                    }
+                });
+            }, function(){
+                layer.msg('已取消', {icon: 1});
+            });
+        };
+    });
+
+    function randomString(length) {
+        var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        var result = '';
+        for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+        return result;
     }
 
-    function deleteToken(row){
-        let url = "/nmqs/delete/" + row;
-
-        layer.confirm('你确认要删除 ID:'+row+' 吗？', {
-            btn: ['确认','取消'] //按钮
-        }, function(){
-            $.ajax({
-                url: url,
-                type: "POST",
-                dataType: "json",
-                success: function (data) {
-                    if (data.code === 200) {
-                        $('#token_list').bootstrapTable('refresh');
-                        layer.msg('删除成功！', {icon: 1});
-                    } else {
-                        layer.msg(data.msg, {icon: 2});
-                    }
-                }
-            })
-        }, function(){
-            layer.msg('已取消', {icon: 1});
-        });
+    function isBlank(str) {
+        return (!str || /^\s*$/.test(str));
     }
 </script>
+<script type="text/html" id="operationBar">
+    <a class="layui-btn layui-btn-xs" lay-event="show">查看</a>
+    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
+</script>
+
 <style>
-    .fixed-table-container {
-        height: 500px;
-        border: 1px solid #ddd;
+    .layui-form-label {
+        width: 100px;
     }
 </style>
 </html>
