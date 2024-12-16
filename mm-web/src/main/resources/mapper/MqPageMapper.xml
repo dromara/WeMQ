@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.mmanager.dao.MQTT.MqPageMapper">
-    <resultMap id="mqPage" type="cn.mmanager.model.dto.MqPageDto">
+<mapper namespace="org.dromara.mapper.MqPageMapper">
+    <resultMap id="mqPage" type="org.dromara.model.dto.MqPageDto">
         <id column="id" property="id"/>
         <result column="page_name" property="pageName"/>
         <result column="page_url" property="pageUrl"/>
@@ -14,11 +14,11 @@
         <result column="batch_send" property="batchSend"/>
         <result column="batch_command" property="batchCommand"/>
         <result column="batch_delay" property="batchDelay"/>
-        <association property="customer" javaType="cn.mmanager.model.pojo.Customer">
+        <association property="customer" javaType="org.dromara.model.pojo.Customer">
             <result column="customer_id" property="id"/>
             <result column="customer_name" property="name"/>
         </association>
-        <association property="settings" javaType="cn.mmanager.model.pojo.NmqsToken">
+        <association property="settings" javaType="org.dromara.model.pojo.NmqsToken">
             <result column="name" property="name"/>
             <result column="token" property="token"/>
             <result column="mqtt_server" property="mqttServer"/>
