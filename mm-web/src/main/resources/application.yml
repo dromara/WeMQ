@@ -15,7 +15,7 @@ spring:
     password: 88888888
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**.xml
-  type-aliases-package: cn.mmanager.model
+  type-aliases-package: org.dromara.model
   configuration:
     # MyBatis 配置
     map-underscore-to-camel-case: true
@@ -30,4 +30,4 @@ logging:
     name: logs/logs.log
   level:
       root: info
-      cn.mmanager: debug
+      org.dromara: debug
