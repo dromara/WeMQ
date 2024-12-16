@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="org.dromara.mapper.NmqsMapper">
+<mapper namespace="org.dromara.wemq.mapper.NmqsMapper">
     <resultMap id="select" type="NmqsToken">
         <id column="id" property="id" />
         <result column="name" property="name" />
@@ -12,7 +12,7 @@
         <result column="mqtt_password" property="mqttPassword" />
     </resultMap>
 
-    <select id="select" resultType="org.dromara.model.pojo.NmqsToken" resultMap="select">
+    <select id="select" resultType="org.dromara.wemq.model.pojo.NmqsToken" resultMap="select">
         select * from mq_nmqs_token
         <where>
             <if test="id != null">
@@ -27,11 +27,11 @@
         </where>
     </select>
 
-    <select id="selectById" resultType="org.dromara.model.pojo.NmqsToken" resultMap="select">
+    <select id="selectById" resultType="org.dromara.wemq.model.pojo.NmqsToken" resultMap="select">
         select * from mq_nmqs_token where id = #{id}
     </select>
 
-    <select id="getInfoByToken" resultType="org.dromara.model.pojo.NmqsToken" resultMap="select">
+    <select id="getInfoByToken" resultType="org.dromara.wemq.model.pojo.NmqsToken" resultMap="select">
         select * from mq_nmqs_token where token = #{token}
     </select>
 
